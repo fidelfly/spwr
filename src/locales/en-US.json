@@ -1,0 +1,9 @@
+{
+    "app.name": "SPWR Console",
+    "app.name.short": "SPWR",
+    "app.copyright": "SPWR © fidelfly 2019",
+    "app.login": "Login",
+    "app.logout": "Logout",
+    "app.language.en": "English",
+    "app.language.zh": "中文"
+}

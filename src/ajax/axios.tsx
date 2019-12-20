@@ -1,0 +1,189 @@
+import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
+import { Authkit } from "../auth";
+import { WsException } from "../errors";
+
+const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse> => {
+    if (resp.status === 202 && resp.headers && resp.headers["location"]) {
+        const queryUrl = resp.headers["location"];
+        const cfg = resp.config as RequestConfig;
+        const interval = cfg.checkStatusInterval || 1000;
+        const timeout = cfg.checkStatusTimeout || 0;
+        const time = cfg.time || Date.now();
+        if (timeout && Date.now() - time > timeout) {
+            throw new WsException(408, `Server(408)`, "Long request timeout");
+        }
+        return new Promise(function(resolve): void {
+            setTimeout(function() {
+                const config = {
+                    checkStatusInterval: interval,
+                    checkStatusTimeout: timeout,
+                    time: time,
+                };
+                resolve(Ajax.get(queryUrl, config));
+            }, interval);
+        });
+    } else {
+        return resp;
+    }
+};
+
+const resolveError = (error: any): any => {
+    if (error.response) {
+        const status = error.response.status;
+        const data = error.response.data;
+        if (status === 403) {
+            return Promise.reject(new WsException(status, `Server(${status})`, "No Access"));
+        } else if (data) {
+            if (data.errorCode || data.error) {
+                return Promise.reject(
+                    new WsException(
+                        status,
+                        data.errorCode || data.error,
+                        data.errorMessage || data["error_description"],
+                        data.data
+                    )
+                );
+            } else {
+                return Promise.reject(new WsException(status, `Server(${status})`, data.toString()));
+            }
+        }
+    }
+    return Promise.reject(error);
+};
+
+axios.interceptors.response.use(resolveData, resolveError);
+
+axios.interceptors.request.use(
+    function(config) {
+        config = config || {};
+        const headers = config.headers || {};
+        if (!headers["Authorization"]) {
+            const accessToken = Authkit.getAuthorizeToken();
+            if (accessToken) {
+                headers["Authorization"] = accessToken;
+                config.headers = headers;
+            }
+        }
+        return config;
+    },
+    function(error) {
+        return Promise.reject(error);
+    }
+);
+
+interface RequestConfig extends AxiosRequestConfig {
+    withAuthInject?: boolean;
+    checkStatusInterval?: number;
+    checkStatusTimeout?: number;
+    time?: number;
+}
+
+export async function request<R = AxiosResponse>(config: RequestConfig): Promise<R> {
+    if (config === undefined || config.withAuthInject !== false) {
+        await Authkit.checkAuthorizeBeforeRequest();
+    }
+
+    return axios.request(config);
+}
+
+declare interface AjaxApi {
+    get<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    delete<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    head<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    option<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    post<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
+    put<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
+    patch<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
+}
+
+/*const ajax = {};
+["delete", "get", "head", "options"].forEach(function(method: string) {
+    ajax[method] = function(url: string, config?: RequestConfig) {
+        config = config || {};
+        return request({
+            ...config,
+            method: method as Method,
+            url: url,
+        });
+    };
+});
+
+["post", "put", "patch"].forEach(function(method: string) {
+    /!*eslint func-names:0*!/
+    ajax[method] = function(url: string, data?: any, config?: RequestConfig) {
+        config = config || {};
+        return request({
+            ...config,
+            method: method as Method,
+            url: url,
+            data: data,
+        });
+    };
+});*/
+
+function createRequestFunction<T = any, R = AxiosResponse<T>>(
+    method: string
+): (url: string, config?: RequestConfig) => Promise<R> {
+    return function(url: string, config?: RequestConfig): Promise<R> {
+        config = config || {};
+        return request({
+            ...config,
+            method: method as Method,
+            url: url,
+        });
+    };
+}
+
+function createDataRequestFunction<T = any, R = AxiosResponse<T>>(
+    method: string
+): (url: string, data?: any, config?: RequestConfig) => Promise<R> {
+    return function(url: string, data?: T, config?: RequestConfig): Promise<R> {
+        config = config || {};
+        return request({
+            ...config,
+            method: method as Method,
+            url: url,
+            data: data,
+        });
+    };
+}
+
+export const Ajax: AjaxApi = {
+    delete: createRequestFunction("delete"),
+    get: createRequestFunction("get"),
+    head: createRequestFunction("head"),
+    option: createRequestFunction("option"),
+    post: createDataRequestFunction("post"),
+    put: createDataRequestFunction("put"),
+    patch: createDataRequestFunction("patch"),
+};
+
+/*export const upload = ({ action, data, file, filename, headers, onError, onProgress, onSuccess, withCredentials }) => {
+    const formData = new FormData();
+    if (data) {
+        Object.keys(data).map((key) => {
+            formData.append(key, data[key]);
+            return key;
+        });
+    }
+    formData.append(filename, file);
+    const config = {
+        withCredentials,
+        headers,
+        onUploadProgress: ({ total, loaded }) => {
+            onProgress({ percent: Math.round((loaded / total) * 100).toFixed(2) }, file);
+        },
+    };
+    authRequest("POST", action, formData, config)
+        .then((response) => {
+            onSuccess(response, file);
+        })
+        .catch(onError);
+
+    return {
+        abort() {
+            console.log("upload progress is aborted."); /!*eslint-disable-line no-console*!/
+        },
+    };
+};*/
+/* eslint-enable @typescript-eslint/no-explicit-any*/

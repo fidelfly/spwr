@@ -1,0 +1,9 @@
+{
+    "app.name": "SPWR 控制台",
+    "app.name.short": "SPWR",
+    "app.copyright": "SPWR © fidelfly 2019",
+    "app.login": "登录",
+    "app.logout": "退出",
+    "app.language.en": "English",
+    "app.language.zh": "中文"
+}

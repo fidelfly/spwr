@@ -1,0 +1,6 @@
+/*
+interface Actions {
+    
+}*/
+
+export default {};

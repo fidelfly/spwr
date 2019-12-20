@@ -4,5 +4,6 @@ module.exports = {
     plugins: ["@typescript-eslint", "react"], // 插件
     rules: {  // 规则
         // "additional-typescript-only-rule": "warn",
+        "@typescript-eslint/no-explicit-any": "off",
     },
 };
