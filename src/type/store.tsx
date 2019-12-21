@@ -10,7 +10,7 @@ export interface Token {
 
 export interface StoreState {
     language: string;
-    verfiyToken: boolean;
+    verifyToken: boolean;
     layout: LayoutState;
     token?: Token;
 }

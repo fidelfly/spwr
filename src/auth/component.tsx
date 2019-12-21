@@ -16,7 +16,7 @@ interface AuthState {
 
 const mapStateToProps = (state: StoreState): Props => {
     return {
-        verifyToken: state.verfiyToken,
+        verifyToken: state.verifyToken,
     };
 };
 

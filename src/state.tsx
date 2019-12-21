@@ -12,7 +12,7 @@ window.store = store;
 function getInitState(): StoreState {
     return {
         language: getLang(),
-        verfiyToken: false,
+        verifyToken: true,
         layout: {
             theme: "light",
             collapsed: false,
