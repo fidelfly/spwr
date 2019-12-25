@@ -1,6 +1,16 @@
-import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
-import { Authkit } from "../auth";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios";
+import { Authkit, invalidateToken, refreshToken } from "../auth";
 import { WsException } from "../errors";
+import { ErrCode } from "../constants";
+
+export type ErrorType = "error" | "info" | "warning";
+
+export interface RespError {
+    error_code: string;
+    error_message: string;
+    type: ErrorType;
+    data: any;
+}
 
 const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse> => {
     if (resp.status === 202 && resp.headers && resp.headers["location"]) {
@@ -27,25 +37,15 @@ const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse
     }
 };
 
-const resolveError = (error: any): any => {
+const resolveError = (error: AxiosError): any => {
     if (error.response) {
         const status = error.response.status;
         const data = error.response.data;
-        if (status === 403) {
-            return Promise.reject(new WsException(status, `Server(${status})`, "No Access"));
-        } else if (data) {
-            if (data.errorCode || data.error) {
-                return Promise.reject(
-                    new WsException(
-                        status,
-                        data.errorCode || data.error,
-                        data.errorMessage || data["error_description"],
-                        data.data
-                    )
-                );
-            } else {
-                return Promise.reject(new WsException(status, `Server(${status})`, data.toString()));
-            }
+
+        if (Ajax.isError(data)) {
+            return Promise.reject(new WsException(status, data.error_code, data.error_message, data.data));
+        } else {
+            return Promise.reject(new WsException(status, error.code || `Server(${status})`, "", data));
         }
     }
     return Promise.reject(error);
@@ -82,8 +82,20 @@ export async function request<R = AxiosResponse>(config: RequestConfig): Promise
     if (config === undefined || config.withAuthInject !== false) {
         await Authkit.checkAuthorizeBeforeRequest();
     }
-
-    return axios.request(config);
+    try {
+        return axios.request(config);
+    } catch (e) {
+        if ((e as WsException).code !== undefined) {
+            const we = e as WsException;
+            if (we.code === ErrCode.TokenExpired) {
+                await refreshToken();
+                return axios.request(config);
+            } else if (we.code === ErrCode.Unauthorized) {
+                invalidateToken();
+            }
+        }
+        throw e;
+    }
 }
 
 declare interface AjaxApi {
@@ -94,6 +106,8 @@ declare interface AjaxApi {
     post<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
     put<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
     patch<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
+
+    isError(data: any): boolean;
 }
 
 /*const ajax = {};
@@ -156,6 +170,16 @@ export const Ajax: AjaxApi = {
     post: createDataRequestFunction("post"),
     put: createDataRequestFunction("put"),
     patch: createDataRequestFunction("patch"),
+
+    isError(data: any): boolean {
+        if (data === undefined || data === null) {
+            return false;
+        }
+        if ((data as RespError).error_code !== undefined) {
+            return true;
+        }
+        return false;
+    },
 };
 
 /*export const upload = ({ action, data, file, filename, headers, onError, onProgress, onSuccess, withCredentials }) => {

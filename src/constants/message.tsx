@@ -32,4 +32,8 @@ export const appMessages = defineMessages({
         id: "app.language.zh",
         defaultMessage: "中文",
     },
+    loading: {
+        id: "app.loading",
+        defaultMessage: "Loading...",
+    },
 });

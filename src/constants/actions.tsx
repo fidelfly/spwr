@@ -1,9 +1,10 @@
-const CHANGE_LANG = "CHANGE_LANG";
-const GRANT_TOKEN = "GRANT_TOKEN";
-const CLEAR_TOKEN = "CLEAR_TOKEN";
-const LOGOUT = "LOGOUT";
-
-export default { CHANGE_LANG, GRANT_TOKEN, CLEAR_TOKEN, LOGOUT };
-
-// export type GrantToken = typeof GRANT_TOKEN;
-// export type ClearToken = typeof CLEAR_TOKEN;
+export const ActionCode = {
+    changeLang: "CHANGE_LANG",
+    grantToken: "GRANT_TOKEN",
+    clearToken: "CLEAR_TOKEN",
+    updateUser: "UPDATE_USER",
+    toggleMenu: "SIDER_MENU_TOGGLE",
+    updateTheme: "UPDATE_THEME",
+    updateSiderWidth: "UPDATE_SIDER_WIDTH",
+    logout: "LOGOUT",
+};

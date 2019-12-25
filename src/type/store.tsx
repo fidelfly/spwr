@@ -1,11 +1,21 @@
+export type Theme = "dark" | "light";
+
 export interface LayoutState {
-    theme: string;
+    theme: Theme;
     collapsed: boolean;
     sideWidth: number;
 }
 
 export interface Token {
-    userId?: number;
+    userId: number;
+}
+
+export interface User {
+    id: number;
+    code: string;
+    name: string;
+    email: string;
+    avatar: number;
 }
 
 export interface StoreState {
@@ -13,4 +23,5 @@ export interface StoreState {
     verifyToken: boolean;
     layout: LayoutState;
     token?: Token;
+    user?: User;
 }

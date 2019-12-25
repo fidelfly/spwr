@@ -1,10 +1,11 @@
-import { Action } from "../constants";
-import { Token } from "../type";
+import { ActionCode } from "../constants";
+import { Token, User } from "../type";
 import { combineReducers } from "redux";
 import { ReduxAction } from "../actions";
+import { default as layout } from "./layout";
 
 function language(langCode = "en", action: ReduxAction<string>): string {
-    if (action.type === Action.CHANGE_LANG) {
+    if (action.type === ActionCode.changeLang) {
         return action.payload as string;
     } else {
         return langCode;
@@ -13,10 +14,10 @@ function language(langCode = "en", action: ReduxAction<string>): string {
 
 function tokenReducer(token: Token = { userId: 0 }, action: ReduxAction<Token>): Token {
     switch (action.type) {
-        case Action.GRANT_TOKEN:
+        case ActionCode.grantToken:
             return action.payload as Token;
-        case Action.LOGOUT:
-        case Action.CLEAR_TOKEN:
+        case ActionCode.logout:
+        case ActionCode.clearToken:
             return { userId: 0 };
         default:
             return token;
@@ -25,13 +26,25 @@ function tokenReducer(token: Token = { userId: 0 }, action: ReduxAction<Token>):
 
 function verifyToken(verify = false, action: ReduxAction<Token>): boolean {
     switch (action.type) {
-        case Action.GRANT_TOKEN:
+        case ActionCode.grantToken:
             return false;
-        case Action.LOGOUT:
-        case Action.CLEAR_TOKEN:
+        case ActionCode.logout:
+        case ActionCode.clearToken:
             return true;
         default:
             return verify;
+    }
+}
+
+function user(user: User = { id: 0, code: "", name: "", email: "", avatar: 0 }, action: ReduxAction<User>): User {
+    switch (action.type) {
+        case ActionCode.updateUser:
+            return action.payload;
+        case ActionCode.logout:
+        case ActionCode.clearToken:
+            return { id: 0, code: "", name: "", email: "", avatar: 0 };
+        default:
+            return user;
     }
 }
 
@@ -39,4 +52,6 @@ export default combineReducers({
     language: language,
     token: tokenReducer,
     verifyToken: verifyToken,
+    layout,
+    user,
 });

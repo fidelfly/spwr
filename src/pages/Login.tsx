@@ -14,6 +14,7 @@ import { LangBtn } from "../components";
 import { EnvColor } from "../system";
 
 import "../style/login.less";
+import { RouteChildrenProps } from "react-router";
 
 const loginMessage = defineMessages({
     user: {
@@ -34,6 +35,11 @@ const loginMessage = defineMessages({
     pwdWarning: {
         id: "login.pwd.warning",
         defaultMessage: "Please input password!",
+        description: "",
+    },
+    loginBtn: {
+        id: "login.loginBtn",
+        defaultMessage: "Login",
         description: "",
     },
 });
@@ -130,7 +136,7 @@ class LoginView extends React.Component<Props, State> {
                                     htmlType="submit"
                                     className="login-form-button"
                                     style={{ width: "100%" }}>
-                                    <FormattedMessage id={"login.loginBtn"} defaultMessage={"Login"} />
+                                    <FormattedMessage {...loginMessage.loginBtn} />
                                 </Button>
                             </FormItem>
                         </Form>
@@ -149,7 +155,7 @@ class LoginView extends React.Component<Props, State> {
 
 export const Login = injectIntl(Form.create()(connector(LoginView)));
 
-export const LoginPage = withAuthorizeCheck((props: { location: { state?: any } }) => {
+export const LoginPage = withAuthorizeCheck((props: RouteChildrenProps) => {
     const { from } = props.location.state || { from: { pathname: "/app/home" } };
     return <Redirect to={from} />;
 }, Login);

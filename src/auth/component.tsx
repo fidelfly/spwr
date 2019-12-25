@@ -38,11 +38,13 @@ export function withAuthorizeCheck(AuthComp: ComponentType<any>, UnAuthComp: Com
             return null;
         }
 
-        /*        shouldComponentUpdate(
+        shouldComponentUpdate(
             nextProps: Readonly<AuthProps>,
             nextState: Readonly<AuthState>,
             nextContext: any
-        ): boolean {}*/
+        ): boolean {
+            return this.props.verifyToken !== nextProps.verifyToken || this.state.verifying !== nextState.verifying;
+        }
 
         componentDidMount(): void {
             this.refreshAuthorizeStatus();

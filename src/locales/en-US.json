@@ -5,5 +5,16 @@
     "app.login": "Login",
     "app.logout": "Logout",
     "app.language.en": "English",
-    "app.language.zh": "中文"
+    "app.language.zh": "中文",
+    "app.loading": "Loading...",
+
+
+    "app.logging.out": "You are leaving...",
+    "app.logout.return": "Return",
+
+    "login.user": "Username",
+    "login.user.warning": "Please input username",
+    "login.pwd": "Password",
+    "login.pwd.warning": "Please input password!",
+    "login.loginBtn": "Login"
 }

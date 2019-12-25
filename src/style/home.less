@@ -1,0 +1,137 @@
+.App {
+    min-height: 100vh;
+}
+
+.App-Logo {
+    line-height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.App-Sider {
+    border-right: 1px solid #ccc;
+
+    .ant-menu-item,
+    .ant-menu-submenu {
+        .anticon.menu-icon {
+            font-size: 18px;
+        }
+    }
+}
+
+.App-Header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .trigger {
+        cursor: pointer;
+
+        margin-left: 1rem;
+    }
+
+    .App-Header-Menu {
+        flex-grow: 1;
+        text-align: right;
+        float: right;
+        line-height: 64px;
+    }
+
+    .Avatar {
+        margin-right: 1rem;
+        .anticon {
+            margin-right: 0;
+        }
+    }
+}
+
+.App-Content {
+    margin: 24px 16px;
+    padding: 24px;
+    background: #fff;
+    min-height: 280px;
+    .App-Breadcrumb {
+        //padding: 5px 1rem;
+
+        .ant-breadcrumb-link > a > .anticon + span {
+            margin-left: 4px;
+        }
+    }
+}
+
+.App-Footer {
+    text-align: center;
+    padding: 0 2rem 1rem 2rem;
+}
+
+.App-Page {
+    padding: 1rem;
+    .Toolbar {
+        padding-bottom: 1rem;
+        display: flex;
+        align-items: center;
+
+        .ant-select, .ant-checkbox, button {
+            margin-left: 0.5rem;
+        }
+        .Search {
+            margin-left: 0.5rem;
+            width: 200px;
+        }
+        .Progress {
+            margin-left: 1rem;
+            display: inline-block;
+            flex: 1;
+        }
+    }
+    .Operations {
+        button {
+            margin-right: 0.5rem;
+            margin-bottom: 5px;
+            padding-left: 6px;
+            padding-right: 6px;
+        }
+    }
+}
+
+.Page-Loading {
+  width: 100%;
+  text-align: center;
+}
+
+.Tab-Tools {
+    padding-bottom: 1rem;
+    button {
+        margin-right: 5px;
+    }
+}
+
+.Form-No-Warning {
+    .ant-form-item {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.fix-table {
+    table {
+        table-layout: fixed;
+        td {
+            word-break: break-word;
+        }
+    }
+}
+
+.ant-input-number.amount {
+    width: 150px;
+}
+
+.status-fail {
+    color: red;
+}
+
+.dashboard {
+    .ant-col {
+        margin-top: 10px;
+    }
+}

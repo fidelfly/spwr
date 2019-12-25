@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export interface ReduxAction<P> {
-    type: string;
-    payload?: P;
+import { Action } from "redux";
+
+export interface ReduxAction<P> extends Action<string> {
+    payload: P;
 }
 
 export interface ReduxActionFunction<P> {
@@ -11,15 +12,15 @@ export interface ReduxActionFunction<P> {
 
 export function createAction<P>(type: string, payloadCreator?: (data: any) => P): ReduxActionFunction<P> {
     return function(data?: any): ReduxAction<P> {
-        const action: ReduxAction<P> = {
-            type: type,
-            // payload: p ,
-        };
+        let payload: P;
         if (payloadCreator !== null && payloadCreator !== undefined) {
-            action.payload = payloadCreator(data);
+            payload = payloadCreator(data);
         } else {
-            action.payload = data as P;
+            payload = data as P;
         }
-        return action;
+        return {
+            type: type,
+            payload: payload,
+        };
     };
 }

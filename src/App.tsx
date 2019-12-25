@@ -9,7 +9,7 @@ import "./App.css";
 import { LocaleObject } from "./type/locale";
 import moment from "moment";
 import { StoreState } from "./type";
-import { LoginPage, Home } from "./pages";
+import { LoginPage, HomePage, LogoutPage } from "./pages";
 
 import "./style/index.less";
 
@@ -28,6 +28,10 @@ interface Props {
 }
 
 class StarterComponent extends React.Component<Props, object> {
+    componentWillUnmount(): void {
+        console.log("exit....");
+    }
+
     render(): ReactElement {
         const appLocales = getLocale(this.props.language);
         return (
@@ -35,9 +39,9 @@ class StarterComponent extends React.Component<Props, object> {
                 <IntlProvider locale={appLocales.locale} messages={appLocales.messages} formats={appLocales.formats}>
                     <Switch>
                         <Redirect from="/" exact to="/login" />
-                        <Route path="/app" component={Home} />
+                        <Route path="/app" component={HomePage} />
                         <Route exact path="/login" component={LoginPage} />
-                        {/*<Route exact path="/logout" component={Logout} />*/}
+                        <Route exact path="/logout" component={LogoutPage} />
                     </Switch>
                 </IntlProvider>
             </ConfigProvider>

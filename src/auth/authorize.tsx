@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { CookieKeys, Storage, ErrCode, WsPath } from "../constants";
 import { clearToken } from "../actions";
 import { WsError } from "../errors";
-import { Ajax, Ajaxkit } from "../ajax";
+import { Ajax, AjaxCfg } from "../ajax";
 
 /* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/no-explicit-any */
 const basicAuthKey = process.env.REACT_APP_OAUTH_KEY;
@@ -82,6 +82,19 @@ export function isTokenValid(): boolean {
     return false;
 }
 
+export function isTokenExpiring(duration?: number): boolean {
+    if (duration === undefined || duration <= 0) {
+        duration = 60 * 1000;
+    }
+    const expiredValue = getTokenExpired();
+    if (expiredValue && expiredValue.length > 0) {
+        const expiredTime = Number(expiredValue);
+        return expiredTime - new Date().getTime() <= duration;
+    }
+
+    return true;
+}
+
 let refreshLock = false;
 
 async function waitRefreshToken(): Promise<TokenData> {
@@ -94,6 +107,11 @@ async function waitRefreshToken(): Promise<TokenData> {
     }
 
     throw new WsError(ErrCode.Unauthorized, `You should grant authorized first`);
+}
+
+export function invalidateToken() {
+    removeToken();
+    window.store.dispatch(clearToken());
 }
 
 export async function refreshToken(): Promise<TokenData> {
@@ -114,6 +132,7 @@ export async function refreshToken(): Promise<TokenData> {
                     refresh_token: key,
                 },
                 {
+                    ...AjaxCfg.FormRequestConfig,
                     headers: { Authorization: basicAuthKey },
                     withAuthInject: false,
                 }
@@ -141,7 +160,7 @@ export async function requestToken(authData: { username: string; password: strin
         scope: "all",
     };
     const ajaxConfig = {
-        ...Ajaxkit.FormRequestConfig,
+        ...AjaxCfg.FormRequestConfig,
         headers: { Authorization: basicAuthKey },
         withAuthInject: false,
     };
@@ -151,6 +170,12 @@ export async function requestToken(authData: { username: string; password: strin
     return resp.data;
 }
 
+export async function logout(): Promise<boolean> {
+    await Ajax.post(WsPath.logout);
+    removeToken();
+    return true;
+}
+
 export const Authkit = {
     checkAuthorizeBeforeRequest: (): Promise<void> => checkAuthorizeBeforeRequest(),
     getAuthorizeToken: (): string => getAuthorizeToken(),
@@ -158,18 +183,20 @@ export const Authkit = {
 
 export async function checkAuthorizeBeforeRequest(): Promise<void> {
     if (isAuthorized()) {
-        if (!isTokenValid()) {
+        // if (!isTokenValid()) {
+        if (isTokenExpiring()) {
             try {
-                const token = await refreshToken();
-                setToken(token);
+                await refreshToken();
+                // setToken(token);
             } catch (e) {
-                removeToken();
+                // removeToken();
                 window.store.dispatch(clearToken());
                 throw e;
             }
         }
+    } else {
+        throw new WsError(ErrCode.Unauthorized, `You should grant authorized first`);
     }
-    throw new WsError(ErrCode.Unauthorized, `You should grant authorized first`);
 }
 
 /* eslint-enable @typescript-eslint/camelcase */
