@@ -15,5 +15,10 @@
     "login.user.warning": "请输入用户名",
     "login.pwd": "密码",
     "login.pwd.warning": "请输入密码",
-    "login.loginBtn": "登录"
+    "login.loginBtn": "登录",
+
+    "menu.home": "首页",
+    "menu.profile": "个人资料",
+    "menu.profile.user": "用户资料",
+    "menu.profile.password": "密码变更"
 }

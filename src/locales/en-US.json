@@ -16,5 +16,10 @@
     "login.user.warning": "Please input username",
     "login.pwd": "Password",
     "login.pwd.warning": "Please input password!",
-    "login.loginBtn": "Login"
+    "login.loginBtn": "Login",
+
+    "menu.home": "Home",
+    "menu.profile": "Profile",
+    "menu.profile.user": "User Information",
+    "menu.profile.password": "Change Password"
 }

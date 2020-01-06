@@ -6,14 +6,16 @@ import { IntlProps, ReduxProps, StoreState, Token } from "../type";
 import { appMessages } from "../constants";
 import { Spin, Layout, Icon } from "antd";
 import { loadUser, toggleMenu } from "../actions";
-import { RouteChildrenProps } from "react-router";
+import { RouteChildrenProps, Switch, Route } from "react-router";
 import { withAuthorizeCheck } from "../auth";
 import { Login } from "./Login";
-import { Header as AppHeader } from "./home/AppHeader";
+import { Header as AppHeader } from "./app/AppHeader";
+import SiderMenu from "./app/SiderMenu";
 import "../style/home.less";
+import { Home } from "../views";
 
 const { Header, Sider, Footer, Content } = Layout;
-interface HomeState {
+interface AppState {
     loading: boolean;
 }
 
@@ -35,10 +37,10 @@ const mapStateToProps = (state: StoreState): Props => {
 };
 
 const connector = connect(mapStateToProps);
-type HomeProps = IntlProps & ReduxProps & RouteChildrenProps & FormComponentProps & Props;
+type AppProps = IntlProps & ReduxProps & RouteChildrenProps & FormComponentProps & Props;
 
-class HomeView extends React.Component<HomeProps, HomeState> {
-    constructor(props: HomeProps) {
+class AppView extends React.Component<AppProps, AppState> {
+    constructor(props: AppProps) {
         super(props);
         this.state = {
             loading: true,
@@ -86,11 +88,7 @@ class HomeView extends React.Component<HomeProps, HomeState> {
                     <div className="App-Logo">
                         <FormattedMessage {...(this.props.collapsed ? appMessages.shortName : appMessages.name)} />
                     </div>
-                    {/*                    <SiderMenu
-                        theme={this.props.siderTheme}
-                        collapsed={this.props.collapsed}
-                        path={this.props.location.pathname}
-                    />*/}
+                    <SiderMenu className={"App-Menu"} />
                 </Sider>
                 <Layout>
                     <Header style={{ background: "#fff", padding: 0 }} className={"App-Header"}>
@@ -102,8 +100,11 @@ class HomeView extends React.Component<HomeProps, HomeState> {
                         <AppHeader />
                     </Header>
                     <Content className={"App-Content"}>
-                        {/*             <AppBreadcrumb path={this.props.location.pathname} />
-                        <AppRouter />*/}
+                        <Switch>
+                            <Route exact path="/app/home" component={Home} />
+                            {/*                         <Route exact path="/app/profile/user" component={UserPage} />
+                            <Route exact path="/app/profile/password" component={Password} />*/}
+                        </Switch>
                     </Content>
                     <Footer className="App-Footer">
                         <FormattedMessage {...appMessages.copyright} />
@@ -114,6 +115,6 @@ class HomeView extends React.Component<HomeProps, HomeState> {
     }
 }
 
-export const Home = injectIntl(connector(HomeView));
+export const App = injectIntl(connector(AppView));
 
-export const HomePage = withAuthorizeCheck(Home, Login);
+export const AppPage = withAuthorizeCheck(App, Login);

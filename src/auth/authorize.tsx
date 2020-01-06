@@ -109,7 +109,7 @@ async function waitRefreshToken(): Promise<TokenData> {
     throw new WsError(ErrCode.Unauthorized, `You should grant authorized first`);
 }
 
-export function invalidateToken() {
+export function invalidateToken(): void {
     removeToken();
     window.store.dispatch(clearToken());
 }

@@ -9,7 +9,7 @@ import { connect, ConnectedProps } from "react-redux";
 // import { findErrorMessage } from "../errors";
 import { grantToken } from "../actions";
 import { requestToken } from "../auth";
-import { AppIcon } from "../icons";
+import { Snowflake } from "../icons";
 import { LangBtn } from "../components";
 import { EnvColor } from "../system";
 
@@ -100,7 +100,8 @@ class LoginView extends React.Component<Props, State> {
                 </div>
                 <div className="login">
                     <div className="login-form">
-                        <AppIcon style={{ color: EnvColor, fontSize: "80px", marginBottom: "1rem" }} />
+                        {/*<AppIcon style={{ color: EnvColor, fontSize: "80px", marginBottom: "1rem" }} />*/}
+                        <Snowflake style={{ color: EnvColor, fontSize: "80px", marginBottom: "1rem" }} />
                         <div className="login-logo">
                             <span>
                                 <FormattedMessage {...appMessages.name} />
