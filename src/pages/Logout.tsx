@@ -1,11 +1,12 @@
 import React, { Component, ReactElement } from "react";
-import { Spin, Icon } from "antd";
+import { Spin } from "antd";
 import { Link } from "react-router-dom";
 import { injectIntl, defineMessages, FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { logout as logoutAction } from "../actions";
 import { IntlProps, ReduxProps, StoreState, Token } from "../type";
 import { isAuthorized, isTokenValid, logout } from "../auth";
+import { LoginOutlined } from "@ant-design/icons/lib";
 import "../style/logout.less";
 
 const messages = defineMessages({
@@ -68,7 +69,7 @@ class Logout extends Component<LogoutProps, State> {
             return (
                 <div className="Logout">
                     <Link to="/login">
-                        <Icon type={"login"} />
+                        <LoginOutlined />
                         <FormattedMessage {...messages.returnToLogin} />
                     </Link>
                 </div>

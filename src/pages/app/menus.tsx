@@ -1,20 +1,23 @@
+import { HomeOutlined, UserOutlined, ProfileOutlined, SafetyOutlined } from "@ant-design/icons/lib";
+import React, { ReactNode } from "react";
+
 export interface MenuItem {
     key: string;
     title: string;
-    icon: string;
+    icon: ReactNode;
     sub?: MenuItem[];
     props?: any;
 }
 
 export const menus: MenuItem[] = [
-    { key: "/app/home", title: "menu.home", icon: "home" },
+    { key: "/app/home", title: "menu.home", icon: <HomeOutlined /> },
     {
         key: "/app/profile",
         title: "menu.profile",
-        icon: "profile",
+        icon: <ProfileOutlined />,
         sub: [
-            { key: "/app/profile/user", title: "menu.profile.user", icon: "user" },
-            { key: "/app/profile/password", title: "menu.profile.password", icon: "safety" },
+            { key: "/app/profile/user", title: "menu.profile.user", icon: <UserOutlined /> },
+            { key: "/app/profile/password", title: "menu.profile.password", icon: <SafetyOutlined /> },
         ],
     },
 ];

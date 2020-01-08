@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
-import { Form, Icon, Input, Button, Alert } from "antd";
-import { FormComponentProps } from "antd/lib/form";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Input, Button, Alert, Form } from "antd";
 import { Redirect } from "react-router-dom";
 import { withAuthorizeCheck } from "../auth";
 import { injectIntl, FormattedMessage, defineMessages, WrappedComponentProps } from "react-intl";
@@ -12,9 +12,10 @@ import { requestToken } from "../auth";
 import { Snowflake } from "../icons";
 import { LangBtn } from "../components";
 import { EnvColor } from "../system";
-
 import "../style/login.less";
 import { RouteChildrenProps } from "react-router";
+import { FormInstance } from "antd/lib/form";
+import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 
 const loginMessage = defineMessages({
     user: {
@@ -47,8 +48,7 @@ const loginMessage = defineMessages({
 const FormItem = Form.Item;
 const connector = connect();
 type Props = WrappedComponentProps<"intl"> &
-    ConnectedProps<typeof connector> &
-    FormComponentProps & {
+    ConnectedProps<typeof connector> & {
         language: string;
     };
 
@@ -57,6 +57,7 @@ interface State {
 }
 
 class LoginView extends React.Component<Props, State> {
+    form = React.createRef<FormInstance>();
     constructor(props: Props) {
         super(props);
         this.state = {};
@@ -67,23 +68,23 @@ class LoginView extends React.Component<Props, State> {
         document.title = intl.formatMessage(appMessages.name);
     }
 
-    handleSubmit = (e: any): void => {
+    onFinishFailed = ({ errorFields }: ValidateErrorEntity): void => {
+        this.form.current.scrollToField(errorFields[0].name);
+    };
+
+    handleSubmit = async (values: any): Promise<boolean> => {
         const { dispatch } = this.props;
-        e.preventDefault();
-        this.props.form.validateFields(async (err, values) => {
-            if (!err) {
-                try {
-                    const token = await requestToken(values);
-                    dispatch(
-                        grantToken({
-                            userId: parseInt(token.user_id),
-                        })
-                    );
-                } catch (e) {
-                    this.setState({ error: err });
-                }
-            }
-        });
+        try {
+            const token = await requestToken(values);
+            dispatch(
+                grantToken({
+                    userId: parseInt(token.user_id),
+                })
+            );
+        } catch (e) {
+            this.setState({ error: e });
+        }
+        return true;
     };
 
     clearError = (): void => {
@@ -92,7 +93,6 @@ class LoginView extends React.Component<Props, State> {
 
     render(): ReactElement {
         const { intl } = this.props;
-        const { getFieldDecorator } = this.props.form;
         return (
             <div className="loginPage">
                 <div className="loginHeader">
@@ -107,29 +107,25 @@ class LoginView extends React.Component<Props, State> {
                                 <FormattedMessage {...appMessages.name} />
                             </span>
                         </div>
-                        <Form onSubmit={this.handleSubmit}>
-                            <FormItem>
-                                {getFieldDecorator("username", {
-                                    rules: [{ required: true, message: intl.formatMessage(loginMessage.userWarning) }],
-                                })(
-                                    <Input
-                                        prefix={<Icon type="user" style={{ fontSize: 13 }} />}
-                                        placeholder={intl.formatMessage(loginMessage.user)}
-                                        onChange={this.clearError}
-                                    />
-                                )}
+                        <Form ref={this.form} onFinish={this.handleSubmit} onFinishFailed={this.onFinishFailed}>
+                            <FormItem
+                                name={"username"}
+                                rules={[{ required: true, message: intl.formatMessage(loginMessage.userWarning) }]}>
+                                <Input
+                                    prefix={<UserOutlined style={{ fontSize: 13 }} />}
+                                    placeholder={intl.formatMessage(loginMessage.user)}
+                                    onChange={this.clearError}
+                                />
                             </FormItem>
-                            <FormItem>
-                                {getFieldDecorator("password", {
-                                    rules: [{ required: true, message: intl.formatMessage(loginMessage.pwdWarning) }],
-                                })(
-                                    <Input
-                                        prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
-                                        type="password"
-                                        placeholder={intl.formatMessage(loginMessage.password)}
-                                        onChange={this.clearError}
-                                    />
-                                )}
+                            <FormItem
+                                name={"password"}
+                                rules={[{ required: true, message: intl.formatMessage(loginMessage.pwdWarning) }]}>
+                                <Input
+                                    prefix={<LockOutlined style={{ fontSize: 13 }} />}
+                                    type="password"
+                                    placeholder={intl.formatMessage(loginMessage.password)}
+                                    onChange={this.clearError}
+                                />
                             </FormItem>
                             <FormItem>
                                 <Button
@@ -154,7 +150,7 @@ class LoginView extends React.Component<Props, State> {
     }
 }
 
-export const Login = injectIntl(Form.create()(connector(LoginView)));
+export const Login = injectIntl(connector(LoginView));
 
 export const LoginPage = withAuthorizeCheck((props: RouteChildrenProps) => {
     const { from } = props.location.state || { from: { pathname: "/app/home" } };

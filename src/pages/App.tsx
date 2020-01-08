@@ -1,10 +1,10 @@
 import React, { ReactElement } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { FormComponentProps } from "antd/lib/form";
 import { IntlProps, ReduxProps, StoreState, Token } from "../type";
 import { appMessages } from "../constants";
-import { Spin, Layout, Icon } from "antd";
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import { Spin, Layout } from "antd";
 import { loadUser, toggleMenu } from "../actions";
 import { RouteChildrenProps, Switch, Route } from "react-router";
 import { withAuthorizeCheck } from "../auth";
@@ -37,7 +37,7 @@ const mapStateToProps = (state: StoreState): Props => {
 };
 
 const connector = connect(mapStateToProps);
-type AppProps = IntlProps & ReduxProps & RouteChildrenProps & FormComponentProps & Props;
+type AppProps = IntlProps & ReduxProps & RouteChildrenProps & Props;
 
 class AppView extends React.Component<AppProps, AppState> {
     constructor(props: AppProps) {
@@ -91,12 +91,10 @@ class AppView extends React.Component<AppProps, AppState> {
                     <SiderMenu className={"App-Menu"} />
                 </Sider>
                 <Layout>
-                    <Header style={{ background: "#fff", padding: 0 }} className={"App-Header"}>
-                        <Icon
-                            className="trigger"
-                            type={this.props.collapsed ? "menu-unfold" : "menu-fold"}
-                            onClick={this.toggle}
-                        />
+                    <Header style={{ padding: 0 }} className={"App-Header"}>
+                        <a href="#" className="trigger" onClick={this.toggle}>
+                            {this.props.collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                        </a>
                         <AppHeader />
                     </Header>
                     <Content className={"App-Content"}>

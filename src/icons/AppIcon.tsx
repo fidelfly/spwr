@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { Icon } from "antd";
+import Icon from "@ant-design/icons";
 
 const AppSvg: React.FC = () => (
     <svg

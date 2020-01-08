@@ -6,7 +6,7 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import { MenuItem, menus } from "./menus";
 import { Path } from "../../utilities";
-import { Menu, Icon } from "antd";
+import { Menu } from "antd";
 import { SelectParam, MenuProps } from "antd/lib/menu";
 
 interface Props extends MenuProps {
@@ -65,7 +65,7 @@ class MenuView extends Component<MenuViewProps, State> {
         return (
             <Menu.Item key={item.key} {...item.props}>
                 <Link to={item.key}>
-                    {item.icon && <Icon type={item.icon} className={"menu-icon"} />}
+                    {item.icon}
                     <span>
                         <FormattedMessage id={item.title} defaultMessage={item.title} />
                     </span>
@@ -80,7 +80,7 @@ class MenuView extends Component<MenuViewProps, State> {
                 key={item.key}
                 title={
                     <span>
-                        {item.icon && <Icon type={item.icon} className={"menu-icon"} />}
+                        {item.icon}
                         <span>
                             <FormattedMessage id={item.title} defaultMessage={item.title} />
                         </span>
@@ -114,7 +114,6 @@ class MenuView extends Component<MenuViewProps, State> {
         const { collapsed, theme, ...otherProps } = this.props;
         return (
             <Menu
-                inlineCollapsed={this.props.collapsed}
                 mode={collapsed ? "vertical" : "inline"}
                 theme={theme}
                 selectedKeys={this.state.selectedKeys}

@@ -1,5 +1,5 @@
 import { ActionCode } from "../constants";
-import { Token, User } from "../type";
+import { StoreState, Token, User } from "../type";
 import { combineReducers } from "redux";
 import { ReduxAction } from "../actions";
 import { default as layout } from "./layout";
@@ -48,7 +48,7 @@ function user(user: User = { id: 0, code: "", name: "", email: "", avatar: 0 }, 
     }
 }
 
-export default combineReducers({
+export default combineReducers<StoreState>({
     language: language,
     token: tokenReducer,
     verifyToken: verifyToken,

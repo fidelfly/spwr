@@ -1,12 +1,13 @@
 /* eslint-disable */
 const { override, fixBabelImports, addLessLoader, useEslintRc } = require("customize-cra");
-const fs = require("fs");
+// const fs = require("fs");
 // const HtmlWebpackPlugin = require("html-webpack-plugin");
 // const appDirectory = fs.realpathSync(process.cwd());
-const path = require("path");
+// const path = require("path");
 // const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
-const packageJSON = require("./package.json");
+// const packageJSON = require("./package.json");
 const rewireDefinePlugin = require("@yeutech-lab/react-app-rewire-define-plugin"); // TODO need to use react-app-rewired-define-plugin
+const darkThemeVars = require('antd/dist/dark-theme');
 
 function makeBasicAuth(user, password) {
     const authKey = user + ":" + password;
@@ -16,30 +17,27 @@ function makeBasicAuth(user, password) {
 }
 
 function myOverride(config, env) {
-    // do stuff with the webpack i18n...
-    // config = injectBabelPlugin(['import', {libraryName: 'antd', libraryDirectory: 'es', style: true}], config)
-
-    // config = injectBabelPlugin(['react-intl', {'messagesDir': "./i18n-messages"}], config)
-    config = override(
-        fixBabelImports("import", { libraryName: "antd", libraryDirectory: "es", style: true }),
-        addLessLoader({
-            javascriptEnabled: true,
-            modifyVars: { "@primary-color": process.env.REACT_APP_THEME_COLOR || "#1DA57A" },
-        }),
-        useEslintRc(".eslintrc.js") //eslint-disable-line
-    )(config, env);
-    // config = rewireEslint(config, env);
-    config.module.rules.push({
-        loader: "webpack-ant-icon-loader",
-        enforce: "pre",
-        include: [path.resolve("node_modules/@ant-design/icons/lib/dist")],
-    });
 
     config = rewireDefinePlugin(config, env, {
         "process.env.REACT_APP_OAUTH_KEY": JSON.stringify(
             makeBasicAuth(process.env.REACT_APP_OAUTH_CLIENT, process.env.REACT_APP_OAUTH_PWD)
         ),
     });
+
+    config = override(
+        fixBabelImports("import", { libraryName: "antd", libraryDirectory: "es", style: true }),
+        addLessLoader({
+            javascriptEnabled: true,
+            modifyVars: {
+                "@primary-color": process.env.REACT_APP_THEME_COLOR || "#1DA57A",
+                'hack': `true;@import "${require.resolve('antd/lib/style/color/colorPalette.less')}";`,
+                ...darkThemeVars,
+            },
+        }),
+        // useEslintRc(".eslintrc.js") //eslint-disable-line
+        useEslintRc()
+    )(config, env);
+
 
     /*    //handler multi entries
     var multiEntry = {
@@ -70,7 +68,7 @@ function myOverride(config, env) {
 module.exports = {
     // The Webpack config to use when compiling your react app for development or production.
     webpack: myOverride,
-    devServer: function(configFunction) {
+/*    devServer: function(configFunction) {
         return function(proxy, allowedHost) {
             // Create the default config by calling configFunction with the proxy/allowedHost parameters
             const config = configFunction(proxy, allowedHost);
@@ -84,5 +82,5 @@ module.exports = {
             // Return your customised Webpack Development Server config.
             return config;
         };
-    },
+    },*/
 };

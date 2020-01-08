@@ -1,10 +1,10 @@
-import React, { ReactElement } from "react";
-import { Provider, connect } from "react-redux";
+import React, { ReactElement, useEffect, useState } from "react";
+import { Provider, useSelector } from "react-redux";
 import { IntlProvider } from "react-intl";
 import store from "./state";
 import { Language, System } from "./constants";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, Spin } from "antd";
 import "./App.css";
 import { LocaleObject } from "./type/locale";
 import moment from "moment";
@@ -27,7 +27,43 @@ interface Props {
     language: string;
 }
 
-class StarterComponent extends React.Component<Props, object> {
+const Starter: React.FC<Props> = (props: Props): ReactElement => {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [appLocales, setLocales] = useState<LocaleObject | null>();
+    const language = useSelector<StoreState, string>((state) => state.language);
+    useEffect(() => {
+        setLoading(true);
+        getLocale(language)
+            .then((localeData) => {
+                setLocales(localeData);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [language]);
+
+    return (
+        <Spin spinning={loading} delay={50}>
+            {appLocales && (
+                <ConfigProvider locale={appLocales.antdLocale}>
+                    <IntlProvider
+                        locale={appLocales.locale}
+                        messages={appLocales.messages}
+                        formats={appLocales.formats}>
+                        <Switch>
+                            <Redirect from="/" exact to="/login" />
+                            <Route path="/app" component={AppPage} />
+                            <Route exact path="/login" component={LoginPage} />
+                            <Route exact path="/logout" component={LogoutPage} />
+                        </Switch>
+                    </IntlProvider>
+                </ConfigProvider>
+            )}
+        </Spin>
+    );
+};
+
+/*class StarterComponent extends React.Component<Props, object> {
     componentWillUnmount(): void {
         console.log("exit....");
     }
@@ -54,21 +90,22 @@ const mapStateToProps = (state: StoreState): Props => ({
 });
 
 const Starter = connect(mapStateToProps)(StarterComponent);
-
-function getLocale(langCode: string): LocaleObject {
+*/
+async function getLocale(langCode: string): Promise<LocaleObject> {
     const code = Language.getLocaleCode(langCode);
     let result: LocaleObject | null = window.appLocale && window.appLocale[code];
     if (!result) {
-        switch (code) {
+        await import(`./locales/${code}`);
+        /*        switch (code) {
             case "zh-CN":
-                require("./locales/zh-CN");
+                import("./locales/zh-CN");
                 break;
             case "en-US":
-                require("./locales/en-US");
+                import("./locales/en-US");
                 break;
             default:
-                require("./locales/zh-CN");
-        }
+                import("./locales/zh-CN");
+        }*/
         result = window.appLocale && window.appLocale[code];
     }
     moment.locale(langCode === Language.en ? "en" : "zh-cn");
