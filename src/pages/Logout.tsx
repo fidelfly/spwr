@@ -1,13 +1,13 @@
-import React, { Component, ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { Spin } from "antd";
 import { Link } from "react-router-dom";
-import { injectIntl, defineMessages, FormattedMessage } from "react-intl";
-import { connect } from "react-redux";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
+import { useDispatch, useSelector } from "react-redux";
 import { logout as logoutAction } from "../actions";
-import { IntlProps, ReduxProps, StoreState, Token } from "../type";
+import { AsyncDispatch, StoreState } from "../type";
 import { isAuthorized, isTokenValid, logout } from "../auth";
 import { LoginOutlined } from "@ant-design/icons/lib";
-import "../style/logout.less";
+import "./logout.less";
 
 const messages = defineMessages({
     logoutLoading: {
@@ -21,7 +21,7 @@ const messages = defineMessages({
         description: "tip to login",
     },
 });
-
+/*
 interface Props {
     token: Token;
 }
@@ -87,3 +87,37 @@ class Logout extends Component<LogoutProps, State> {
 }
 
 export const LogoutPage = injectIntl(connect(mapStateToProps)(Logout));
+*/
+export const LogoutPage: React.FC = (): ReactElement => {
+    const [isLogout, setLogout] = useState<boolean>(!isAuthorized() || isTokenValid());
+    const intl = useIntl();
+    const userId = useSelector<StoreState, number>((state) => state.token.userId);
+    const dispatch = useDispatch<AsyncDispatch>();
+    useEffect(() => {
+        if (userId > 0 || (isAuthorized() && isTokenValid())) {
+            logout().then(() => {
+                dispatch(logoutAction());
+                setLogout(true);
+            });
+        }
+    }, [dispatch, userId]);
+
+    if (isLogout) {
+        return (
+            <div className="Logout">
+                <Link to="/login">
+                    <LoginOutlined />
+                    <FormattedMessage {...messages.returnToLogin} />
+                </Link>
+            </div>
+        );
+    } else {
+        return (
+            <Spin
+                size="large"
+                style={{ width: "100%", height: "100%", paddingTop: "10%" }}
+                tip={intl.formatMessage(messages.logoutLoading)}
+            />
+        );
+    }
+};

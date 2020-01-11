@@ -1,17 +1,15 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { Provider, useSelector } from "react-redux";
-import { IntlProvider } from "react-intl";
+import { IntlProvider, useIntl } from "react-intl";
 import store from "./state";
-import { Language, System } from "./constants";
+import { appMessages, Language, System } from "./constants";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { ConfigProvider, Spin } from "antd";
-import "./App.css";
+import "./App.less";
 import { LocaleObject } from "./type/locale";
 import moment from "moment";
 import { StoreState } from "./type";
-import { LoginPage, AppPage, LogoutPage } from "./pages";
-
-import "./style/index.less";
+import { LoginPage, LogoutPage, AppPage } from "./pages";
 
 const App: React.FC = () => {
     return (
@@ -43,23 +41,34 @@ const Starter: React.FC<Props> = (props: Props): ReactElement => {
     }, [language]);
 
     return (
-        <Spin spinning={loading} delay={50}>
+        <Spin spinning={loading} delay={50} wrapperClassName={"App-loading"}>
             {appLocales && (
                 <ConfigProvider locale={appLocales.antdLocale}>
                     <IntlProvider
                         locale={appLocales.locale}
                         messages={appLocales.messages}
                         formats={appLocales.formats}>
-                        <Switch>
-                            <Redirect from="/" exact to="/login" />
-                            <Route path="/app" component={AppPage} />
-                            <Route exact path="/login" component={LoginPage} />
-                            <Route exact path="/logout" component={LogoutPage} />
-                        </Switch>
+                        <AppRouter />
                     </IntlProvider>
                 </ConfigProvider>
             )}
         </Spin>
+    );
+};
+
+const AppRouter: React.FC = () => {
+    const intl = useIntl();
+    useEffect(() => {
+        document.title = intl.formatMessage(appMessages.name);
+    });
+
+    return (
+        <Switch>
+            <Redirect from="/" exact to="/login" />
+            <Route path="/app" component={AppPage} />
+            <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/logout" component={LogoutPage} />
+        </Switch>
     );
 };
 

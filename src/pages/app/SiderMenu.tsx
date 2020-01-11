@@ -1,8 +1,7 @@
-import React, { Component, ReactElement } from "react";
-import { IntlProps, ReduxProps, StoreState, Theme } from "../../type";
-import { FormattedMessage, injectIntl } from "react-intl";
-import { connect } from "react-redux";
-import { RouteComponentProps, withRouter } from "react-router";
+import React, { ReactElement, useState } from "react";
+import { Theme } from "../../type";
+import { FormattedMessage } from "react-intl";
+import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { MenuItem, menus } from "./menus";
 import { Path } from "../../utilities";
@@ -14,20 +13,14 @@ interface Props extends MenuProps {
     collapsed: boolean;
 }
 
+/*
 interface State {
     path?: string;
     selectedKeys: string[];
     openKeys: string[];
 }
 
-const mapStateToProps = (state: StoreState): Props => {
-    return {
-        theme: state.layout.theme,
-        collapsed: state.layout.collapsed,
-    };
-};
-
-type MenuViewProps = IntlProps & ReduxProps & RouteComponentProps & Props & any;
+type MenuViewProps = IntlProps & RouteComponentProps & Props & any;
 
 class MenuView extends Component<MenuViewProps, State> {
     constructor(props: MenuViewProps) {
@@ -111,7 +104,7 @@ class MenuView extends Component<MenuViewProps, State> {
     };
 
     render(): ReactElement {
-        const { collapsed, theme, ...otherProps } = this.props;
+        const { collapsed, theme, style, className } = this.props;
         return (
             <Menu
                 mode={collapsed ? "vertical" : "inline"}
@@ -121,7 +114,8 @@ class MenuView extends Component<MenuViewProps, State> {
                 onOpenChange={this.onOpenChange}
                 onSelect={this.onSelect}
                 onDeselect={this.onDeselect}
-                {...otherProps}>
+                className={className}
+                style={style}>
                 {menus &&
                     menus.map((item) =>
                         item.sub && item.sub.length ? this.renderSubMenu(item) : this.renderMenuItem(item)
@@ -131,4 +125,76 @@ class MenuView extends Component<MenuViewProps, State> {
     }
 }
 
-export default injectIntl(connect(mapStateToProps)(withRouter(MenuView)));
+export default injectIntl(withRouter(MenuView));
+*/
+
+export const SiderMenu: React.FC<Props> = (props) => {
+    const location = useLocation();
+    const [path, setPath] = useState<string>("");
+    const [openKeys, setOpenKeys] = useState<string[]>([]);
+    const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+    const { collapsed, ...otherProps } = props;
+    const newPath = location.pathname;
+    if (newPath !== path) {
+        if (collapsed) {
+            setOpenKeys([]);
+        } else {
+            const parentPath = Path.getParent(newPath);
+            if (parentPath !== newPath) {
+                if (openKeys.indexOf(parentPath) < 0) {
+                    setOpenKeys([...openKeys, parentPath]);
+                }
+            }
+        }
+        setSelectedKeys([newPath]);
+        setPath(newPath);
+    }
+
+    function renderMenuItem(item: MenuItem): ReactElement {
+        return (
+            <Menu.Item key={item.key} {...item.props}>
+                <Link to={item.key}>
+                    {item.icon}
+                    <span>
+                        <FormattedMessage id={item.title} defaultMessage={item.title} />
+                    </span>
+                </Link>
+            </Menu.Item>
+        );
+    }
+
+    function renderSubMenu(item: MenuItem): ReactElement {
+        return (
+            <Menu.SubMenu
+                key={item.key}
+                title={
+                    <span>
+                        {item.icon}
+                        <span>
+                            <FormattedMessage id={item.title} defaultMessage={item.title} />
+                        </span>
+                    </span>
+                }
+                {...item.props}>
+                {item.sub && item.sub.map((item) => renderMenuItem(item))}
+            </Menu.SubMenu>
+        );
+    }
+
+    function onSelectChange(param: SelectParam): void {
+        setSelectedKeys(param.selectedKeys);
+    }
+
+    return (
+        <Menu
+            mode={collapsed ? "vertical" : "inline"}
+            selectedKeys={selectedKeys}
+            openKeys={openKeys}
+            onOpenChange={setOpenKeys}
+            onSelect={onSelectChange}
+            onDeselect={onSelectChange}
+            {...otherProps}>
+            {menus && menus.map((item) => (item.sub && item.sub.length ? renderSubMenu(item) : renderMenuItem(item)))}
+        </Menu>
+    );
+};

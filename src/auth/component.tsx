@@ -1,11 +1,11 @@
-import React, { Component, ComponentType, ReactElement } from "react";
+import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import * as auth from "./authorize";
-import { connect, DispatchProp } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { grantToken, clearToken } from "../actions";
 import { StoreState } from "../type";
 import { Spin } from "antd";
 
-interface Props {
+/*interface Props {
     verifyToken: boolean;
 }
 type AuthProps = DispatchProp & Props;
@@ -82,4 +82,57 @@ export function withAuthorizeCheck(AuthComp: ComponentType<any>, UnAuthComp: Com
     };
 
     return connect(mapStateToProps)(HOCComp);
+}*/
+
+interface AuthCompProps {
+    fallback?: ReactNode;
 }
+
+export const AuthComponent: React.FC<AuthCompProps> = (props): ReactElement => {
+    const authorized = useSelector<StoreState, boolean>((state) => state.token.userId > 0);
+    const [verifying, setVerifying] = useState<boolean>(authorized);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        async function refreshTokenStatus(): Promise<void> {
+            try {
+                const tokenData = await auth.refreshToken();
+                dispatch(
+                    grantToken({
+                        userId: parseInt(tokenData.user_id),
+                    })
+                );
+            } catch (e) {
+                dispatch(clearToken());
+            }
+        }
+
+        if (auth.isAuthorized() && (!auth.isTokenValid() || !authorized)) {
+            setVerifying(true);
+            refreshTokenStatus().finally(() => {
+                setVerifying(false);
+            });
+        } else {
+            setVerifying(false);
+        }
+    }, [authorized, dispatch]);
+
+    const conditionView = (authorized: boolean, verifying: boolean): ReactNode => {
+        if (authorized) {
+            return props.children;
+        }
+        if (verifying) {
+            return "";
+        }
+        if (props.fallback) {
+            return props.fallback;
+        }
+        return "You are not authorized to access this view";
+    };
+
+    return (
+        <Spin wrapperClassName={"App-loading"} spinning={verifying}>
+            {conditionView(authorized, verifying)}
+        </Spin>
+    );
+};

@@ -1,14 +1,14 @@
-import React, { Component, ReactElement } from "react";
+import React, { ReactElement } from "react";
 import { Menu, Avatar } from "antd";
 import { Link } from "react-router-dom";
-import { FormattedMessage, injectIntl } from "react-intl";
-import { IntlProps, ReduxProps, StoreState, User } from "../../type";
+import { FormattedMessage } from "react-intl";
+import { StoreState, User } from "../../type";
 import { LangBtn } from "../../components";
 import { WsPath, appMessages } from "../../constants";
 import { AjaxKit } from "../../ajax";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons/lib";
-
+/*
 interface Props {
     user: User;
 }
@@ -57,3 +57,34 @@ class HeaderView extends Component<HeaderProps, any> {
 }
 
 export const Header = injectIntl(connect(mapStateToProps)(HeaderView));
+*/
+export const Header: React.FC = (): ReactElement => {
+    const user = useSelector<StoreState, User>((state) => state.user);
+    return (
+        <Menu mode={"horizontal"} className={"App-Header-Menu"} selectable={false}>
+            <Menu.Item>
+                <LangBtn />
+            </Menu.Item>
+            <Menu.SubMenu
+                title={
+                    <span>
+                        {user.avatar > 0 ? (
+                            <Avatar className={"Avatar"} src={AjaxKit.getPath(WsPath.file, user.avatar)} />
+                        ) : (
+                            <Avatar className={"Avatar"} icon={<UserOutlined />} />
+                        )}
+                        <span className={"Avatar-Name"}>{user.name}</span>
+                    </span>
+                }>
+                <Menu.Item key={"logout"}>
+                    <Link to={"/logout"}>
+                        <LogoutOutlined />
+                        <span>
+                            <FormattedMessage {...appMessages.logout} />
+                        </span>
+                    </Link>
+                </Menu.Item>
+            </Menu.SubMenu>
+        </Menu>
+    );
+};
