@@ -4,7 +4,7 @@ import { clearToken } from "../actions";
 import { WsError } from "../errors";
 import { Ajax, AjaxCfg } from "../ajax";
 
-/* eslint-disable @typescript-eslint/camelcase, @typescript-eslint/no-explicit-any */
+/* eslint-disable, @typescript-eslint/no-explicit-any */
 const basicAuthKey = process.env.REACT_APP_OAUTH_KEY;
 
 export function getAccessToken(): string | undefined {
@@ -199,4 +199,4 @@ export async function checkAuthorizeBeforeRequest(): Promise<void> {
     }
 }
 
-/* eslint-enable @typescript-eslint/camelcase */
+/* eslint-enable */

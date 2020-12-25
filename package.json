@@ -1,40 +1,46 @@
 {
-  "name": "spwr",
+  "name": "spwr2",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/compatible": "^0.0.1-rc.0",
-    "@ant-design/icons": "^4.0.0-alpha.19",
-    "@types/jest": "24.0.19",
-    "@types/js-cookie": "^2.2.4",
-    "@types/node": "12.11.1",
-    "@types/qs": "^6.9.0",
-    "@types/react": "16.9.9",
-    "@types/react-dom": "16.9.2",
-    "@types/react-redux": "^7.1.5",
-    "@types/react-router-dom": "^5.1.3",
-    "antd": "4.0.0-rc.0",
-    "axios": "^0.19.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.19",
+    "@types/js-cookie": "^2.2.6",
+    "@types/node": "^14.14.16",
+    "@types/qs": "^6.9.5",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-redux": "^7.1.13",
+    "@types/react-router-dom": "^5.1.6",
+    "antd": "^4.9.4",
+    "axios": "^0.21.1",
     "js-cookie": "^2.2.1",
-    "moment": "^2.24.0",
-    "qs": "^6.9.1",
-    "rc-field-form": "^0.0.0-alpha.30",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-intl": "^3.9.1",
-    "react-redux": "^7.1.3",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0",
+    "moment": "^2.29.1",
+    "qs": "^6.9.4",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-intl": "^5.10.9",
+    "react-redux": "^7.2.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "typescript": "^3.7.4"
+    "typescript": "^4.1.3",
+    "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "specialBuild": "env-cmd -f .env.special react-app-rewired build",
-    "test": "react-app-rewired test",
+    "start": "craco start",
+    "build": "env-cmd -f .env.build craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
@@ -48,24 +54,28 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx)$"
+    ]
+  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.4.0",
-    "@typescript-eslint/parser": "^2.4.0",
-    "@yeutech-lab/react-app-rewire-define-plugin": "^1.0.0",
-    "babel-plugin-import": "^1.13.0",
-    "babel-plugin-react-intl": "^5.1.11",
-    "customize-cra": "^0.9.1",
-    "env-cmd": "^10.0.1",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-config-react-app": "^5.0.2",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react-hooks": "^2.3.0",
-    "http-proxy-middleware": "^0.20.0",
-    "less": "^3.10.3",
-    "less-loader": "^5.0.0",
-    "prettier": "^1.18.2",
-    "react-app-rewired": "^2.1.5",
-    "webpack-ant-icon-loader": "^1.0.8"
+    "@craco/craco": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "babel-plugin-import": "^1.13.3",
+    "craco-less": "^1.17.1",
+    "env-cmd": "^10.1.0",
+    "eslint": "^7.16.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "http-proxy-middleware": "^1.0.6",
+    "prettier": "^2.2.1"
   }
 }

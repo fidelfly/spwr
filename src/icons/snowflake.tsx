@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import Icon from "@ant-design/icons";
+import { IconComponentProps } from "@ant-design/icons/lib/components/Icon";
 
 const SnowSvg: React.FC = () => (
     <svg
@@ -28,6 +29,7 @@ const SnowSvg: React.FC = () => (
     </svg>
 );
 
-export const Snowflake = (props: any): ReactElement => {
+type Props = Pick<IconComponentProps, "style">;
+export const Snowflake = (props: Props): ReactElement => {
     return <Icon component={SnowSvg} {...props} />;
 };

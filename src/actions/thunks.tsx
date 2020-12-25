@@ -3,7 +3,7 @@ import { WsPath } from "../constants";
 import { updateUser } from "./index";
 import { AsyncDispatch, ThunkResult, User } from "../type";
 
-export const loadUser = function(userId: number): ThunkResult<Promise<User>> {
+export const loadUser = function (userId: number): ThunkResult<Promise<User>> {
     return async (dispatch: AsyncDispatch): Promise<User> => {
         const resp = await Ajax.get(AjaxKit.getPath(WsPath.user, userId));
         const user: User = {

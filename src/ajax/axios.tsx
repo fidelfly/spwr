@@ -22,8 +22,8 @@ const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse
         if (timeout && Date.now() - time > timeout) {
             throw new WsException(408, `Server(408)`, "Long request timeout");
         }
-        return new Promise(function(resolve): void {
-            setTimeout(function() {
+        return new Promise(function (resolve): void {
+            setTimeout(function () {
                 const config = {
                     checkStatusInterval: interval,
                     checkStatusTimeout: timeout,
@@ -54,7 +54,7 @@ const resolveError = (error: AxiosError): any => {
 axios.interceptors.response.use(resolveData, resolveError);
 
 axios.interceptors.request.use(
-    function(config) {
+    function (config) {
         config = config || {};
         const headers = config.headers || {};
         if (!headers["Authorization"]) {
@@ -66,7 +66,7 @@ axios.interceptors.request.use(
         }
         return config;
     },
-    function(error) {
+    function (error) {
         return Promise.reject(error);
     }
 );
@@ -138,7 +138,7 @@ declare interface AjaxApi {
 function createRequestFunction<T = any, R = AxiosResponse<T>>(
     method: string
 ): (url: string, config?: RequestConfig) => Promise<R> {
-    return function(url: string, config?: RequestConfig): Promise<R> {
+    return function (url: string, config?: RequestConfig): Promise<R> {
         config = config || {};
         return request({
             ...config,
@@ -151,7 +151,7 @@ function createRequestFunction<T = any, R = AxiosResponse<T>>(
 function createDataRequestFunction<T = any, R = AxiosResponse<T>>(
     method: string
 ): (url: string, data?: any, config?: RequestConfig) => Promise<R> {
-    return function(url: string, data?: T, config?: RequestConfig): Promise<R> {
+    return function (url: string, data?: T, config?: RequestConfig): Promise<R> {
         config = config || {};
         return request({
             ...config,
@@ -175,10 +175,7 @@ export const Ajax: AjaxApi = {
         if (data === undefined || data === null) {
             return false;
         }
-        if ((data as RespError).error_code !== undefined) {
-            return true;
-        }
-        return false;
+        return (data as RespError).error_code !== undefined;
     },
 };
 

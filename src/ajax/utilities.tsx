@@ -17,7 +17,7 @@ export const AjaxCfg: AxiosUtilities = {
 };
 
 export const AjaxKit = {
-    getURL: (path: string, params: any): string => {
+    getURL: (path: string, params: Record<string, unknown>): string => {
         if (params) {
             return `${path}${qs.stringify(params, { addQueryPrefix: true })}`;
         }

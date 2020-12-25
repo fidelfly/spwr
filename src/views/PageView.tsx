@@ -24,6 +24,8 @@ class PageViewHeader extends Component<PageViewHeaderProps, any> {
     }
 }
 
+//todo
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PageLayout = injectIntl(PageView);
 
 // PageLayout.Header = PageHeader;

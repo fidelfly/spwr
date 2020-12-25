@@ -25,7 +25,7 @@ interface Props {
     language: string;
 }
 
-const Starter: React.FC<Props> = (props: Props): ReactElement => {
+const Starter: React.FC<Props> = (): ReactElement => {
     const [loading, setLoading] = useState<boolean>(true);
     const [appLocales, setLocales] = useState<LocaleObject | null>();
     const language = useSelector<StoreState, string>((state) => state.language);

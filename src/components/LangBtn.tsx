@@ -21,7 +21,7 @@ const connector = connect(mapStateToProps);
 
 type BtnProps = ConnectedProps<typeof connector> & Props;
 
-class LangBtn extends React.Component<BtnProps, object> {
+class LangBtn extends React.Component<BtnProps, Record<string, unknown>> {
     toggleLanguage = (lang: string): void => {
         let newLang = "en";
         if (lang === "en") {

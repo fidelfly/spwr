@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 import { MenuItem, menus } from "./menus";
 import { Path } from "../../utilities";
 import { Menu } from "antd";
-import { SelectParam, MenuProps } from "antd/lib/menu";
+import { MenuProps } from "antd/lib/menu";
+import { SelectInfo } from "rc-menu/lib/interface";
 
 interface Props extends MenuProps {
     theme: Theme;
@@ -181,8 +182,12 @@ export const SiderMenu: React.FC<Props> = (props) => {
         );
     }
 
-    function onSelectChange(param: SelectParam): void {
-        setSelectedKeys(param.selectedKeys);
+    function onSelectChange(param: SelectInfo): void {
+        setSelectedKeys(param.selectedKeys as string[]);
+    }
+
+    function onOpenChange(param: (string | number)[]): void {
+        setOpenKeys(param as string[]);
     }
 
     return (
@@ -190,7 +195,7 @@ export const SiderMenu: React.FC<Props> = (props) => {
             mode={collapsed ? "vertical" : "inline"}
             selectedKeys={selectedKeys}
             openKeys={openKeys}
-            onOpenChange={setOpenKeys}
+            onOpenChange={onOpenChange}
             onSelect={onSelectChange}
             onDeselect={onSelectChange}
             {...otherProps}>

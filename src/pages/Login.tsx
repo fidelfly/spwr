@@ -239,7 +239,7 @@ export const Login: React.FC = (): ReactElement => {
 
 export const LoginPage: React.FC = (): ReactElement => {
     const location = useLocation();
-    const { from } = location.state || { from: { pathname: "/app/home" } };
+    const { from }: any = location.state || { from: { pathname: "/app/home" } };
     return (
         <AuthComponent fallback={<Login />}>
             <Redirect to={from} push={true} />

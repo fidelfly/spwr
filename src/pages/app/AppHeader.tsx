@@ -59,7 +59,7 @@ class HeaderView extends Component<HeaderProps, any> {
 export const Header = injectIntl(connect(mapStateToProps)(HeaderView));
 */
 export const Header: React.FC = (): ReactElement => {
-    const user = useSelector<StoreState, User>((state) => state.user);
+    const user = useSelector<StoreState, User>((state) => state.user as User);
     return (
         <Menu mode={"horizontal"} className={"App-Header-Menu"} selectable={false}>
             <Menu.Item>

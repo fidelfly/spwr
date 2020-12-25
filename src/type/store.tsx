@@ -22,6 +22,6 @@ export interface StoreState {
     language: string;
     verifyToken: boolean;
     layout: LayoutState;
-    token?: Token;
+    token: Token;
     user?: User;
 }

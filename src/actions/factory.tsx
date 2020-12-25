@@ -11,7 +11,7 @@ export interface ReduxActionFunction<P> {
 }
 
 export function createAction<P>(type: string, payloadCreator?: (data: any) => P): ReduxActionFunction<P> {
-    return function(data?: any): ReduxAction<P> {
+    return function (data?: any): ReduxAction<P> {
         let payload: P;
         if (payloadCreator !== null && payloadCreator !== undefined) {
             payload = payloadCreator(data);
