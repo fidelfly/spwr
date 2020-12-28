@@ -1,12 +1,12 @@
 module.exports = {
-    parser: "@typescript-eslint/parser", // 解析器
-    extends: ["plugin:@typescript-eslint/recommended", "react-app", "plugin:prettier/recommended"], // 继承的规则 [扩展]
-    plugins: ["@typescript-eslint", "react", "react-hooks"], // 插件
+    parser: "@typescript-eslint/parser", // Parser
+    extends: ["plugin:@typescript-eslint/recommended", "react-app", "plugin:prettier/recommended"], // rule set extended
+    plugins: ["@typescript-eslint", "react", "react-hooks"], // plugins
     rules: {
-        // 规则
+        // rules
         "@typescript-eslint/no-explicit-any": "warn",
-        "react-hooks/rules-of-hooks": "error", // 检查 Hook 的规则
-        "react-hooks/exhaustive-deps": "warn", // 检查 effect 的依赖
+        "react-hooks/rules-of-hooks": "error", // rules for Hook
+        "react-hooks/exhaustive-deps": "warn", // rules for effect
         "jsx-a11y/anchor-is-valid": "off",
         "import/no-anonymous-default-export": [
             "error",
