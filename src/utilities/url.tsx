@@ -1,6 +1,6 @@
 import qs from "qs";
 
-function getQueryVariable(): any {
+function getQueryVariable(): Record<string, unknown> {
     return qs.parse(window.location.search, { ignoreQueryPrefix: true });
 }
 

@@ -4,8 +4,7 @@ module.exports = {
     plugins: ["@typescript-eslint", "react", "react-hooks"], // 插件
     rules: {
         // 规则
-        // "additional-typescript-only-rule": "warn",
-        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
         "react-hooks/rules-of-hooks": "error", // 检查 Hook 的规则
         "react-hooks/exhaustive-deps": "warn", // 检查 effect 的依赖
         "jsx-a11y/anchor-is-valid": "off",

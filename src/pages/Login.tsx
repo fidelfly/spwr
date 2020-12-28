@@ -156,7 +156,7 @@ export const LoginPage = withAuthorizeCheck((props: RouteChildrenProps) => {
 */
 
 export const Login: React.FC = (): ReactElement => {
-    const [error, setError] = useState<any>(undefined);
+    const [error, setError] = useState<unknown>(undefined);
     const [form] = Form.useForm();
     const dispatch = useDispatch<AsyncDispatch>();
     const intl = useIntl();
@@ -164,7 +164,7 @@ export const Login: React.FC = (): ReactElement => {
         form.scrollToField(errorFields[0].name);
     }
 
-    async function handleSubmit(values: any): Promise<boolean> {
+    async function handleSubmit(values: Record<string, unknown>): Promise<boolean> {
         try {
             const token = await requestToken(values);
             dispatch(
@@ -225,7 +225,7 @@ export const Login: React.FC = (): ReactElement => {
                             </Button>
                         </Form.Item>
                     </Form>
-                    {error && <Alert message={error} className="login-error" type="error" />}
+                    {error && <Alert message={`${error}`} className="login-error" type="error" />}
                 </div>
             </div>
             <div className="loginFooter">
@@ -239,7 +239,7 @@ export const Login: React.FC = (): ReactElement => {
 
 export const LoginPage: React.FC = (): ReactElement => {
     const location = useLocation();
-    const { from }: any = location.state || { from: { pathname: "/app/home" } };
+    const { from } = (location.state as { from: { pathname: string } }) || { from: { pathname: "/app/home" } };
     return (
         <AuthComponent fallback={<Login />}>
             <Redirect to={from} push={true} />

@@ -26,7 +26,7 @@ function getInitState(): StoreState {
 
 function getLang(): string {
     const queryParam = url.getQueryVariable();
-    let lang: string | null = queryParam[Param.lang];
+    let lang = queryParam[Param.lang] as string | null;
     if (!lang || lang.length === 0) {
         lang = localStorage.getItem(Storage.Lang);
     }

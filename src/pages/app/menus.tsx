@@ -6,7 +6,7 @@ export interface MenuItem {
     title: string;
     icon: ReactNode;
     sub?: MenuItem[];
-    props?: any;
+    props?: Record<string, unknown>;
 }
 
 export const menus: MenuItem[] = [

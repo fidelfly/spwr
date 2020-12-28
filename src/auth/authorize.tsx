@@ -99,7 +99,7 @@ let refreshLock = false;
 
 async function waitRefreshToken(): Promise<TokenData> {
     while (refreshLock) {
-        await new Promise((resolve): any => setTimeout(resolve, 50));
+        await new Promise((resolve): unknown => setTimeout(resolve, 50));
     }
 
     if (isTokenValid()) {
@@ -137,9 +137,9 @@ export async function refreshToken(): Promise<TokenData> {
                     withAuthInject: false,
                 }
             );
-            setToken(resp.data);
+            setToken(resp.data as TokenData);
             refreshLock = false;
-            return resp.data;
+            return resp.data as TokenData;
         } catch (e) {
             refreshLock = false;
             removeToken();
@@ -150,12 +150,15 @@ export async function refreshToken(): Promise<TokenData> {
     }
 }
 
-export async function requestToken(authData: { username: string; password: string }): Promise<TokenData> {
-    if (authData.username.length === 0 || authData.password.length === 0) {
+export async function requestToken(formData: Record<string, unknown>): Promise<TokenData> {
+    const { username, password } = formData;
+    if (!username || !password) {
         throw new Error("No Username Or Password");
+    } else if ((username as string).length === 0 || (password as string).length === 0) {
+        throw new Error("Empty Username Or Password");
     }
     const requestData = {
-        ...authData,
+        ...formData,
         grant_type: "password",
         scope: "all",
     };
@@ -166,8 +169,8 @@ export async function requestToken(authData: { username: string; password: strin
     };
 
     const resp = await Ajax.post(WsPath.token, requestData, ajaxConfig);
-    setToken(resp.data);
-    return resp.data;
+    setToken(resp.data as TokenData);
+    return resp.data as TokenData;
 }
 
 export async function logout(): Promise<boolean> {

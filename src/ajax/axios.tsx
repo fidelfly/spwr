@@ -9,7 +9,7 @@ export interface RespError {
     error_code: string;
     error_message: string;
     type: ErrorType;
-    data: any;
+    data: unknown;
 }
 
 const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse> => {
@@ -37,7 +37,7 @@ const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse
     }
 };
 
-const resolveError = (error: AxiosError): any => {
+const resolveError = (error: AxiosError): unknown => {
     if (error.response) {
         const status = error.response.status;
         const data = error.response.data;
@@ -99,15 +99,15 @@ export async function request<R = AxiosResponse>(config: RequestConfig): Promise
 }
 
 declare interface AjaxApi {
-    get<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
-    delete<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
-    head<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
-    option<T = any, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
-    post<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
-    put<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
-    patch<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: RequestConfig): Promise<R>;
+    get<T = unknown, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    delete<T = unknown, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    head<T = unknown, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    option<T = unknown, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
+    post<T = unknown, R = AxiosResponse<T>>(url: string, data?: unknown, config?: RequestConfig): Promise<R>;
+    put<T = unknown, R = AxiosResponse<T>>(url: string, data?: unknown, config?: RequestConfig): Promise<R>;
+    patch<T = unknown, R = AxiosResponse<T>>(url: string, data?: unknown, config?: RequestConfig): Promise<R>;
 
-    isError(data: any): boolean;
+    isError(data: unknown): boolean;
 }
 
 /*const ajax = {};
@@ -135,7 +135,7 @@ declare interface AjaxApi {
     };
 });*/
 
-function createRequestFunction<T = any, R = AxiosResponse<T>>(
+function createRequestFunction<T = unknown, R = AxiosResponse<T>>(
     method: string
 ): (url: string, config?: RequestConfig) => Promise<R> {
     return function (url: string, config?: RequestConfig): Promise<R> {
@@ -148,9 +148,9 @@ function createRequestFunction<T = any, R = AxiosResponse<T>>(
     };
 }
 
-function createDataRequestFunction<T = any, R = AxiosResponse<T>>(
+function createDataRequestFunction<T = unknown, R = AxiosResponse<T>>(
     method: string
-): (url: string, data?: any, config?: RequestConfig) => Promise<R> {
+): (url: string, data?: T, config?: RequestConfig) => Promise<R> {
     return function (url: string, data?: T, config?: RequestConfig): Promise<R> {
         config = config || {};
         return request({
@@ -171,7 +171,7 @@ export const Ajax: AjaxApi = {
     put: createDataRequestFunction("put"),
     patch: createDataRequestFunction("patch"),
 
-    isError(data: any): boolean {
+    isError(data: unknown): boolean {
         if (data === undefined || data === null) {
             return false;
         }
