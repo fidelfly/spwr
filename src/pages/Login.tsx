@@ -7,7 +7,7 @@ import { FormattedMessage, defineMessages, useIntl } from "react-intl";
 import { appMessages } from "../constants";
 import { useDispatch } from "react-redux";
 import { grantToken } from "../actions";
-import { requestToken } from "../auth";
+import { loginWithPassword } from "../auth";
 import { Snowflake } from "../icons";
 import { LangBtn } from "../components";
 import { EnvColor } from "../system";
@@ -166,7 +166,7 @@ export const Login: React.FC = (): ReactElement => {
 
     async function handleSubmit(values: Record<string, unknown>): Promise<boolean> {
         try {
-            const token = await requestToken(values);
+            const token = await loginWithPassword(values);
             dispatch(
                 grantToken({
                     userId: parseInt(token.user_id),

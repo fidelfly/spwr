@@ -150,7 +150,7 @@ export async function refreshToken(): Promise<TokenData> {
     }
 }
 
-export async function requestToken(formData: Record<string, unknown>): Promise<TokenData> {
+export async function loginWithPassword(formData: Record<string, unknown>): Promise<TokenData> {
     const { username, password } = formData;
     if (!username || !password) {
         throw new Error("No Username Or Password");
@@ -159,22 +159,20 @@ export async function requestToken(formData: Record<string, unknown>): Promise<T
     }
     const requestData = {
         ...formData,
-        grant_type: "password",
-        scope: "all",
     };
     const ajaxConfig = {
         ...AjaxCfg.FormRequestConfig,
-        headers: { Authorization: basicAuthKey },
+        // headers: { Authorization: basicAuthKey },
         withAuthInject: false,
     };
 
-    const resp = await Ajax.post(WsPath.token, requestData, ajaxConfig);
+    const resp = await Ajax.post(WsPath.login, requestData, ajaxConfig);
     setToken(resp.data as TokenData);
     return resp.data as TokenData;
 }
 
 export async function logout(): Promise<boolean> {
-    await Ajax.post(WsPath.logout);
+    await Ajax.post(WsPath.logout, { token: getAccessToken() }, AjaxCfg.FormRequestConfig);
     removeToken();
     return true;
 }
