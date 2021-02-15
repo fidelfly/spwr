@@ -5,7 +5,7 @@ import { WsError } from "../errors";
 import { Ajax, AjaxCfg } from "../ajax";
 
 /* eslint-disable, @typescript-eslint/no-explicit-any */
-const basicAuthKey = process.env.REACT_APP_OAUTH_KEY;
+// const basicAuthKey = process.env.REACT_APP_OAUTH_KEY;
 
 export function getAccessToken(): string | undefined {
     return Cookies.get(CookieKeys.accessToken);
@@ -126,14 +126,14 @@ export async function refreshToken(): Promise<TokenData> {
             const resp = await Ajax.post(
                 WsPath.token,
                 {
-                    access_token: getAccessToken(),
+                    // access_token: getAccessToken(),
                     grant_type: "refresh_token",
                     scope: "all",
                     refresh_token: key,
                 },
                 {
                     ...AjaxCfg.FormRequestConfig,
-                    headers: { Authorization: basicAuthKey },
+                    // headers: { Authorization: basicAuthKey },
                     withAuthInject: false,
                 }
             );

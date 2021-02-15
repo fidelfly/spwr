@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { AsyncDispatch, StoreState } from "../../type";
 import { appMessages } from "../../constants";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import { Spin, Layout } from "antd";
+import { Spin, Button, Layout } from "antd";
 import { loadUser } from "../../actions";
 import { Switch, Route } from "react-router";
 
@@ -157,17 +157,16 @@ export const AppPage: React.FC = (): ReactElement => {
             </Sider>
             <Layout>
                 <Header style={{ padding: 0 }} className={"App-Header"}>
-                    {/* eslint-disable-next-line no-script-url */}
-                    <a href="javascript:" className="trigger" onClick={toggle}>
+                    <Button type={"link"} className="trigger" onClick={toggle}>
                         {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                    </a>
+                    </Button>
                     <AppHeader />
                 </Header>
                 <Content className={"App-Content"}>
                     <Switch>
                         <Route exact path="/app/home" component={Home} />
-                        {/*                         <Route exact path="/app/profile/user" component={UserPage} />
-                            <Route exact path="/app/profile/password" component={Password} />*/}
+                        {/*        <Route exact path="/app/profile/user" component={UserPage} />
+                        <Route exact path="/app/profile/password" component={Password} />*/}
                     </Switch>
                 </Content>
                 <Footer className="App-Footer">
