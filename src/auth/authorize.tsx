@@ -128,7 +128,7 @@ export async function refreshToken(): Promise<TokenData> {
                 {
                     // access_token: getAccessToken(),
                     grant_type: "refresh_token",
-                    scope: "all",
+                    scope: "*",
                     refresh_token: key,
                 },
                 {
