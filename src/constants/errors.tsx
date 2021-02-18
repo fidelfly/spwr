@@ -1,4 +1,4 @@
 export enum ErrCode {
-    Unauthorized = "UNAUTHORIZED",
-    TokenExpired = "TOKENEXPIRED",
+    Unauthorized = "oauth2.unauthorized",
+    TokenExpired = "oauth2.token.expired",
 }

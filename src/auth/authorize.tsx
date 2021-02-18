@@ -35,9 +35,14 @@ interface TokenData {
     user_id: string;
 }
 
+let autoRefresh: ReturnType<typeof setTimeout>;
+
 function setToken(data: TokenData): void {
-    Cookies.set(CookieKeys.accessToken, data.access_token);
-    Cookies.set(CookieKeys.tokenType, data.token_type);
+    const expireDate = new Date();
+    expireDate.setMinutes(expireDate.getMinutes() + 30);
+
+    Cookies.set(CookieKeys.accessToken, data.access_token, { expires: expireDate });
+    Cookies.set(CookieKeys.tokenType, data.token_type, { expires: expireDate });
     if (data.refresh_token) {
         localStorage.setItem(Storage.RefreshToken, data.refresh_token);
     }
@@ -45,7 +50,12 @@ function setToken(data: TokenData): void {
         localStorage.setItem(Storage.TokenExpired, (new Date().getTime() + data.expires_in * 1000).toString());
     }
     localStorage.setItem(Storage.UserID, data.user_id);
-    // return data;
+
+    if (autoRefresh !== undefined) {
+        clearTimeout(autoRefresh);
+    }
+
+    autoRefresh = setTimeout(() => refreshToken(), 30 * 60 * 1000);
 }
 
 function getTokenData(): TokenData {

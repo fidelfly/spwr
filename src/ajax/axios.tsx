@@ -3,12 +3,12 @@ import { Authkit, invalidateToken, refreshToken } from "../auth";
 import { WsException } from "../errors";
 import { ErrCode } from "../constants";
 
-export type ErrorType = "error" | "info" | "warning";
+export type MessageType = "error" | "info" | "warning" | "debug" | "fatal";
 
-export interface RespError {
-    error_code: string;
-    error_message: string;
-    type: ErrorType;
+export interface AjaxMessage {
+    code: string;
+    message: string;
+    type: MessageType;
     data: unknown;
 }
 
@@ -43,7 +43,7 @@ const resolveError = (error: AxiosError): unknown => {
         const data = error.response.data;
 
         if (Ajax.isError(data)) {
-            return Promise.reject(new WsException(status, data.error_code, data.error_message, data.data));
+            return Promise.reject(new WsException(status, data.code, data.message, data.data));
         } else {
             return Promise.reject(new WsException(status, error.code || `Server(${status})`, "", data));
         }
@@ -175,7 +175,7 @@ export const Ajax: AjaxApi = {
         if (data === undefined || data === null) {
             return false;
         }
-        return (data as RespError).error_code !== undefined;
+        return (data as AjaxMessage).code !== undefined;
     },
 };
 
