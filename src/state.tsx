@@ -17,6 +17,13 @@ function getInitState(): StoreState {
             theme: "dark",
             collapsed: false,
             sideWidth: 300,
+            appLoading: {
+                status: true,
+                tip: "Loading",
+            },
+            viewLoading: {
+                status: false,
+            },
         },
         token: {
             userId: 0,

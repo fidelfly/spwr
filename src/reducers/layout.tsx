@@ -1,7 +1,7 @@
 import { ReduxAction } from "../actions";
 import { ActionCode } from "../constants";
 import { combineReducers } from "redux";
-import { Theme } from "../type";
+import { LoadingIndicator, Theme } from "../type";
 
 function collapsed(collapse = false, action: ReduxAction<void>): boolean {
     if (action.type === ActionCode.toggleMenu) {
@@ -27,8 +27,26 @@ function siderWidth(width = 250, action: ReduxAction<number>): number {
     }
 }
 
+function appLoading(loading = { status: true }, action: ReduxAction<LoadingIndicator>): LoadingIndicator {
+    if (action.type === ActionCode.appLoading) {
+        return action.payload;
+    } else {
+        return loading;
+    }
+}
+
+function viewLoading(loading = { status: false }, action: ReduxAction<LoadingIndicator>): LoadingIndicator {
+    if (action.type === ActionCode.viewLoading) {
+        return action.payload;
+    } else {
+        return loading;
+    }
+}
+
 export default combineReducers({
     collapsed,
     theme: siderTheme,
     sideWidth: siderWidth,
+    appLoading,
+    viewLoading,
 });

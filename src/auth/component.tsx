@@ -131,7 +131,7 @@ export const AuthComponent: React.FC<AuthCompProps> = (props): ReactElement => {
     };
 
     return (
-        <Spin wrapperClassName={"App-loading"} spinning={verifying}>
+        <Spin wrapperClassName={"app-loading"} spinning={verifying}>
             {conditionView(authorized, verifying)}
         </Spin>
     );

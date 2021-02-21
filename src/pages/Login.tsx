@@ -160,6 +160,7 @@ export const Login: React.FC = (): ReactElement => {
     const [form] = Form.useForm();
     const dispatch = useDispatch<AsyncDispatch>();
     const intl = useIntl();
+
     function onFinishFailed({ errorFields }: ValidateErrorEntity): void {
         form.scrollToField(errorFields[0].name);
     }

@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { IntlProvider, useIntl } from "react-intl";
 import store from "./state";
 import { appMessages, Language, System } from "./constants";
@@ -8,8 +8,9 @@ import { ConfigProvider, Spin } from "antd";
 import "./App.less";
 import { LocaleObject } from "./type/locale";
 import moment from "moment";
-import { StoreState } from "./type";
+import { LoadingIndicator, StoreState } from "./type";
 import { LoginPage, LogoutPage, AppPage } from "./pages";
+import { appLoading } from "./actions";
 
 const App: React.FC = () => {
     return (
@@ -26,22 +27,26 @@ interface Props {
 }
 
 const Starter: React.FC<Props> = (): ReactElement => {
-    const [loading, setLoading] = useState<boolean>(true);
+    // const [loading, setLoading] = useState<boolean>(true);
     const [appLocales, setLocales] = useState<LocaleObject | null>();
     const language = useSelector<StoreState, string>((state) => state.language);
+    const loading = useSelector<StoreState, LoadingIndicator>((state) => state.layout.appLoading);
+    const dispatch = useDispatch();
     useEffect(() => {
-        setLoading(true);
+        // setLoading(true);
+        dispatch(appLoading(true));
         getLocale(language)
             .then((localeData) => {
                 setLocales(localeData);
             })
             .finally(() => {
-                setLoading(false);
+                dispatch(appLoading(false));
+                // setLoading(false);
             });
-    }, [language]);
+    }, [language, dispatch]);
 
     return (
-        <Spin spinning={loading} delay={50} wrapperClassName={"App-loading"}>
+        <Spin size={"large"} spinning={loading.status} delay={50} wrapperClassName={"app-loading"} tip={loading.tip}>
             {appLocales && (
                 <ConfigProvider locale={appLocales.antdLocale}>
                     <IntlProvider

@@ -1,9 +1,15 @@
 export type Theme = "dark" | "light";
 
+export interface LoadingIndicator {
+    status: boolean;
+    tip?: string;
+}
 export interface LayoutState {
     theme: Theme;
     collapsed: boolean;
     sideWidth: number;
+    appLoading: LoadingIndicator;
+    viewLoading: LoadingIndicator;
 }
 
 export interface Token {

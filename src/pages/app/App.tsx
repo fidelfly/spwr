@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FormattedMessage, useIntl } from "react-intl";
-import { AsyncDispatch, StoreState } from "../../type";
+import { AsyncDispatch, LoadingIndicator, StoreState } from "../../type";
 import { appMessages } from "../../constants";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Spin, Button, Layout } from "antd";
@@ -122,6 +122,7 @@ export const AppPage: React.FC = (): ReactElement => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const userId = useSelector<StoreState, number>((state) => state.token.userId);
     const dispatch = useDispatch<AsyncDispatch>();
+    const viewLoadingEnable = useSelector<StoreState, LoadingIndicator>((state) => state.layout.viewLoading);
 
     useEffect(() => {
         setLoading(true);
@@ -163,11 +164,18 @@ export const AppPage: React.FC = (): ReactElement => {
                     <AppHeader />
                 </Header>
                 <Content className={"App-Content"}>
-                    <Switch>
-                        <Route exact path="/app/home" component={Home} />
-                        {/*        <Route exact path="/app/profile/user" component={UserPage} />
-                        <Route exact path="/app/profile/password" component={Password} />*/}
-                    </Switch>
+                    <Spin
+                        size={"large"}
+                        spinning={viewLoadingEnable.status}
+                        delay={50}
+                        wrapperClassName={"view-loading"}
+                        tip={viewLoadingEnable.tip || intl.formatMessage(appMessages.loading)}>
+                        <Switch>
+                            <Route exact path="/app/home" component={Home} />
+                            {/*        <Route exact path="/app/profile/user" component={UserPage} />
+                            <Route exact path="/app/profile/password" component={Password} />*/}
+                        </Switch>
+                    </Spin>
                 </Content>
                 <Footer className="App-Footer">
                     <FormattedMessage {...appMessages.copyright} />
