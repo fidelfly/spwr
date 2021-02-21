@@ -33,16 +33,21 @@ interface TokenData {
     refresh_token: string;
     expires_in?: number;
     user_id: string;
+    request_id?: string;
 }
 
 let autoRefresh: ReturnType<typeof setTimeout>;
 
 function setToken(data: TokenData): void {
     const expireDate = new Date();
-    expireDate.setMinutes(expireDate.getMinutes() + 30);
+    expireDate.setMinutes(expireDate.getMinutes() + 35);
 
     Cookies.set(CookieKeys.accessToken, data.access_token, { expires: expireDate });
     Cookies.set(CookieKeys.tokenType, data.token_type, { expires: expireDate });
+    if (data.request_id) {
+        Cookies.set(CookieKeys.requestID, data.request_id, { path: "/api/login" });
+    }
+
     if (data.refresh_token) {
         localStorage.setItem(Storage.RefreshToken, data.refresh_token);
     }
@@ -64,12 +69,14 @@ function getTokenData(): TokenData {
         token_type: Cookies.get(CookieKeys.tokenType) || "",
         refresh_token: localStorage.getItem(Storage.RefreshToken) || "",
         user_id: localStorage.getItem(Storage.UserID) || "",
+        request_id: Cookies.get(CookieKeys.requestID) || "",
     };
 }
 
 function removeToken(): void {
     Cookies.remove(CookieKeys.accessToken);
     Cookies.remove(CookieKeys.tokenType);
+    Cookies.remove(CookieKeys.requestID);
     localStorage.removeItem(Storage.RefreshToken);
     localStorage.removeItem(Storage.TokenExpired);
     localStorage.removeItem(Storage.UserID);
