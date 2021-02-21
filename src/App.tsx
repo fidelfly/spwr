@@ -46,7 +46,12 @@ const Starter: React.FC<Props> = (): ReactElement => {
     }, [language, dispatch]);
 
     return (
-        <Spin size={"large"} spinning={loading.status} delay={50} wrapperClassName={"app-loading"} tip={loading.tip}>
+        <Spin
+            size={"large"}
+            spinning={loading.status}
+            delay={50}
+            wrapperClassName={"app-loading"}
+            tip={loading.tip || "Loading"}>
             {appLocales && (
                 <ConfigProvider locale={appLocales.antdLocale}>
                     <IntlProvider
