@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import Icon from "@ant-design/icons";
-import { IconComponentProps } from "@ant-design/icons/lib/components/Icon";
+import IconProps from "./types";
 
 const AppSvg: React.FC = () => (
     <svg
@@ -32,7 +32,6 @@ const AppSvg: React.FC = () => (
     </svg>
 );
 
-type Props = Pick<IconComponentProps, "style">;
-export const AppIcon = (props: Props): ReactElement => {
+export const AppIcon = (props: IconProps): ReactElement => {
     return <Icon component={AppSvg} {...props} />;
 };

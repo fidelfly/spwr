@@ -1,6 +1,8 @@
 import React, { ReactElement, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { viewLoading } from "../actions";
+import { viewLoading } from "../../actions";
+import { ReactComponent as DateIcon } from "../../assets/svg/date.svg";
+import snowflake from "../../assets/image/snowflake.png";
 
 export const Home: React.FC = (): ReactElement => {
     const dispatch = useDispatch();
@@ -15,7 +17,18 @@ export const Home: React.FC = (): ReactElement => {
         },
         [dispatch]
     );
-    return <div>{"asdf"}</div>;
+    return (
+        <div>
+            <p>
+                {"Use svg as Icon:"}
+                <DateIcon />
+            </p>
+            <p>
+                {"Use png as image:"}
+                <img src={snowflake} />
+            </p>
+        </div>
+    );
 };
 
 async function wait5() {

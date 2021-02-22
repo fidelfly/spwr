@@ -9,9 +9,9 @@ import { loadUser } from "../../actions";
 import { Switch, Route } from "react-router";
 
 import { Header as AppHeader } from "./AppHeader";
-import { SiderMenu } from "./SiderMenu";
+import { SideMenu } from "./SideMenu";
 import "./home.less";
-import { Home } from "../../views";
+import { Home } from "../views";
 
 const { Header, Sider, Footer, Content } = Layout;
 /*
@@ -154,7 +154,7 @@ export const AppPage: React.FC = (): ReactElement => {
                 <div className="App-Logo">
                     <FormattedMessage {...(collapsed ? appMessages.shortName : appMessages.name)} />
                 </div>
-                <SiderMenu className={"App-Menu"} collapsed={collapsed} theme={"dark"} />
+                <SideMenu className={"App-Menu"} collapsed={collapsed} theme={"dark"} />
             </Sider>
             <Layout>
                 <Header style={{ padding: 0 }} className={"App-Header"}>

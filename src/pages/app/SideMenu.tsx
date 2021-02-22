@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { Theme } from "../../type";
 import { FormattedMessage } from "react-intl";
 import { useLocation } from "react-router";
@@ -129,14 +129,14 @@ class MenuView extends Component<MenuViewProps, State> {
 export default injectIntl(withRouter(MenuView));
 */
 
-export const SiderMenu: React.FC<Props> = (props) => {
+export const SideMenu: React.FC<Props> = (props) => {
     const location = useLocation();
     const [path, setPath] = useState<string>("");
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const { collapsed, ...otherProps } = props;
     const newPath = location.pathname;
-    if (newPath !== path) {
+    useEffect(() => {
         if (collapsed) {
             setOpenKeys([]);
         } else {
@@ -147,9 +147,12 @@ export const SiderMenu: React.FC<Props> = (props) => {
                 }
             }
         }
-        setSelectedKeys([newPath]);
-        setPath(newPath);
-    }
+
+        if (newPath !== path) {
+            setSelectedKeys([newPath]);
+            setPath(newPath);
+        }
+    }, [collapsed, newPath]);
 
     function renderMenuItem(item: MenuItem): ReactElement {
         return (
