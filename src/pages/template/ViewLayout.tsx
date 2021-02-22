@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactElement } from "react";
 import { PageHeader } from "antd";
 import { PageHeaderProps } from "antd/lib/page-header";
-import { PathBreadcrumb, Route } from "../../components/PathBreadcrumb";
+import { PathBreadcrumb, BreadcrumbRoute, Props as BreadcrumbProps } from "../../components/PathBreadcrumb";
 
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
@@ -15,16 +15,19 @@ const ViewLayout: LayoutType = (props: Props): ReactElement => {
     return <div {...others}>{children}</div>;
 };
 
-type HeadProps = Omit<PageHeaderProps, "breadcrumb" | "breadcrumbRender"> & {
-    routes?: Route;
-    routeBase?: string;
+type HeadProps = Omit<PageHeaderProps, "breadcrumb" | "breadcrumbRender" | "extra"> & {
+    breadcrumb?: BreadcrumbProps;
+    toolbar?: React.ReactNode;
 };
 
 const ViewHeader: React.FC<HeadProps> = (props: PropsWithChildren<HeadProps>): ReactElement => {
-    const { children, routes, routeBase, ...others } = props;
+    const { children, breadcrumb, toolbar, ...others } = props;
     others.className = (others.className ? " " : "") + "view-layout";
-    if (routes) {
-        (others as PageHeaderProps).breadcrumbRender = () => <PathBreadcrumb base={routeBase || ""} routes={routes} />;
+    if (breadcrumb) {
+        (others as PageHeaderProps).breadcrumbRender = () => <PathBreadcrumb {...breadcrumb} />;
+    }
+    if (toolbar) {
+        (others as PageHeaderProps).extra = toolbar;
     }
 
     return <PageHeader {...others}>{children}</PageHeader>;

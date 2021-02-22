@@ -4,15 +4,15 @@ import { Breadcrumb } from "antd";
 import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 
-export interface Route {
+export interface BreadcrumbRoute {
     path: string;
     title: string | ReactNode;
-    children?: Route[];
+    children?: BreadcrumbRoute[];
 }
 
-export type BreadcrumbNode = Omit<Route, "children">;
+export type BreadcrumbNode = Omit<BreadcrumbRoute, "children">;
 
-function findRoute(route: Route, path: string, parent: string): Omit<Route, "children"> | undefined {
+function findRoute(route: BreadcrumbRoute, path: string, parent: string): BreadcrumbNode | undefined {
     const routePath = parent + (route.path === "/" ? "" : route.path);
     if (routePath === path || path.startsWith(routePath)) {
         return {
@@ -24,12 +24,12 @@ function findRoute(route: Route, path: string, parent: string): Omit<Route, "chi
     return undefined;
 }
 
-function resolveBreadcrumb(routes: Route, path: string, base = ""): BreadcrumbNode[] {
+function resolveBreadcrumb(routes: BreadcrumbRoute, path: string, base = ""): BreadcrumbNode[] {
     let nodes: BreadcrumbNode[] = [];
-    let target: Route[] | undefined = [routes];
+    let target: BreadcrumbRoute[] | undefined = [routes];
     let parentPath: string = base;
     while (target) {
-        let route: Omit<Route, "children"> | undefined;
+        let route: BreadcrumbNode | undefined;
         for (let i = 0; i < target.length; i++) {
             route = findRoute(target[i], path, parentPath);
             if (route !== undefined) {
@@ -47,14 +47,14 @@ function resolveBreadcrumb(routes: Route, path: string, base = ""): BreadcrumbNo
     return nodes;
 }
 
-type Props = Omit<BreadcrumbProps, "itemRender" | "routes"> & {
+export type Props = Omit<BreadcrumbProps, "itemRender" | "routes"> & {
     base: string;
-    routes: Route;
+    routes: BreadcrumbRoute;
 };
 
 export const PathBreadcrumb: React.FC<Props> = (props: Props): ReactElement => {
     const { base, routes, ...others } = props;
-    const [steps, setSteps] = useState<Omit<Route, "children">[]>([]);
+    const [steps, setSteps] = useState<Omit<BreadcrumbRoute, "children">[]>([]);
     const location = useLocation();
 
     const path = location.pathname;
@@ -62,11 +62,7 @@ export const PathBreadcrumb: React.FC<Props> = (props: Props): ReactElement => {
         setSteps(resolveBreadcrumb(routes, path, base));
     }, [path, routes, base]);
 
-    function renderItem(
-        route: Omit<Route, "children">,
-        routes: Omit<Route, "children">[],
-        currentPath: string
-    ): ReactNode {
+    function renderItem(route: BreadcrumbNode, routes: BreadcrumbNode[], currentPath: string): ReactNode {
         if (route.path === currentPath) {
             return route.title;
         }
