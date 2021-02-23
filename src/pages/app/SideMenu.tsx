@@ -139,7 +139,7 @@ export const SideMenu: React.FC<Props> = (props) => {
         if (collapsed) {
             setOpenKeys([]);
         } else {
-            const parentPath = Path.getParent(newPath);
+            const parentPath = Path.getTopParent(newPath, 2);
             if (parentPath !== newPath) {
                 setOpenKeys((o): string[] => {
                     if (o.indexOf(parentPath) < 0) {
@@ -149,9 +149,8 @@ export const SideMenu: React.FC<Props> = (props) => {
                 });
             }
         }
-
-        setSelectedKeys([newPath]);
-    }, [collapsed, newPath]);
+        setSelectedKeys([Path.getTopParent(newPath, 3)]);
+    }, [newPath, collapsed]);
 
     function renderMenuItem(item: MenuItem): ReactElement {
         return (
@@ -194,7 +193,8 @@ export const SideMenu: React.FC<Props> = (props) => {
 
     return (
         <Menu
-            mode={collapsed ? "vertical" : "inline"}
+            mode={"inline"}
+            inlineCollapsed={collapsed}
             selectedKeys={selectedKeys}
             openKeys={openKeys}
             onOpenChange={onOpenChange}

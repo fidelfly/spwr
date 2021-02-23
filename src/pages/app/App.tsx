@@ -61,7 +61,12 @@ export const AppPage: React.FC = (): ReactElement => {
                 <div className="app-logo">
                     <Link to={"/app/home"}>
                         <img src={snowflake} alt={"logo"} height={30} />
-                        {!collapsed && <FormattedMessage {...(collapsed ? appMessages.shortName : appMessages.name)} />}
+
+                        {!collapsed && (
+                            <span className={"app-name"}>
+                                <FormattedMessage {...(collapsed ? appMessages.shortName : appMessages.name)} />
+                            </span>
+                        )}
                     </Link>
                 </div>
                 <SideMenu className={"app-menu"} collapsed={collapsed} theme={"light"} />
