@@ -131,7 +131,6 @@ export default injectIntl(withRouter(MenuView));
 
 export const SideMenu: React.FC<Props> = (props) => {
     const location = useLocation();
-    const [path, setPath] = useState<string>("");
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const { collapsed, ...otherProps } = props;
@@ -143,15 +142,17 @@ export const SideMenu: React.FC<Props> = (props) => {
             const parentPath = Path.getParent(newPath);
             if (parentPath !== newPath) {
                 if (openKeys.indexOf(parentPath) < 0) {
-                    setOpenKeys([...openKeys, parentPath]);
+                    setOpenKeys((o): string[] => {
+                        if (o.indexOf(parentPath) < 0) {
+                            return [...o, parentPath];
+                        }
+                        return [...o];
+                    });
                 }
             }
         }
 
-        if (newPath !== path) {
-            setSelectedKeys([newPath]);
-            setPath(newPath);
-        }
+        setSelectedKeys([newPath]);
     }, [collapsed, newPath]);
 
     function renderMenuItem(item: MenuItem): ReactElement {

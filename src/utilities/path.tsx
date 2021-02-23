@@ -1,11 +1,11 @@
 export const PathSeparator = "/";
 export const Path = {
-    getTopParent: (path: string): string => {
+    getTopParent: (path: string, keep = 2): string => {
         const pa = Path.resolvePath(path);
-        if (pa.length <= 2) {
+        if (pa.length <= keep) {
             return path;
         }
-        return PathSeparator + pa.slice(0, 2).join(PathSeparator);
+        return PathSeparator + pa.slice(0, keep).join(PathSeparator);
     },
     resolvePath: (path: string): string[] => {
         let pa = path.split(PathSeparator);
@@ -14,9 +14,9 @@ export const Path = {
         }
         return pa;
     },
-    getParent: (path: string): string => {
+    getParent: (path: string, min = 2): string => {
         const pa = Path.resolvePath(path);
-        if (pa.length <= 2) {
+        if (pa.length <= min) {
             return path;
         }
         return PathSeparator + pa.slice(0, pa.length - 1).join(PathSeparator);
