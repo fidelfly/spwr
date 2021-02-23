@@ -4,7 +4,6 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { AsyncDispatch, LoadingIndicator, StoreState } from "../../type";
 import { appMessages } from "../../constants";
 import { Link } from "react-router-dom";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Spin, Button, Layout } from "antd";
 import { loadUser } from "../../actions";
 import { Switch, Route } from "react-router";

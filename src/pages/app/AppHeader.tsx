@@ -1,10 +1,9 @@
 import React, { ReactElement } from "react";
-import { Menu, Avatar, Divider } from "antd";
+import { Avatar, Divider } from "antd";
 import { Link } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
 import { StoreState, User } from "../../type";
 import { LangBtn } from "../../components";
-import { WsPath, appMessages } from "../../constants";
+import { WsPath } from "../../constants";
 import { AjaxKit } from "../../ajax";
 import { useSelector } from "react-redux";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons/lib";
@@ -24,7 +23,7 @@ export const Header: React.FC = (): ReactElement => {
                 <span className={"avatar-name"}>{user.name}</span>
             </Link>
             <Divider type={"vertical"} />
-            <Link to={"/logout"}>
+            <Link to={"/logout"} className={"logout"}>
                 <LogoutOutlined />
             </Link>
         </div>

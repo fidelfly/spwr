@@ -25,7 +25,7 @@ export const Home: React.FC = (): ReactElement => {
             </p>
             <p>
                 {"Use png as image:"}
-                <img src={snowflake} />
+                <img src={snowflake} alt={"snowflake"} />
             </p>
         </div>
     );
