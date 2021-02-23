@@ -18,7 +18,7 @@
     "login.loginBtn": "登录",
 
     "menu.home": "首页",
-    "menu.profile": "个人资料",
-    "menu.profile.user": "用户资料",
-    "menu.profile.password": "密码变更"
+    "menu.account": "账户",
+    "menu.account.profile": "用户资料",
+    "menu.account.password": "变更密码"
 }

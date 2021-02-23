@@ -14,7 +14,7 @@ function getInitState(): StoreState {
         language: getLang(),
         verifyToken: true,
         layout: {
-            theme: "dark",
+            theme: "light",
             collapsed: false,
             sideWidth: 300,
             appLoading: {

@@ -1,17 +1,24 @@
 import React, { PropsWithChildren, ReactElement } from "react";
 import { PageHeader } from "antd";
 import { PageHeaderProps } from "antd/lib/page-header";
-import { PathBreadcrumb, BreadcrumbRoute, Props as BreadcrumbProps } from "../../components/PathBreadcrumb";
+import { PathBreadcrumb, Props as BreadcrumbProps } from "../../components/PathBreadcrumb";
+import "../style/ViewLayout.less";
 
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
-interface LayoutType extends React.FC<Props> {
+/*interface LayoutType extends React.FC<Props> {
     Header: typeof ViewHeader;
-}
+}*/
 
-const ViewLayout: LayoutType = (props: Props): ReactElement => {
+const ViewLayout: React.FC<Props> = (props: Props): ReactElement => {
     const { children, ...others } = props;
     others.className = (others.className ? " " : "") + "view-layout";
+    return <div {...others}>{children}</div>;
+};
+
+const ViewContent: React.FC<Props> = (props: Props): ReactElement => {
+    const { children, ...others } = props;
+    others.className = (others.className ? " " : "") + "view-content";
     return <div {...others}>{children}</div>;
 };
 
@@ -33,6 +40,5 @@ const ViewHeader: React.FC<HeadProps> = (props: PropsWithChildren<HeadProps>): R
     return <PageHeader {...others}>{children}</PageHeader>;
 };
 
-ViewLayout.Header = ViewHeader;
 export default ViewLayout;
-export { ViewHeader };
+export { ViewHeader, ViewContent };

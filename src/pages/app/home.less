@@ -1,19 +1,34 @@
-.App {
+@import "../../vars";
+
+.app {
     min-height: 100vh;
 }
 
-.App-Logo {
+.app-logo {
     line-height: 32px;
     //background: rgba(255, 255, 255, 0.2);
     margin: 16px;
     text-align: center;
     font-weight: bold;
 }
+.app-menu {
+    .menu-title {
+        display: inline-flex;
+        align-items: center;
 
-.App-Sider {
-    border-right: 1px solid #303030;
+        .anticon {
+            font-size: 20px;
+        }
+    }
+}
 
-    .App-Menu {
+.app-sider {
+    //border-right: 1px solid #303030;
+    position: fixed;
+    z-index: 200;
+    height: 100vh;
+    box-shadow: 2px 0px 8px lightgray;
+    .app-menu {
         text-align: left;
     }
     .ant-menu-item,
@@ -24,24 +39,45 @@
     }
 }
 
-.App-Header {
+.app-header {
+    position: fixed;
+    z-index: 100;
+    width: calc(100% - 300px);
+    margin-left: 300px;
+    transition: margin-left 0.2s, width 0.2s;
     display: flex;
     flex-direction: row;
     align-items: center;
-    .trigger {
-        cursor: pointer;
-        position: absolute;
-        margin-left: 1rem;
+    background: white;
+    box-shadow: 0px 0px 8px lighten(@app-primary, 10%);
+    .menu-trigger {
+        font-size: 2rem;
+        height: 4rem;
     }
 
-    .App-Header-Menu {
+    .app-head-menu {
         flex-grow: 1;
         text-align: right;
         float: right;
         line-height: 64px;
     }
 
-    .Avatar {
+    .app-head-navi {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+
+        padding-right: 1rem;
+
+        >a {
+            display: inline-flex;
+            align-items: center;
+        }
+    }
+
+    .avatar {
         margin-right: 1rem;
         .anticon {
             margin-right: 0;
@@ -49,8 +85,12 @@
     }
 }
 
-.App-Content {
-    margin: 24px 16px;
+.app-content {
+    margin-top: @layout-header-height;
+    margin-left: 300px;
+    margin-bottom: 2rem;
+    transition: margin-left 0.2s;
+    //margin: 24px 16px;
     padding: 24px;
     //background: #fff;
     min-height: 280px;
@@ -63,54 +103,61 @@
     }
 }
 
-.App-Footer {
+.menu-collapsed {
+    .app-header, .app-content, .app-footer {
+        margin-left: 80px;
+    }
+    .app-header, .app-footer {
+        width: calc(100% - 80px);
+    }
+}
+
+.app-menu.ant-menu-inline-collapsed {
+    .ant-menu-submenu, >.ant-menu-item {
+        position: relative;
+        &::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            border-right: @menu-item-active-border-width solid @menu-highlight-color;
+            transform: scaleY(0.0001);
+            opacity: 0;
+            transition: transform 0.15s @ease-out, opacity 0.15s @ease-out;
+            content: '';
+        }
+
+        &.ant-menu-submenu-selected, &.ant-menu-item-selected {
+            &::before {
+                z-index: 100;
+                transform: scaleY(1);
+                opacity: 1;
+                transition: transform 0.15s @ease-in-out, opacity 0.15s @ease-in-out;
+            }
+        }
+    }
+
+    >.ant-menu-submenu, >.ant-menu-item {
+        .ant-menu-submenu-title, .menu-title {
+            .anticon {
+                font-size: 22px;
+            }
+        }
+    }
+
+}
+
+.app-footer {
+    position: fixed;
+    bottom: 0px;
+    margin-left: 300px;
+    width: calc(100% - 300px);
+    transition: margin-left 0.2s, width 0.2s;
     text-align: center;
     padding: 0 2rem 1rem 2rem;
 }
 
-.App-Page {
-    padding: 1rem;
-    .Toolbar {
-        padding-bottom: 1rem;
-        display: flex;
-        align-items: center;
-
-        .ant-select, .ant-checkbox, button {
-            margin-left: 0.5rem;
-        }
-        .Search {
-            margin-left: 0.5rem;
-            width: 200px;
-        }
-        .Progress {
-            margin-left: 1rem;
-            display: inline-block;
-            flex: 1;
-        }
-    }
-    .Operations {
-        button {
-            margin-right: 0.5rem;
-            margin-bottom: 5px;
-            padding-left: 6px;
-            padding-right: 6px;
-        }
-    }
-}
-
-.Page-Loading {
-  width: 100%;
-  text-align: center;
-}
-
-.Tab-Tools {
-    padding-bottom: 1rem;
-    button {
-        margin-right: 5px;
-    }
-}
-
-.Form-No-Warning {
+.form-without-warning {
     .ant-form-item {
         margin-bottom: 0.5rem;
     }
@@ -122,19 +169,5 @@
         td {
             word-break: break-word;
         }
-    }
-}
-
-.ant-input-number.amount {
-    width: 150px;
-}
-
-.status-fail {
-    color: red;
-}
-
-.dashboard {
-    .ant-col {
-        margin-top: 10px;
     }
 }

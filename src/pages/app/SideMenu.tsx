@@ -141,14 +141,12 @@ export const SideMenu: React.FC<Props> = (props) => {
         } else {
             const parentPath = Path.getParent(newPath);
             if (parentPath !== newPath) {
-                if (openKeys.indexOf(parentPath) < 0) {
-                    setOpenKeys((o): string[] => {
-                        if (o.indexOf(parentPath) < 0) {
-                            return [...o, parentPath];
-                        }
-                        return [...o];
-                    });
-                }
+                setOpenKeys((o): string[] => {
+                    if (o.indexOf(parentPath) < 0) {
+                        return [...o, parentPath];
+                    }
+                    return [...o];
+                });
             }
         }
 
@@ -158,7 +156,7 @@ export const SideMenu: React.FC<Props> = (props) => {
     function renderMenuItem(item: MenuItem): ReactElement {
         return (
             <Menu.Item key={item.key} {...item.props}>
-                <Link to={item.key}>
+                <Link to={item.key} className={"menu-title"}>
                     {item.icon}
                     <span>
                         <FormattedMessage id={item.title} defaultMessage={item.title} />
@@ -173,7 +171,7 @@ export const SideMenu: React.FC<Props> = (props) => {
             <Menu.SubMenu
                 key={item.key}
                 title={
-                    <span>
+                    <span className={"menu-title"}>
                         {item.icon}
                         <span>
                             <FormattedMessage id={item.title} defaultMessage={item.title} />

@@ -19,7 +19,7 @@
     "login.loginBtn": "Login",
 
     "menu.home": "Home",
-    "menu.profile": "Profile",
-    "menu.profile.user": "User Information",
-    "menu.profile.password": "Change Password"
+    "menu.account": "Account",
+    "menu.account.profile": "Profile",
+    "menu.account.password": "Change Password"
 }
