@@ -17,6 +17,34 @@ export const AjaxCfg: AxiosUtilities = {
     FormRequestConfig: formRequestConfig,
 };
 
+export const ApiBase = "/api";
+
+// const pathVarRegex = /\{(\w+)\}/gi;
+
+const resolvePathVar = (path: string, params: Record<string, unknown> | unknown[] | null): Record<string, string> => {
+    const vars: Record<string, string> = {};
+    const reg = /\{(\w+)\}/gi;
+    let match = reg.exec(path);
+    let index = 0;
+    while (match !== null) {
+        const param = match[1] as string;
+        vars[param] = "";
+        if (params !== null) {
+            const len = (params as unknown[]).length;
+            if (len !== undefined) {
+                if (len > index) {
+                    vars[param] = `${(params as unknown[])[index]}`;
+                }
+            } else if ((params as Record<string, unknown>)[param] !== undefined) {
+                vars[param] = `${(params as Record<string, unknown>)[param]}`;
+            }
+        }
+        index++;
+        match = reg.exec(path);
+    }
+    return vars;
+};
+
 export const AjaxKit = {
     getURL: (path: string, params: Record<string, unknown>): string => {
         if (params) {
@@ -25,10 +53,34 @@ export const AjaxKit = {
         return path;
     },
 
-    getPath: (basePath: string, ...params: unknown[]): string => {
-        for (let i = 0; i < params.length; i++) {
-            basePath += `/${params[i]}`;
+    getPath: (basePath: string, params: Record<string, unknown> | unknown[] | null): string => {
+        basePath = basePath.trim();
+        if (!basePath.startsWith("/")) {
+            basePath = "/" + basePath;
         }
+        if (!basePath.startsWith(ApiBase)) {
+            basePath = ApiBase + basePath;
+        }
+
+        const vars = resolvePathVar(basePath, params);
+        for (const key in vars) {
+            basePath = basePath.replaceAll(new RegExp(`\\{${key}\\}`, "gi"), vars[key]);
+        }
+
+        basePath = basePath.replaceAll(/\/{2,}/gi, "/");
+
+        basePath = basePath.replace(/\/$/, "");
+
+        return basePath;
+    },
+
+    joinPath: (basePath: string, params: unknown[] | null): string => {
+        if (params) {
+            for (let i = 0; i < params.length; i++) {
+                basePath += `/${params[i]}`;
+            }
+        }
+
         return basePath;
     },
 };
