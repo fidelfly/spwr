@@ -21,21 +21,21 @@ export const ApiBase = "/api";
 
 // const pathVarRegex = /\{(\w+)\}/gi;
 
-const resolvePathVar = (path: string, params: Record<string, unknown> | unknown[] | null): Record<string, string> => {
+const resolvePathVar = (path: string, params?: Record<string, unknown> | unknown[] | null): Record<string, string> => {
     const vars: Record<string, string> = {};
     const reg = /\{(\w+)\}/gi;
     let match = reg.exec(path);
     let index = 0;
-    while (match !== null) {
+    while (match != null) {
         const param = match[1] as string;
         vars[param] = "";
-        if (params !== null) {
+        if (params != null) {
             const len = (params as unknown[]).length;
-            if (len !== undefined) {
+            if (len != null) {
                 if (len > index) {
                     vars[param] = `${(params as unknown[])[index]}`;
                 }
-            } else if ((params as Record<string, unknown>)[param] !== undefined) {
+            } else if ((params as Record<string, unknown>)[param] != null) {
                 vars[param] = `${(params as Record<string, unknown>)[param]}`;
             }
         }
@@ -47,7 +47,7 @@ const resolvePathVar = (path: string, params: Record<string, unknown> | unknown[
 
 export const AjaxKit = {
     getURL: (path: string, params: Record<string, unknown>): string => {
-        if (params) {
+        if (params != null) {
             return `${path}${qs.stringify(params, { addQueryPrefix: true })}`;
         }
         return path;
@@ -74,8 +74,15 @@ export const AjaxKit = {
         return basePath;
     },
 
-    joinPath: (basePath: string, params: unknown[] | null): string => {
-        if (params) {
+    joinPath: (basePath: string, ...params: unknown[]): string => {
+        basePath = basePath.trim();
+        if (!basePath.startsWith("/")) {
+            basePath = "/" + basePath;
+        }
+        if (!basePath.startsWith(ApiBase)) {
+            basePath = ApiBase + basePath;
+        }
+        if (params != null) {
             for (let i = 0; i < params.length; i++) {
                 basePath += `/${params[i]}`;
             }
