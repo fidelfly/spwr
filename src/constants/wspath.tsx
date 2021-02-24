@@ -2,7 +2,7 @@ export const WsPath = {
     token: "/api/token",
     login: "/api/login",
     logout: "/api/logout",
-    user: "/api/user",
+    user: "/user/{id}",
     // listAcl: "/api/user/acl",
     file: "/api/file",
 };

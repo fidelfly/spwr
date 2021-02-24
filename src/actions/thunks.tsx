@@ -5,7 +5,7 @@ import { AsyncDispatch, ThunkResult, User } from "../type";
 
 export const loadUser = function (userId: number): ThunkResult<Promise<User>> {
     return async (dispatch: AsyncDispatch): Promise<User> => {
-        const resp = await Ajax.get(AjaxKit.getPath(WsPath.user, userId));
+        const resp = await Ajax.get(AjaxKit.getPath(WsPath.user, { id: userId }));
         const user = resp.data as User;
         /*        const user: User = {
             id: respUser.id,
