@@ -78,7 +78,7 @@ interface RequestConfig extends AxiosRequestConfig {
     time?: number;
 }
 
-export const ApiBase = "/api";
+export const ApiBase = process.env.API_BASE || "/api";
 
 function joinBase(url: string): string {
     url = url.trim();
