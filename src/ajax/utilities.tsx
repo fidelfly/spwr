@@ -17,8 +17,6 @@ export const AjaxCfg: AxiosUtilities = {
     FormRequestConfig: formRequestConfig,
 };
 
-export const ApiBase = "/api";
-
 // const pathVarRegex = /\{(\w+)\}/gi;
 
 const resolvePathVar = (path: string, params?: Record<string, unknown> | unknown[] | null): Record<string, string> => {
@@ -58,9 +56,6 @@ export const AjaxKit = {
         if (!basePath.startsWith("/")) {
             basePath = "/" + basePath;
         }
-        if (!basePath.startsWith(ApiBase)) {
-            basePath = ApiBase + basePath;
-        }
 
         const vars = resolvePathVar(basePath, params);
         for (const key in vars) {
@@ -79,9 +74,7 @@ export const AjaxKit = {
         if (!basePath.startsWith("/")) {
             basePath = "/" + basePath;
         }
-        if (!basePath.startsWith(ApiBase)) {
-            basePath = ApiBase + basePath;
-        }
+
         if (params != null) {
             for (let i = 0; i < params.length; i++) {
                 basePath += `/${params[i]}`;

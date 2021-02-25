@@ -78,6 +78,20 @@ interface RequestConfig extends AxiosRequestConfig {
     time?: number;
 }
 
+export const ApiBase = "/api";
+
+function joinBase(url: string): string {
+    url = url.trim();
+    if (!url.startsWith("/")) {
+        url = "/" + url;
+    }
+    if (!url.startsWith(ApiBase)) {
+        url = ApiBase + url;
+    }
+
+    return url;
+}
+
 export async function request<R = AxiosResponse>(config: RequestConfig): Promise<R> {
     if (config === undefined || config.withAuthInject !== false) {
         await Authkit.checkAuthorizeBeforeRequest();
@@ -143,7 +157,7 @@ function createRequestFunction<T = unknown, R = AxiosResponse<T>>(
         return request({
             ...config,
             method: method as Method,
-            url: url,
+            url: joinBase(url),
         });
     };
 }
@@ -156,7 +170,7 @@ function createDataRequestFunction<T = unknown, R = AxiosResponse<T>>(
         return request({
             ...config,
             method: method as Method,
-            url: url,
+            url: joinBase(url),
             data: data,
         });
     };
