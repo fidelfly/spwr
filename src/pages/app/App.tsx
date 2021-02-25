@@ -13,7 +13,7 @@ import { SideMenu } from "./SideMenu";
 import "./home.less";
 import { Home } from "../views";
 import snowflake from "../../assets/image/snowflake.png";
-import { MenuIcon } from "../../icons";
+import { MenuIcon, Snowflake } from "../../icons";
 import { Profile } from "../views/Profile";
 const { Header, Sider, Footer, Content } = Layout;
 
@@ -58,9 +58,9 @@ export const AppPage: React.FC = (): ReactElement => {
                 width={300}
                 trigger={null}>
                 <div className="app-logo">
-                    <Link to={"/app/home"}>
-                        <img src={snowflake} alt={"logo"} height={30} />
-
+                    <Link to={"/app/home"} className={"home-link"}>
+                        {/*     <img src={snowflake} alt={"logo"} height={30} />*/}
+                        <Snowflake />
                         {!collapsed && (
                             <span className={"app-name"}>
                                 <FormattedMessage {...(collapsed ? appMessages.shortName : appMessages.name)} />

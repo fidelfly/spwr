@@ -7,9 +7,25 @@
 .app-logo {
     line-height: 32px;
     //background: rgba(255, 255, 255, 0.2);
-    margin: 16px;
+    margin: 10px;
     text-align: center;
     font-weight: bold;
+
+    .home-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .anticon {
+            font-size: 3rem;
+        }
+
+        .app-name {
+            flex-shrink: 1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-left: 1rem;
+        }
+    }
 }
 .app-menu {
     .menu-title {
