@@ -7,6 +7,8 @@
     "app.language.en": "English",
     "app.language.zh": "中文",
     "app.loading": "加载中...",
+    "app.edit": "编辑",
+    "app.save": "保存",
 
     "app.logging.out": "你正在离开...",
     "app.logout.return": "返回",

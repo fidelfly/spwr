@@ -7,7 +7,8 @@
     "app.language.en": "English",
     "app.language.zh": "中文",
     "app.loading": "Loading...",
-
+    "app.edit": "Edit",
+    "app.save": "Save",
 
     "app.logging.out": "You are leaving...",
     "app.logout.return": "Return",

@@ -27,16 +27,29 @@ function siderWidth(width = 250, action: ReduxAction<number>): number {
     }
 }
 
-function appLoading(loading = { status: true }, action: ReduxAction<LoadingIndicator>): LoadingIndicator {
+function appLoading(
+    loading: LoadingIndicator = { status: true },
+    action: ReduxAction<LoadingIndicator>
+): LoadingIndicator {
     if (action.type === ActionCode.appLoading) {
+        if (action.payload.tip == null && !action.payload.status) {
+            return { ...action.payload, tip: loading.tip };
+        }
         return action.payload;
     } else {
         return loading;
     }
 }
 
-function viewLoading(loading = { status: false }, action: ReduxAction<LoadingIndicator>): LoadingIndicator {
+function viewLoading(
+    loading: LoadingIndicator = { status: false },
+    action: ReduxAction<LoadingIndicator>
+): LoadingIndicator {
     if (action.type === ActionCode.viewLoading) {
+        if (action.payload.tip == null && !action.payload.status) {
+            return { ...action.payload, tip: loading.tip };
+        }
+
         return action.payload;
     } else {
         return loading;
