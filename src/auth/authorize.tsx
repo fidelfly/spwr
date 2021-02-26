@@ -189,8 +189,13 @@ export async function loginWithPassword(formData: Record<string, unknown>): Prom
 }
 
 export async function logout(): Promise<boolean> {
-    await Ajax.post(WsPath.logout, { token: getAccessToken() }, AjaxCfg.FormRequestConfig);
-    removeToken();
+    try {
+        await Ajax.post(WsPath.logout, { token: getAccessToken() }, AjaxCfg.FormRequestConfig);
+        removeToken();
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
     return true;
 }
 
@@ -213,7 +218,7 @@ export async function checkAuthorizeBeforeRequest(): Promise<void> {
             }
         }
     } else {
-        throw new WsError(ErrCode.Unauthorized, `You should grant authorized first`);
+        throw new WsError(ErrCode.Unauthorized, `You should grant authorized token first`);
     }
 }
 

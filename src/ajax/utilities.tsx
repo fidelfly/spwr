@@ -1,5 +1,8 @@
 import { AxiosRequestConfig } from "axios";
 import qs from "qs";
+import { Ajax, AjaxMessage } from "./axios";
+import { message } from "antd";
+import { FormattedMessage } from "react-intl";
 
 const formRequestConfig: AxiosRequestConfig = {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
