@@ -95,7 +95,7 @@ function joinBase(url: string): string {
     return url;
 }
 
-export async function request<T = any, R = AxiosResponse<T>>(config: RequestConfig): Promise<R> {
+export async function request<T = unknown, R = AxiosResponse<T>>(config: RequestConfig): Promise<R> {
     if (config == null || config.withAuthInject !== false) {
         try {
             await Authkit.checkAuthorizeBeforeRequest();
