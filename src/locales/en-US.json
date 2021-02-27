@@ -22,5 +22,10 @@
     "menu.home": "Home",
     "menu.account": "Account",
     "menu.account.profile": "Profile",
-    "menu.account.password": "Change Password"
+    "menu.account.password": "Change Password",
+
+
+    "example.message.info": "Example: Information message",
+    "example.message.error": "Example: Error message",
+    "example.message.warning": "Example: Warning message"
 }

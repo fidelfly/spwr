@@ -22,5 +22,10 @@
     "menu.home": "首页",
     "menu.account": "账户",
     "menu.account.profile": "用户资料",
-    "menu.account.password": "变更密码"
+    "menu.account.password": "变更密码",
+
+
+    "example.message.info": "示例: 一般消息",
+    "example.message.error": "示例: 错误消息",
+    "example.message.warning": "示例: 警告消息"
 }
