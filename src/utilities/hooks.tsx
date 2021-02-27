@@ -57,12 +57,12 @@ class MessageHandlerImpl implements MessageHandler, NotificationRender, MessageR
         return this.intl.formatMessage(title);
     }
 
-    showMessage(data: unknown, config?: MessageConfig | null, msgContent?: MessageRender): void {
-        handleMessage(data, config, this);
+    showMessage(data: unknown, config?: MessageConfig | null, render: MessageRender = this): void {
+        handleMessage(data, config, render);
     }
 
-    showNotification(data: unknown, config?: NotificationConfig | null, render?: NotificationRender): void {
-        handleWithNotification(data, config, this);
+    showNotification(data: unknown, config?: NotificationConfig | null, render: NotificationRender = this): void {
+        handleWithNotification(data, config, render);
     }
 }
 
