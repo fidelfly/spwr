@@ -2,32 +2,42 @@ import { Ajax, AjaxMessage } from "../ajax";
 import { message } from "antd";
 import { ReactNode } from "react";
 import { useIntl } from "react-intl";
+import { ArgsProps } from "antd/lib/message";
 
+export type MessageConfig = Omit<ArgsProps, "content" | "type">;
 export type MessageRender = (msg: AjaxMessage) => ReactNode | string;
 export const handleMessage = (
     data: unknown,
+    config?: MessageConfig | null,
     msgContent: MessageRender = (msg) => `(${msg.code}) ${msg.message}`
 ): void => {
     if (Ajax.isMessage(data)) {
         const msg = data as AjaxMessage;
+        const msgCfg = {
+            content: msgContent(msg),
+            ...config,
+        };
         switch (msg.type) {
             case "debug":
             case "info":
-                message.info(msgContent(msg), 10);
+                message.info(msgCfg);
                 break;
             case "error":
             case "fatal":
-                message.error(msgContent(msg), 10);
+                message.error(msgCfg);
                 break;
             case "warning":
-                message.warning(msgContent(msg), 10);
+                message.warning(msgCfg);
+                break;
+            case "success":
+                message.success(msgCfg);
                 break;
         }
     }
 };
 
 interface AjaxHandlers {
-    showMessage(data: unknown, msgContent?: MessageRender): void;
+    showMessage(data: unknown, config?: MessageConfig | null, msgContent?: MessageRender): void;
 }
 
 export const useAjaxHandler = (): AjaxHandlers => {
@@ -39,8 +49,12 @@ export const useAjaxHandler = (): AjaxHandlers => {
         });
         // return <FormattedMessage id={msg.code} defaultMessage={`(${msg.code}) ${msg.message}`} />;
     };
-    const showMessage = (data: unknown, msgContent: MessageRender = defaultMsgContent) => {
-        handleMessage(data, msgContent);
+    const showMessage = (
+        data: unknown,
+        config?: MessageConfig | null,
+        msgContent: MessageRender = defaultMsgContent
+    ) => {
+        handleMessage(data, config, msgContent);
     };
     return {
         showMessage,

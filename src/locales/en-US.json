@@ -27,5 +27,6 @@
 
     "example.message.info": "Example: Information message",
     "example.message.error": "Example: Error message",
-    "example.message.warning": "Example: Warning message"
+    "example.message.warning": "Example: Warning message",
+    "example.message.success": "Example: Success message"
 }

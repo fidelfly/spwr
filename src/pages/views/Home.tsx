@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { viewLoading } from "../../actions";
 import { ReactComponent as DateIcon } from "../../assets/svg/date.svg";
 import snowflake from "../../assets/image/snowflake.png";
-import { Button, message } from "antd";
+import { Button, message, Space } from "antd";
 import { AjaxMessage, Ajax, AjaxKit } from "../../ajax";
 import { useAjaxHandler } from "../../utilities";
 import { FormattedMessage } from "react-intl";
@@ -71,13 +71,23 @@ export const Home: React.FC = (): ReactElement => {
                 {"Use png as image:"}
                 <img src={snowflake} alt={"snowflake"} />
             </p>
-            <Button onClick={() => msgExample("info")}>{"General Message"}</Button>
-            <Button onClick={() => msgExample("warning")}>{"Warning Message"}</Button>
-            <Button onClick={() => msgExample("error")}>{"Error Message"}</Button>
-            <br />
-            <Button onClick={() => errorExample()}>{"Ajax Error"}</Button>
-            <br />
-            <Button onClick={() => unauthorizedRequest()}>{"Unauthorized Request"}</Button>
+            <Space direction={"vertical"}>
+                <Space>
+                    <Button type={"primary"} onClick={() => msgExample("info")}>
+                        {"General Message"}
+                    </Button>
+                    <Button onClick={() => msgExample("warning")}>{"Warning Message"}</Button>
+                    <Button danger onClick={() => msgExample("error")}>
+                        {"Error Message"}
+                    </Button>
+                    <Button onClick={() => msgExample("success")}>{"Success Message"}</Button>
+                    <Button type={"primary"} danger onClick={() => errorExample()}>
+                        {"Ajax Error"}
+                    </Button>
+                </Space>
+
+                <Button onClick={() => unauthorizedRequest()}>{"Unauthorized Request"}</Button>
+            </Space>
         </div>
     );
 };

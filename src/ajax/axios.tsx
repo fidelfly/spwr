@@ -3,7 +3,7 @@ import { Authkit, invalidateToken, refreshToken } from "../auth";
 import { WsException } from "../errors";
 import { ErrCode } from "../constants";
 
-export type MessageType = "error" | "info" | "warning" | "debug" | "fatal";
+export type MessageType = "error" | "info" | "warning" | "debug" | "fatal" | "success";
 
 export interface AjaxMessage {
     code: string;
