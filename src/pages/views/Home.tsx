@@ -5,13 +5,13 @@ import { ReactComponent as DateIcon } from "../../assets/svg/date.svg";
 import snowflake from "../../assets/image/snowflake.png";
 import { Button, message, Space } from "antd";
 import { AjaxMessage, Ajax, AjaxKit } from "../../ajax";
-import { useAjaxHandler } from "../../utilities";
+import { useMessage } from "../../utilities";
 import { FormattedMessage } from "react-intl";
 import { appMessages } from "../../constants";
 
 export const Home: React.FC = (): ReactElement => {
     const dispatch = useDispatch();
-    const ajaxHandler = useAjaxHandler();
+    const messageHandler = useMessage();
     useEffect(
         function () {
             dispatch(viewLoading(true, "fidel is testing"));
@@ -37,9 +37,9 @@ export const Home: React.FC = (): ReactElement => {
         try {
             const resp = await Ajax.get<AjaxMessage>(AjaxKit.getPath("/example/message/{type}", { type: type }));
             // handlerMessage(resp.data);
-            ajaxHandler.showMessage(resp.data);
+            messageHandler.showMessage(resp.data);
         } catch (e) {
-            ajaxHandler.showMessage(e.data);
+            messageHandler.showNotification(e.data);
         }
     };
 
@@ -55,7 +55,7 @@ export const Home: React.FC = (): ReactElement => {
         try {
             await Ajax.get("/example/error");
         } catch (e) {
-            ajaxHandler.showMessage(e.data);
+            messageHandler.showNotification(e.data);
             console.log(e);
         }
     };
