@@ -45,19 +45,19 @@ export const appMessages = defineMessages({
         defaultMessage: "Save",
     },
     errorMsg: {
-        id: "message.error",
+        id: "app.message.error",
         defaultMessage: "Error",
     },
     infoMsg: {
-        id: "message.info",
+        id: "app.message.info",
         defaultMessage: "Information",
     },
     debugMsg: {
-        id: "message.debug",
+        id: "app.message.debug",
         defaultMessage: "Debug",
     },
     warningMsg: {
-        id: "message.warning",
+        id: "app.message.warning",
         defaultMessage: "Warning",
     },
 });

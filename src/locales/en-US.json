@@ -9,6 +9,10 @@
     "app.loading": "Loading...",
     "app.edit": "Edit",
     "app.save": "Save",
+    "app.message.info": "Information",
+    "app.message.error": "Error",
+    "app.message.warning": "Warning",
+    "app.message.debug": "Debug",
 
     "app.logging.out": "You are leaving...",
     "app.logout.return": "Return",

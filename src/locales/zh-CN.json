@@ -9,7 +9,10 @@
     "app.loading": "加载中...",
     "app.edit": "编辑",
     "app.save": "保存",
-
+    "app.message.info": "消息",
+    "app.message.error": "错误",
+    "app.message.warning": "警告",
+    "app.message.debug": "测试",
     "app.logging.out": "你正在离开...",
     "app.logout.return": "返回",
 
