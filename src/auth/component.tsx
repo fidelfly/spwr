@@ -90,7 +90,7 @@ interface AuthCompProps {
 
 export const AuthComponent: React.FC<AuthCompProps> = (props): ReactElement => {
     const authorized = useSelector<StoreState, boolean>((state) => state.token.userId > 0);
-    const [verifying, setVerifying] = useState<boolean>(authorized);
+    const [verifying, setVerifying] = useState<boolean>(!authorized);
     const dispatch = useDispatch();
 
     useEffect(() => {
