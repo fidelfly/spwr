@@ -12,12 +12,12 @@ const defaultMessageRender = {
     messageContent: (msg: AjaxMessage) => `(${msg.code}) ${msg.message}`,
 };
 export const handleMessage = (
-    data: unknown,
+    data: AjaxMessage,
     config?: MessageConfig | null,
     render: MessageRender = defaultMessageRender
 ): void => {
     if (Ajax.isMessage(data)) {
-        const msg = data as AjaxMessage;
+        const msg = data;
         const msgCfg = {
             content: render.messageContent(msg),
             ...config,
@@ -56,12 +56,12 @@ const defaultNotificationRender: NotificationRender = {
     },
 };
 export const handleWithNotification = (
-    data: unknown,
+    data: AjaxMessage,
     config?: NotificationConfig | null,
     render: NotificationRender = defaultNotificationRender
 ): void => {
     if (Ajax.isMessage(data)) {
-        const msg = data as AjaxMessage;
+        const msg = data;
         const notiCfg = {
             message: render.notificationTitle(msg),
             description: render.notificationContent(msg),

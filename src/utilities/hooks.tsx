@@ -12,8 +12,8 @@ import { MessageDescriptor } from "@formatjs/intl/src/types";
 import { appMessages } from "../constants";
 
 interface MessageHandler {
-    showMessage(data: unknown, config?: MessageConfig | null, msgContent?: MessageRender): void;
-    showNotification(data: unknown, config?: NotificationConfig | null, render?: NotificationRender): void;
+    showMessage(data: AjaxMessage, config?: MessageConfig | null, msgContent?: MessageRender): void;
+    showNotification(data: AjaxMessage, config?: NotificationConfig | null, render?: NotificationRender): void;
 }
 
 class MessageHandlerImpl implements MessageHandler, NotificationRender, MessageRender {
@@ -23,17 +23,23 @@ class MessageHandlerImpl implements MessageHandler, NotificationRender, MessageR
     }
 
     messageContent(msg: AjaxMessage): React.ReactNode | string {
-        return this.intl.formatMessage({
-            id: msg.code,
-            defaultMessage: `(${msg.code}) ${msg.message}`,
-        });
+        return this.intl.formatMessage(
+            {
+                id: msg.code,
+                defaultMessage: `(${msg.code}) ${msg.message}`,
+            },
+            msg.data
+        );
     }
 
     notificationContent(msg: AjaxMessage): React.ReactNode | string {
-        return this.intl.formatMessage({
-            id: msg.code,
-            defaultMessage: `(${msg.code}) ${msg.message}`,
-        });
+        return this.intl.formatMessage(
+            {
+                id: msg.code,
+                defaultMessage: `(${msg.code}) ${msg.message}`,
+            },
+            msg.data
+        );
     }
 
     notificationTitle(msg: AjaxMessage): React.ReactNode | string {
@@ -54,14 +60,14 @@ class MessageHandlerImpl implements MessageHandler, NotificationRender, MessageR
                 title = appMessages.warningMsg;
                 break;
         }
-        return this.intl.formatMessage(title);
+        return this.intl.formatMessage(title, msg.data);
     }
 
-    showMessage(data: unknown, config?: MessageConfig | null, render: MessageRender = this): void {
+    showMessage(data: AjaxMessage, config?: MessageConfig | null, render: MessageRender = this): void {
         handleMessage(data, config, render);
     }
 
-    showNotification(data: unknown, config?: NotificationConfig | null, render: NotificationRender = this): void {
+    showNotification(data: AjaxMessage, config?: NotificationConfig | null, render: NotificationRender = this): void {
         handleWithNotification(data, config, render);
     }
 }

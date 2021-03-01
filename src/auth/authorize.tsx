@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { CookieKeys, Storage, ErrCode, WsPath } from "../constants";
 import { clearToken } from "../actions";
 import { WsError } from "../errors";
-import { Ajax, AjaxCfg } from "../ajax";
+import { Ajax, AjaxCfg, ApiBase } from "../ajax";
 
 /* eslint-disable, @typescript-eslint/no-explicit-any */
 // const basicAuthKey = process.env.REACT_APP_OAUTH_KEY;
@@ -45,7 +45,9 @@ function setToken(data: TokenData): void {
     Cookies.set(CookieKeys.accessToken, data.access_token, { expires: expireDate });
     Cookies.set(CookieKeys.tokenType, data.token_type, { expires: expireDate });
     if (data.request_id) {
-        Cookies.set(CookieKeys.requestID, data.request_id, { path: "/api/login" });
+        Cookies.set(CookieKeys.requestID, data.request_id, { path: `${ApiBase}/login` });
+    } else {
+        Cookies.remove(CookieKeys.requestID);
     }
 
     if (data.refresh_token) {

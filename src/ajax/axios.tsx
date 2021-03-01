@@ -9,7 +9,7 @@ export interface AjaxMessage {
     code: string;
     message: string;
     type: MessageType;
-    data: unknown;
+    data?: Record<string, string | number | boolean | null | undefined | Date>;
 }
 
 const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse> => {
