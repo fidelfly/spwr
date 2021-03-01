@@ -10,6 +10,7 @@ import {
 } from "./message";
 import { MessageDescriptor } from "@formatjs/intl/src/types";
 import { appMessages } from "../constants";
+import { useMemo } from "react";
 
 interface MessageHandler {
     showMessage(data: AjaxMessage, config?: MessageConfig | null, msgContent?: MessageRender): void;
@@ -74,5 +75,6 @@ class MessageHandlerImpl implements MessageHandler, NotificationRender, MessageR
 
 export const useMessage = (): MessageHandler => {
     const intl = useIntl();
-    return new MessageHandlerImpl(intl);
+    const msgHandler = useMemo(() => new MessageHandlerImpl(intl), [intl]);
+    return msgHandler;
 };

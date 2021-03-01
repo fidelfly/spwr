@@ -214,12 +214,14 @@ export async function checkAuthorizeBeforeRequest(): Promise<void> {
                 await refreshToken();
                 // setToken(token);
             } catch (e) {
+                invalidateToken();
                 // removeToken();
-                window.store.dispatch(clearToken());
+                // window.store.dispatch(clearToken());
                 throw e;
             }
         }
     } else {
+        invalidateToken();
         throw new WsError(ErrCode.Unauthorized, `You should grant authorized token first`);
     }
 }
