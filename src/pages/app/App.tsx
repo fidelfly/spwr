@@ -12,7 +12,7 @@ import { Header as AppHeader } from "./AppHeader";
 import { SideMenu } from "./SideMenu";
 import "./home.less";
 import { Home } from "../views";
-import snowflake from "../../assets/image/snowflake.png";
+// import snowflake from "../../assets/image/snowflake.png";
 import { MenuIcon, Snowflake } from "../../icons";
 import { Profile } from "../views/Profile";
 const { Header, Sider, Footer, Content } = Layout;
