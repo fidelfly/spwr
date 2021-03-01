@@ -109,9 +109,12 @@ export const AuthComponent: React.FC<AuthCompProps> = (props): ReactElement => {
 
         if (auth.isAuthorized() && (!auth.isTokenValid() || !authorized)) {
             setVerifying(true);
-            refreshTokenStatus().finally(() => {
-                setVerifying(false);
+            refreshTokenStatus().then(() => {
+                //do nothing
             });
+            /*         .finally(() => {
+                setVerifying(false);
+            });*/
         } else {
             setVerifying(false);
         }
