@@ -51,7 +51,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         <PageForm className={"reg-email"} title={"Register by email"} description={""}>
             <Form form={form} className={"form-block form-without-warning"} layout={"vertical"} style={{ width: 500 }}>
                 <Form.Item
-                    label={<FormattedMessage {...appMessages.name} />}
+                    label={<FormattedMessage {...appMessages.userName} />}
                     name={"name"}
                     rules={[{ required: true }]}>
                     <Input />

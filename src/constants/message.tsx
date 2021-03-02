@@ -24,6 +24,10 @@ export const appMessages = defineMessages({
         id: "app.register",
         defaultMessage: "Register",
     },
+    userName: {
+        id: "app.user.name",
+        defaultMessage: "Name",
+    },
     email: {
         id: "app.email",
         defaultMessage: "Email",
