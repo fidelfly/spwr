@@ -1,3 +1,3 @@
-export { default as LangBtn } from "./LangBtn";
+export * from "./LangBtn";
 
 export { PathBreadcrumb } from "./PathBreadcrumb";

@@ -3,6 +3,7 @@
     "app.name.short": "SPWR",
     "app.copyright": "SPWR © fidelfly 2019",
     "app.login": "Login",
+    "app.register": "Registration",
     "app.logout": "Logout",
     "app.language.en": "English",
     "app.language.zh": "中文",
@@ -19,8 +20,8 @@
 
     "login.user": "Username",
     "login.user.warning": "Please input username",
-    "login.pwd": "Password",
-    "login.pwd.warning": "Please input password!",
+    "app.password": "Password",
+    "app.password.warning": "Please input password!",
     "login.loginBtn": "Login",
 
     "menu.home": "Home",

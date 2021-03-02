@@ -20,6 +20,14 @@ export const appMessages = defineMessages({
         id: "app.login",
         defaultMessage: "Login",
     },
+    register: {
+        id: "app.register",
+        defaultMessage: "Register",
+    },
+    password: {
+        id: "app.password",
+        defaultMessage: "Password",
+    },
     logout: {
         id: "app.logout",
         defaultMessage: "Logout",

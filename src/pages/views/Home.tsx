@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { viewLoading } from "../../actions";
 import { ReactComponent as DateIcon } from "../../assets/svg/date.svg";
 import snowflake from "../../assets/image/snowflake.png";
-import { Button, message, Space } from "antd";
+import { Button, Space } from "antd";
 import { AjaxMessage, Ajax, AjaxKit } from "../../ajax";
 import { useMessage } from "../../utilities";
 import { FormattedMessage } from "react-intl";
@@ -76,11 +76,15 @@ export const Home: React.FC = (): ReactElement => {
                     <Button type={"primary"} onClick={() => msgExample("info")}>
                         {"General Message"}
                     </Button>
-                    <Button onClick={() => msgExample("warning")}>{"Warning Message"}</Button>
-                    <Button danger onClick={() => msgExample("error")}>
+                    <Button className={"button-warning"} onClick={() => msgExample("warning")}>
+                        {"Warning Message"}
+                    </Button>
+                    <Button className={"button-error"} onClick={() => msgExample("error")}>
                         {"Error Message"}
                     </Button>
-                    <Button onClick={() => msgExample("success")}>{"Success Message"}</Button>
+                    <Button className={"button-success"} onClick={() => msgExample("success")}>
+                        {"Success Message"}
+                    </Button>
                     <Button type={"primary"} danger onClick={() => errorExample()}>
                         {"Ajax Error"}
                     </Button>
