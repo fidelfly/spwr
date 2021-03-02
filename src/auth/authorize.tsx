@@ -82,9 +82,10 @@ function removeToken(): void {
     localStorage.removeItem(Storage.RefreshToken);
     localStorage.removeItem(Storage.TokenExpired);
     localStorage.removeItem(Storage.UserID);
-    /*    if (error) {
-        return Promise.reject(error);
-    }*/
+
+    if (autoRefresh !== undefined) {
+        clearTimeout(autoRefresh);
+    }
 }
 
 export function isAuthorized(): boolean {
