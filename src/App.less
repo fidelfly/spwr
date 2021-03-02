@@ -1,14 +1,9 @@
+@import "vars";
+
 #root {
   height: 100%;
 }
 
-/*.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-}*/
 
 .app-loading {
   height: 100%;
@@ -20,21 +15,6 @@
 .view-loading {
   height: 100%
 }
-
-/*.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #09d3ac;
-}*/
 
 .form-without-warning {
   .ant-form-item {
@@ -49,4 +29,28 @@
       word-break: break-word;
     }
   }
+}
+
+button.button-black {
+  .button-variant-primary(white, @app-black)
+}
+
+button.button-gray {
+  .button-variant-primary(white, @app-gray)
+}
+
+button.button-cyan {
+  .button-variant-primary(white, @app-cyan)
+}
+
+button.button-purple {
+  .button-variant-primary(white, @app-purple)
+}
+
+button.button-warning {
+  .button-variant-primary(white, @app-warning)
+}
+
+button.button-success {
+  .button-variant-primary(white, @app-success)
 }
