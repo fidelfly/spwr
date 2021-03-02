@@ -27,6 +27,10 @@ const myMessage = defineMessages({
         id: "login.password.warning",
         defaultMessage: "Please input password!",
     },
+    loginError: {
+        id: "login.invalid.user",
+        defaultMessage: "Invalid user or password.",
+    },
 });
 
 export const Login: React.FC = (): ReactElement => {
@@ -108,8 +112,8 @@ export const Login: React.FC = (): ReactElement => {
                             </Link>
                         </Col>
                     </Row>
-                    {error && <Alert message={`${error}`} className="login-error" type="error" />}
                 </Form>
+                {error && <Alert message={<FormattedMessage {...myMessage.loginError} />} type="error" />}
             </PageForm>
         </PageLayout>
     );
