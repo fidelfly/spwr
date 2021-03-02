@@ -60,7 +60,7 @@ export const Login: React.FC = (): ReactElement => {
     return (
         <PageLayout>
             <PageForm className={"login-content"} title={<FormattedMessage {...appMessages.login} />} description={""}>
-                <Form form={form} onFinish={handleSubmit} onFinishFailed={onFinishFailed}>
+                <Form form={form} className={"form-block"} onFinish={handleSubmit} onFinishFailed={onFinishFailed}>
                     <Form.Item
                         name={"username"}
                         rules={[{ required: true, message: intl.formatMessage(myMessage.userWarning) }]}>
@@ -90,26 +90,26 @@ export const Login: React.FC = (): ReactElement => {
                             <FormattedMessage {...appMessages.register} />
                         </Button>
                     </Link>
+                    <Row className={"oauth-provider"}>
+                        <Col span={8}>
+                            <Link to={"/login"}>
+                                <AppleOutlined />
+                            </Link>
+                        </Col>
+
+                        <Col span={8}>
+                            <Link to={"/login"}>
+                                <WechatOutlined />
+                            </Link>
+                        </Col>
+                        <Col span={8}>
+                            <Link to={"/login"}>
+                                <AlipayCircleOutlined />
+                            </Link>
+                        </Col>
+                    </Row>
                     {error && <Alert message={`${error}`} className="login-error" type="error" />}
                 </Form>
-                <Row className={"oauth-provider"}>
-                    <Col span={8}>
-                        <Link to={"/login"}>
-                            <AppleOutlined />
-                        </Link>
-                    </Col>
-
-                    <Col span={8}>
-                        <Link to={"/login"}>
-                            <WechatOutlined />
-                        </Link>
-                    </Col>
-                    <Col span={8}>
-                        <Link to={"/login"}>
-                            <AlipayCircleOutlined />
-                        </Link>
-                    </Col>
-                </Row>
             </PageForm>
         </PageLayout>
     );

@@ -9,7 +9,7 @@ import "./App.less";
 import { LocaleObject } from "./type/locale";
 import moment from "moment";
 import { LoadingIndicator, StoreState } from "./type";
-import { LoginPage, LogoutPage, AppPage } from "./pages";
+import { LoginPage, LogoutPage, AppPage, Registration } from "./pages";
 import { appLoading } from "./actions";
 
 const App: React.FC = () => {
@@ -76,6 +76,7 @@ const AppRouter: React.FC = () => {
         <Switch>
             <Redirect from="/" exact to="/login" />
             <Route path="/app" component={AppPage} />
+            <Route path="/reg" component={Registration} />
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/logout" component={LogoutPage} />
         </Switch>

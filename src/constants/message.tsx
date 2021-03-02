@@ -24,9 +24,21 @@ export const appMessages = defineMessages({
         id: "app.register",
         defaultMessage: "Register",
     },
+    email: {
+        id: "app.email",
+        defaultMessage: "Email",
+    },
     password: {
         id: "app.password",
         defaultMessage: "Password",
+    },
+    avatar: {
+        id: "app.user.avatar",
+        defaultMessage: "Avatar",
+    },
+    timeZone: {
+        id: "app.timeZone",
+        defaultMessage: "Time Zone",
     },
     logout: {
         id: "app.logout",
@@ -67,5 +79,13 @@ export const appMessages = defineMessages({
     warningMsg: {
         id: "app.message.warning",
         defaultMessage: "Warning",
+    },
+    confirm: {
+        id: "app.confirm",
+        defaultMessage: "Confirm",
+    },
+    back: {
+        id: "app.back",
+        defaultMessage: "Back",
     },
 });

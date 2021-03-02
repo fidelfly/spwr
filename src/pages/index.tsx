@@ -5,6 +5,7 @@ import { useLocation, Redirect } from "react-router-dom";
 
 export * from "./Login";
 export * from "./Logout";
+export * from "./Registration";
 
 const App = lazy(() => import("./app"));
 
