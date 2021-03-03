@@ -16,9 +16,13 @@ export const Header: React.FC = (): ReactElement => {
             <Divider type={"vertical"} />
             <Link to={"/app/account/profile"}>
                 {user.avatar > 0 ? (
-                    <Avatar className={"avatar"} src={AjaxKit.joinPath(WsPath.file, user.avatar)} />
+                    <Avatar
+                        className={"avatar"}
+                        size={40}
+                        src={AjaxKit.getPath(WsPath.avatar.get, { id: user.avatar }, true)}
+                    />
                 ) : (
-                    <Avatar className={"avatar"} icon={<UserOutlined />} />
+                    <Avatar size={40} className={"avatar"} icon={<UserOutlined />} />
                 )}
                 <span className={"avatar-name"}>{user.name}</span>
             </Link>

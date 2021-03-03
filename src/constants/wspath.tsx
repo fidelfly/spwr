@@ -4,4 +4,8 @@ export const WsPath = {
     logout: "/logout",
     user: "/user/{id}",
     file: "/file",
+    avatar: {
+        upload: "/avatar",
+        get: "/avatar/{id}",
+    },
 };

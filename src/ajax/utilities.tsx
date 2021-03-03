@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import qs from "qs";
+import { joinBase } from "./axios";
 
 const formRequestConfig: AxiosRequestConfig = {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,10 +52,14 @@ export const AjaxKit = {
         return path;
     },
 
-    getPath: (basePath: string, params: Record<string, unknown> | unknown[] | null): string => {
+    getPath: (basePath: string, params?: Record<string, unknown> | unknown[] | null, checkBase = false): string => {
         basePath = basePath.trim();
         if (!basePath.startsWith("/")) {
             basePath = "/" + basePath;
+        }
+
+        if (checkBase) {
+            basePath = joinBase(basePath);
         }
 
         const vars = resolvePathVar(basePath, params);

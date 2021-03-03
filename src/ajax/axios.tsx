@@ -83,7 +83,7 @@ interface RequestConfig extends AxiosRequestConfig {
 
 export const ApiBase = process.env.API_BASE || "/api";
 
-function joinBase(url: string): string {
+export function joinBase(url: string): string {
     url = url.trim();
     if (!url.startsWith("/")) {
         url = "/" + url;

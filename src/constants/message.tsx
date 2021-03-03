@@ -88,6 +88,10 @@ export const appMessages = defineMessages({
         id: "app.confirm",
         defaultMessage: "Confirm",
     },
+    cancel: {
+        id: "app.cancel",
+        defaultMessage: "Cancel",
+    },
     back: {
         id: "app.back",
         defaultMessage: "Back",
