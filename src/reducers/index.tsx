@@ -36,13 +36,16 @@ function verifyToken(verify = false, action: ReduxAction<Token>): boolean {
     }
 }
 
-function user(user: User = { id: 0, code: "", name: "", email: "", avatar: 0 }, action: ReduxAction<User>): User {
+function user(
+    user: User = { id: 0, code: "", time_zone: "", name: "", email: "", avatar: 0 },
+    action: ReduxAction<User>
+): User {
     switch (action.type) {
         case ActionCode.updateUser:
             return action.payload;
         case ActionCode.logout:
         case ActionCode.clearToken:
-            return { id: 0, code: "", name: "", email: "", avatar: 0 };
+            return { id: 0, code: "", time_zone: "", name: "", email: "", avatar: 0 };
         default:
             return user;
     }

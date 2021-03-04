@@ -1,5 +1,5 @@
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
-import { Input, Row, Col, Form, Upload, Select, Checkbox, Button } from "antd";
+import React, { ReactElement, MouseEvent, useEffect, useMemo, useState } from "react";
+import { Input, Row, Col, Image, Form, Upload, Select, Checkbox, Button } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 import { appMessages, WsPath } from "../../constants";
 import { RcFile } from "antd/lib/upload/interface";
@@ -26,26 +26,26 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         });
     }, []);
 
-    const [logoFile, setLogo] = useState<RcFile | null>(null);
-
+    const [avatarFile, setAvatar] = useState<RcFile | null>(null);
     const [previewUrl, setPreview] = useState<string | null>(null);
+    const [avatarID, setAvatarID] = useState<number>(0);
 
     useEffect(() => {
-        if (logoFile != null) {
+        if (avatarFile != null) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreview(reader.result as string);
             };
-            reader.readAsDataURL(logoFile);
+            reader.readAsDataURL(avatarFile);
         } else {
-            setPreview((url) => {
-                if (url != null && url.startsWith("data:image")) {
-                    return null;
+            setPreview(() => {
+                if (avatarID > 0) {
+                    return AjaxKit.getPath(WsPath.avatar.get, { id: avatarID }, true);
                 }
-                return url;
+                return null;
             });
         }
-    }, [logoFile]);
+    }, [avatarFile, avatarID]);
 
     function beforeUpload(file: RcFile) {
         const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
@@ -65,21 +65,27 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
             });
         }
         if (isJpgOrPng && isLt2M) {
-            setLogo(file);
+            setAvatar(file);
         }
         return false;
     }
 
+    function removeAvatar(e: MouseEvent): void {
+        setAvatarID(0);
+        setAvatar(null);
+        e.stopPropagation();
+    }
+
     async function uploadAvatar(): Promise<number> {
-        if (logoFile == null) {
+        if (avatarFile == null) {
             return 0;
         }
         const formData = new FormData();
-        formData.append("file", logoFile as RcFile);
+        formData.append("file", avatarFile as RcFile);
         try {
             const resp = await axios.post<{ id: number }>(AjaxKit.getPath(WsPath.avatar.upload, null, true), formData);
-            setLogo(null);
-            setPreview(AjaxKit.getPath(WsPath.avatar.get, { id: resp.data.id }, true));
+            setAvatar(null);
+            setAvatarID(resp.data.id);
             return resp.data.id;
         } catch (e) {
             msgHandler.showNotification({
@@ -97,7 +103,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
     }
 
     async function handleSubmit(values: Record<string, unknown>): Promise<boolean> {
-        if (logoFile != null) {
+        if (avatarFile != null) {
             const avatar = await uploadAvatar();
             if (avatar === 0) {
                 return false;
@@ -162,14 +168,22 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
                             listType="picture-card"
                             className="avatar-uploader"
                             showUploadList={false}
+                            fileList={avatarFile != null ? [avatarFile] : []}
                             beforeUpload={beforeUpload}>
                             {previewUrl == null ? (
                                 <div>
                                     <PlusOutlined />
-                                    <div style={{ marginTop: 8 }}>Upload</div>
+                                    <div style={{ marginTop: 8 }}>
+                                        <FormattedMessage {...appMessages.upload} />
+                                    </div>
                                 </div>
                             ) : (
-                                <img alt="avatar" src={previewUrl} width={100} height={100} />
+                                <div className={"avatar-uploader"}>
+                                    <Image alt="avatar" src={previewUrl} width={100} height={100} preview={false} />
+                                    <Button type={"default"} onClick={removeAvatar}>
+                                        <FormattedMessage {...appMessages.remove} />
+                                    </Button>
+                                </div>
                             )}
                         </Upload>
                     </ImgCrop>

@@ -96,4 +96,12 @@ export const appMessages = defineMessages({
         id: "app.back",
         defaultMessage: "Back",
     },
+    upload: {
+        id: "app.upload",
+        defaultMessage: "Upload",
+    },
+    remove: {
+        id: "app.remove",
+        defaultMessage: "Remove",
+    },
 });

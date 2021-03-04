@@ -15,7 +15,7 @@ export const Header: React.FC = (): ReactElement => {
             <LangBtn />
             <Divider type={"vertical"} />
             <Link to={"/app/account/profile"}>
-                {user.avatar > 0 ? (
+                {user.avatar != null && user.avatar > 0 ? (
                     <Avatar
                         className={"avatar"}
                         size={40}

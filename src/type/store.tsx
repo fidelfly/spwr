@@ -21,7 +21,8 @@ export interface User {
     code: string;
     name: string;
     email: string;
-    avatar: number;
+    avatar?: number;
+    time_zone: string;
 }
 
 export interface StoreState {
