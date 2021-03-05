@@ -203,11 +203,11 @@ export async function logout(): Promise<boolean> {
 }
 
 export const Authkit = {
-    checkAuthorizeBeforeRequest: (): Promise<void> => checkAuthorizeBeforeRequest(),
-    getAuthorizeToken: (): string => getAuthorizeToken(),
+    checkAuthorizeBeforeRequest: checkAuthorizeBeforeRequest,
+    getAuthorizeToken: getAuthorizeToken,
 };
 
-export async function checkAuthorizeBeforeRequest(): Promise<void> {
+export async function checkAuthorizeBeforeRequest(assert = true): Promise<void> {
     if (isAuthorized()) {
         // if (!isTokenValid()) {
         if (isTokenExpiring()) {
@@ -221,7 +221,10 @@ export async function checkAuthorizeBeforeRequest(): Promise<void> {
                 throw e;
             }
         }
-    } else {
+        return;
+    }
+
+    if (assert) {
         invalidateToken();
         throw new WsError(ErrCode.Unauthorized, `You should grant authorized token first`);
     }

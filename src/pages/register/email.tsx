@@ -3,7 +3,7 @@ import { Input, Row, Col, Image, Form, Upload, Select, Checkbox, Button } from "
 import { FormattedMessage, useIntl } from "react-intl";
 import { appMessages, WsPath } from "../../constants";
 import { RcFile } from "antd/lib/upload/interface";
-import { useMessage, TZData, Timezone } from "../../utilities";
+import { useMessage, TZData, Timezone, useValidateRules } from "../../utilities";
 import { PlusOutlined } from "@ant-design/icons";
 import { BackButton, PwdHint, SubscribeADHint, TermHint } from "../../components";
 import { PageForm } from "../template/PageLayout";
@@ -16,6 +16,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
     const [form] = Form.useForm();
     const intl = useIntl();
     const msgHandler = useMessage();
+    const validateRules = useValidateRules();
 
     const timezoneOptions = useMemo(() => {
         return TZData.map((zone: Timezone) => {
@@ -143,17 +144,19 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
                 style={{ width: 500 }}
                 onFinish={handleSubmit}
                 onFinishFailed={onFinishFailed}>
-                <Form.Item
-                    label={<FormattedMessage {...appMessages.userName} />}
-                    name={"name"}
-                    rules={[{ required: true }]}>
+                <Form.Item label={intl.formatMessage(appMessages.userName)} name={"name"} rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    label={<FormattedMessage {...appMessages.email} />}
+                    label={intl.formatMessage(appMessages.email)}
                     name={"email"}
-                    rules={[{ required: true }]}>
+                    validateTrigger={["onChange", "onBlur"]}
+                    rules={[
+                        { required: true },
+                        { type: "email" },
+                        validateRules.unique("usermail", "validate.unique.usermail", { validateTrigger: "onBlur" }),
+                    ]}>
                     <Input />
                 </Form.Item>
                 <Form.Item label={<FormattedMessage {...appMessages.avatar} />}>
@@ -195,7 +198,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
                     <Select options={timezoneOptions} />
                 </Form.Item>
                 <Form.Item
-                    label={<FormattedMessage {...appMessages.password} />}
+                    label={intl.formatMessage(appMessages.password)}
                     name={"password"}
                     rules={[{ required: true }]}>
                     <Input type="password" />

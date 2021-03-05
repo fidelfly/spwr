@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { IntlProvider, useIntl } from "react-intl";
 import store from "./state";
@@ -11,6 +11,7 @@ import moment from "moment";
 import { LoadingIndicator, StoreState } from "./type";
 import { LoginPage, LogoutPage, AppPage, Registration } from "./pages";
 import { appLoading } from "./actions";
+import { createIntlKit, IntlKit, IntlKitContext } from "./utilities";
 
 const App: React.FC = () => {
     return (
@@ -70,16 +71,20 @@ const AppRouter: React.FC = () => {
     const intl = useIntl();
     useEffect(() => {
         document.title = intl.formatMessage(appMessages.name);
-    });
+    }, [intl]);
+
+    const intlKit = useMemo<IntlKit>(() => createIntlKit(intl), [intl]);
 
     return (
-        <Switch>
-            <Redirect from="/" exact to="/login" />
-            <Route path="/app" component={AppPage} />
-            <Route path="/reg" component={Registration} />
-            <Route exact path="/login" component={LoginPage} />
-            <Route exact path="/logout" component={LogoutPage} />
-        </Switch>
+        <IntlKitContext.Provider value={intlKit}>
+            <Switch>
+                <Redirect from="/" exact to="/login" />
+                <Route path="/app" component={AppPage} />
+                <Route path="/reg" component={Registration} />
+                <Route exact path="/login" component={LoginPage} />
+                <Route exact path="/logout" component={LogoutPage} />
+            </Switch>
+        </IntlKitContext.Provider>
     );
 };
 

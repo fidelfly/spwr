@@ -8,4 +8,6 @@ export const WsPath = {
         upload: "/avatar",
         get: "/avatar/{id}",
     },
+
+    queryExist: "/universal/exist/{type}",
 };

@@ -1,80 +1,37 @@
-import { IntlShape, useIntl } from "react-intl";
-import { AjaxMessage } from "../ajax";
-import {
-    handleMessage,
-    MessageConfig,
-    MessageRender,
-    handleWithNotification,
-    NotificationConfig,
-    NotificationRender,
-} from "./message";
+import { useIntl } from "react-intl";
 import { MessageDescriptor } from "@formatjs/intl/src/types";
-import { appMessages } from "../constants";
-import { useMemo } from "react";
+import { IntlKit, IntlKitContext, MessageHandler, ValidateRules } from "./IntlKit";
+import { useContext } from "react";
 
-interface MessageHandler {
-    showMessage(data: AjaxMessage, config?: MessageConfig | null, msgContent?: MessageRender): void;
-    showNotification(data: AjaxMessage, config?: NotificationConfig | null, render?: NotificationRender): void;
-}
-
-class MessageHandlerImpl implements MessageHandler, NotificationRender, MessageRender {
-    intl: IntlShape;
-    constructor(intl: IntlShape) {
-        this.intl = intl;
-    }
-
-    messageContent(msg: AjaxMessage): React.ReactNode | string {
-        return this.intl.formatMessage(
-            {
-                id: msg.code,
-                defaultMessage: `(${msg.code}) ${msg.message}`,
-            },
-            msg.data
-        );
-    }
-
-    notificationContent(msg: AjaxMessage): React.ReactNode | string {
-        return this.intl.formatMessage(
-            {
-                id: msg.code,
-                defaultMessage: `(${msg.code}) ${msg.message}`,
-            },
-            msg.data
-        );
-    }
-
-    notificationTitle(msg: AjaxMessage): React.ReactNode | string {
-        let title: MessageDescriptor = appMessages.infoMsg;
-        switch (msg.type) {
-            case "debug":
-                title = appMessages.debugMsg;
-                break;
-            case "info":
-            case "success":
-                title = appMessages.infoMsg;
-                break;
-            case "error":
-            case "fatal":
-                title = appMessages.errorMsg;
-                break;
-            case "warning":
-                title = appMessages.warningMsg;
-                break;
-        }
-        return this.intl.formatMessage(title, msg.data);
-    }
-
-    showMessage(data: AjaxMessage, config?: MessageConfig | null, render: MessageRender = this): void {
-        handleMessage(data, config, render);
-    }
-
-    showNotification(data: AjaxMessage, config?: NotificationConfig | null, render: NotificationRender = this): void {
-        handleWithNotification(data, config, render);
-    }
+export function useIntlKit(): IntlKit {
+    const intlKit = useContext<IntlKit>(IntlKitContext);
+    return intlKit;
 }
 
 export const useMessage = (): MessageHandler => {
+    const intlKit = useIntlKit();
+    return intlKit.messageHandler;
+};
+
+export const useValidateRules = (): ValidateRules => {
+    const intlKit = useIntlKit();
+    return intlKit.validateRules;
+};
+
+export const useMessageVars = (vars: Record<string, string | MessageDescriptor>): Record<string, string> => {
     const intl = useIntl();
-    const msgHandler = useMemo(() => new MessageHandlerImpl(intl), [intl]);
-    return msgHandler;
+    const newVars: Record<string, string> = {};
+    for (const k in vars) {
+        const v = vars[k];
+        if (typeof v === "string") {
+            newVars[k] = v;
+        } else {
+            const md = v as MessageDescriptor;
+            if (md.id) {
+                newVars[k] = intl.formatMessage(md);
+            }
+        }
+    }
+
+    return newVars;
 };

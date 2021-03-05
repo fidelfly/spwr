@@ -32,5 +32,7 @@
     "example.message.info": "示例: 一般消息",
     "example.message.error": "示例: 错误消息",
     "example.message.warning": "示例: 警告消息",
-    "example.message.success": "示例: 成功消息"
+    "example.message.success": "示例: 成功消息",
+
+    "validate.unique.usermail": "This email has been registered!"
 }
