@@ -14,14 +14,22 @@
     "app.message.error": "Error",
     "app.message.warning": "Warning",
     "app.message.debug": "Debug",
-
+    "app.project.url": "Project repository",
     "app.logging.out": "You are leaving...",
     "app.logout.return": "Return",
+    "app.user.name": "Name",
+    "app.email": "Email",
+    "app.confirm": "Confirm",
+    "app.cancel": "Cancel",
+    "app.user.avatar": "Avatar",
+    "app.upload": "Upload",
+    "app.remove": "Remove",
+    "app.timeZone": "Time Zone",
+    "app.back": "Back",
+    "app.password": "Password",
+    "app.back.login": "Back to login",
 
     "login.user": "Username",
-    "login.user.warning": "Please input username",
-    "app.password": "Password",
-    "app.password.warning": "Please input password!",
     "login.loginBtn": "Login",
 
     "menu.home": "Home",
@@ -36,5 +44,23 @@
     "example.message.success": "Example: Success message",
 
 
-    "validate.unique.usermail": "This email has been registered!"
+    "fragment.ad.subscribe": "I want to receive news, feature, update, discounts and offers from SPWR",
+    "fragment.term.1": "I acknowledge that I agree to the ",
+    "fragment.term.2": "Terms of Use",
+    "fragment.term.3": " and have read the ",
+    "fragment.term.4": "Privacy Policy",
+    "fragment.pwd.hint.0": "Password should include:",
+    "fragment.pwd.hint.1": "at least 8 characters",
+    "fragment.pwd.hint.2": "at least 1 alphabet",
+    "fragment.pwd.hint.3": "at least 1 number",
+
+    "validate.unique.usermail": "This email has been registered!",
+
+    "reg.byAppleID": "Register by Apple ID",
+    "reg.byWechat": "Register by Wechat",
+    "reg.byMobile": "Register by Mobile Phone",
+    "reg.byEmail": "Register by Email",
+    "reg.email.done": "Registration done!",
+    "reg.email.reset": "Already have an account?",
+    "reg.term.must": "You must agree to terms of use and privacy policy"
 }

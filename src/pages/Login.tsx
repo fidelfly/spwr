@@ -19,14 +19,6 @@ const myMessage = defineMessages({
         id: "login.user",
         defaultMessage: "User Name",
     },
-    userWarning: {
-        id: "login.user.warning",
-        defaultMessage: "Please input User Name",
-    },
-    pwdWarning: {
-        id: "login.password.warning",
-        defaultMessage: "Please input password!",
-    },
     loginError: {
         id: "login.invalid.user",
         defaultMessage: "Invalid user or password.",
@@ -67,7 +59,8 @@ export const Login: React.FC = (): ReactElement => {
                 <Form form={form} className={"form-block"} onFinish={handleSubmit} onFinishFailed={onFinishFailed}>
                     <Form.Item
                         name={"username"}
-                        rules={[{ required: true, message: intl.formatMessage(myMessage.userWarning) }]}>
+                        messageVariables={{ label: intl.formatMessage(myMessage.user) }}
+                        rules={[{ required: true }]}>
                         <Input
                             prefix={<UserOutlined style={{ fontSize: 13 }} />}
                             placeholder={intl.formatMessage(myMessage.user)}
@@ -76,7 +69,8 @@ export const Login: React.FC = (): ReactElement => {
                     </Form.Item>
                     <Form.Item
                         name={"password"}
-                        rules={[{ required: true, message: intl.formatMessage(myMessage.pwdWarning) }]}>
+                        messageVariables={{ label: intl.formatMessage(appMessages.password) }}
+                        rules={[{ required: true }]}>
                         <Input
                             prefix={<LockOutlined style={{ fontSize: 13 }} />}
                             type="password"

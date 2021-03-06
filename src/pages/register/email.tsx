@@ -7,6 +7,7 @@ import { useMessage, TZData, Timezone, useValidateRules } from "../../utilities"
 import { PlusOutlined } from "@ant-design/icons";
 import { BackButton, PwdHint, SubscribeADHint, TermHint } from "../../components";
 import { PageForm } from "../template/PageLayout";
+import { Link } from "react-router-dom";
 import ImgCrop from "antd-img-crop";
 import axios from "axios";
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
@@ -30,6 +31,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
     const [avatarFile, setAvatar] = useState<RcFile | null>(null);
     const [previewUrl, setPreview] = useState<string | null>(null);
     const [avatarID, setAvatarID] = useState<number>(0);
+    const [done, setDone] = useState<boolean>(false);
 
     useEffect(() => {
         if (avatarFile != null) {
@@ -99,6 +101,14 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         return 0;
     }
 
+    function resetForm(): void {
+        form.resetFields();
+        setAvatar(null);
+        setAvatarID(0);
+        setPreview(null);
+        setDone(false);
+    }
+
     function onFinishFailed({ errorFields }: ValidateErrorEntity): void {
         form.scrollToField(errorFields[0].name);
     }
@@ -123,6 +133,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
                 message: "Register success",
                 type: "success",
             });
+            setDone(true);
         } catch (e) {
             msgHandler.showMessage({
                 code: "register.failed",
@@ -137,96 +148,123 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
 
     return (
         <PageForm className={"reg-email"} title={"Register by email"} description={""}>
-            <Form
-                form={form}
-                className={"form-block form-without-warning"}
-                layout={"vertical"}
-                style={{ width: 500 }}
-                onFinish={handleSubmit}
-                onFinishFailed={onFinishFailed}>
-                <Form.Item label={intl.formatMessage(appMessages.userName)} name={"name"} rules={[{ required: true }]}>
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    label={intl.formatMessage(appMessages.email)}
-                    name={"email"}
-                    validateTrigger={["onChange", "onBlur"]}
-                    rules={[
-                        { required: true },
-                        { type: "email" },
-                        validateRules.unique("usermail", "validate.unique.usermail", { validateTrigger: "onBlur" }),
-                    ]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item label={<FormattedMessage {...appMessages.avatar} />}>
-                    <ImgCrop
-                        grid
-                        rotate
-                        modalTitle={intl.formatMessage(appMessages.edit)}
-                        modalOk={intl.formatMessage(appMessages.confirm)}
-                        modalCancel={intl.formatMessage(appMessages.cancel)}>
-                        <Upload
-                            name="avatar"
-                            listType="picture-card"
-                            className="avatar-uploader"
-                            showUploadList={false}
-                            fileList={avatarFile != null ? [avatarFile] : []}
-                            beforeUpload={beforeUpload}>
-                            {previewUrl == null ? (
-                                <div>
-                                    <PlusOutlined />
-                                    <div style={{ marginTop: 8 }}>
-                                        <FormattedMessage {...appMessages.upload} />
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className={"avatar-uploader"}>
-                                    <Image alt="avatar" src={previewUrl} width={100} height={100} preview={false} />
-                                    <Button type={"default"} onClick={removeAvatar}>
-                                        <FormattedMessage {...appMessages.remove} />
-                                    </Button>
-                                </div>
-                            )}
-                        </Upload>
-                    </ImgCrop>
-                </Form.Item>
-                <Form.Item
-                    label={<FormattedMessage {...appMessages.timeZone} />}
-                    name={"timezone"}
-                    initialValue={"Asia/Hong_Kong"}>
-                    <Select options={timezoneOptions} />
-                </Form.Item>
-                <Form.Item
-                    label={intl.formatMessage(appMessages.password)}
-                    name={"password"}
-                    rules={[{ required: true }]}>
-                    <Input type="password" />
-                </Form.Item>
-                <PwdHint />
-                <Form.Item name={"subscribe"} initialValue={true} valuePropName={"checked"}>
-                    <Checkbox>
-                        <SubscribeADHint />
-                    </Checkbox>
-                </Form.Item>
-                <Form.Item name={"term"} initialValue={true} valuePropName={"checked"}>
-                    <Checkbox>
-                        <TermHint />
-                    </Checkbox>
-                </Form.Item>
-                <Row gutter={20}>
-                    <Col offset={14} span={5}>
-                        <BackButton block>
-                            <FormattedMessage {...appMessages.back} />
-                        </BackButton>
-                    </Col>
-                    <Col span={5}>
-                        <Button block type="primary" htmlType="submit">
-                            <FormattedMessage {...appMessages.confirm} />
+            {done ? (
+                <div style={{ width: 500 }}>
+                    <p>
+                        <FormattedMessage id={"reg.email.done"} defaultMessage={"Registration Done!"} />
+                    </p>
+                    <p>
+                        <Link to={"/login"}>
+                            <FormattedMessage id={"app.back.login"} defaultMessage={"Back to login"} />
+                        </Link>
+                    </p>
+                    <p>
+                        <Button type={"link"} onClick={resetForm} style={{ paddingLeft: 0 }}>
+                            <FormattedMessage id={"reg.email.reset"} defaultMessage={"Create another account"} />
                         </Button>
-                    </Col>
-                </Row>
-            </Form>
+                    </p>
+                </div>
+            ) : (
+                <Form
+                    form={form}
+                    className={"form-block form-without-warning"}
+                    layout={"vertical"}
+                    style={{ width: 500 }}
+                    onFinish={handleSubmit}
+                    onFinishFailed={onFinishFailed}>
+                    <Form.Item
+                        label={intl.formatMessage(appMessages.userName)}
+                        name={"name"}
+                        rules={[{ required: true }]}>
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label={intl.formatMessage(appMessages.email)}
+                        name={"email"}
+                        validateTrigger={["onChange", "onBlur"]}
+                        rules={[
+                            { required: true },
+                            { type: "email" },
+                            validateRules.unique("usermail", "validate.unique.usermail", { validateTrigger: "onBlur" }),
+                        ]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label={<FormattedMessage {...appMessages.avatar} />}>
+                        <ImgCrop
+                            grid
+                            rotate
+                            modalTitle={intl.formatMessage(appMessages.edit)}
+                            modalOk={intl.formatMessage(appMessages.confirm)}
+                            modalCancel={intl.formatMessage(appMessages.cancel)}>
+                            <Upload
+                                name="avatar"
+                                listType="picture-card"
+                                className="avatar-uploader"
+                                showUploadList={false}
+                                fileList={avatarFile != null ? [avatarFile] : []}
+                                beforeUpload={beforeUpload}>
+                                {previewUrl == null ? (
+                                    <div>
+                                        <PlusOutlined />
+                                        <div style={{ marginTop: 8 }}>
+                                            <FormattedMessage {...appMessages.upload} />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className={"avatar-uploader"}>
+                                        <Image alt="avatar" src={previewUrl} width={100} height={100} preview={false} />
+                                        <Button type={"default"} onClick={removeAvatar}>
+                                            <FormattedMessage {...appMessages.remove} />
+                                        </Button>
+                                    </div>
+                                )}
+                            </Upload>
+                        </ImgCrop>
+                    </Form.Item>
+                    <Form.Item
+                        label={<FormattedMessage {...appMessages.timeZone} />}
+                        name={"timezone"}
+                        initialValue={"Asia/Hong_Kong"}>
+                        <Select options={timezoneOptions} />
+                    </Form.Item>
+                    <Form.Item
+                        label={intl.formatMessage(appMessages.password)}
+                        name={"password"}
+                        rules={[{ required: true }]}>
+                        <Input type="password" />
+                    </Form.Item>
+                    <PwdHint />
+                    <Form.Item name={"subscribe"} initialValue={true} valuePropName={"checked"}>
+                        <Checkbox>
+                            <SubscribeADHint />
+                        </Checkbox>
+                    </Form.Item>
+                    <Form.Item
+                        name={"term"}
+                        initialValue={true}
+                        valuePropName={"checked"}
+                        rules={[
+                            validateRules.checked({ id: "reg.term.must", defaultMessage: "You must agree with terms" }),
+                        ]}>
+                        <Checkbox>
+                            <TermHint />
+                        </Checkbox>
+                    </Form.Item>
+                    <Row gutter={20}>
+                        <Col offset={14} span={5}>
+                            <BackButton block>
+                                <FormattedMessage {...appMessages.back} />
+                            </BackButton>
+                        </Col>
+                        <Col span={5}>
+                            <Button block type="primary" htmlType="submit">
+                                <FormattedMessage {...appMessages.confirm} />
+                            </Button>
+                        </Col>
+                    </Row>
+                </Form>
+            )}
         </PageForm>
     );
 };

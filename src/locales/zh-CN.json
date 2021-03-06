@@ -16,11 +16,20 @@
     "app.message.debug": "测试",
     "app.logging.out": "你正在离开...",
     "app.logout.return": "返回",
+    "app.project.url": "项目地址",
+    "app.password": "密码",
+    "app.user.name": "名称",
+    "app.email": "邮箱",
+    "app.confirm": "确认",
+    "app.cancel": "取消",
+    "app.user.avatar": "头像",
+    "app.upload": "上传",
+    "app.remove": "移除",
+    "app.timeZone": "时区",
+    "app.back": "返回",
+    "app.back.login": "返回登陆",
 
     "login.user": "用户名",
-    "login.user.warning": "请输入用户名",
-    "app.password": "密码",
-    "login.password.warning": "请输入密码",
     "login.loginBtn": "登录",
 
     "menu.home": "首页",
@@ -34,5 +43,24 @@
     "example.message.warning": "示例: 警告消息",
     "example.message.success": "示例: 成功消息",
 
-    "validate.unique.usermail": "This email has been registered!"
+    "fragment.ad.subscribe": "我愿意接收来自于SPWR的新闻，功能，更新，折扣信息",
+    "fragment.term.1": "我理解并同意",
+    "fragment.term.2": "使用条款",
+    "fragment.term.3": "并已经阅读",
+    "fragment.term.4": "隐私政策",
+    "fragment.pwd.hint.0": "密码应该包含：",
+    "fragment.pwd.hint.1": "至少8个字符",
+    "fragment.pwd.hint.2": "至少一个英文字母",
+    "fragment.pwd.hint.3": "至少一个阿拉伯数字",
+
+    "validate.unique.usermail": "此邮箱已经被注册使用",
+
+    "reg.byAppleID": "使用苹果账户注册",
+    "reg.byWechat": "使用微信注册",
+    "reg.byMobile": "使用手机注册",
+    "reg.byEmail": "使用邮箱注册",
+    "reg.haveAccount": "已经有账户？",
+    "reg.email.done": "注册成功",
+    "reg.email.reset": "继续使用邮箱创建账户",
+    "reg.term.must": "您必须同意使用条款和隐私政策"
 }

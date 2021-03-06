@@ -32,3 +32,14 @@ export const unique = (
         },
     };
 };
+
+export const checked = (message: string, config?: RuleObject | null): RuleObject => {
+    return {
+        validator: (rule, value): Promise<unknown> => {
+            if (value !== true) {
+                return Promise.reject(message);
+            }
+            return Promise.resolve();
+        },
+    };
+};

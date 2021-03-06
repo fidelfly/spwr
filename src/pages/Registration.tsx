@@ -7,6 +7,7 @@ import { RegisterByEmail, RegisterByMobile } from "./register";
 import PageLayout, { PageForm } from "./template/PageLayout";
 import { AppleOutlined, WechatOutlined, MailOutlined, MobileOutlined } from "@ant-design/icons";
 import "./Registration.less";
+import { appMessages } from "../constants";
 export const Registration: React.FC = (): ReactElement => {
     return (
         <PageLayout className={"reg"}>
@@ -46,10 +47,10 @@ const regMessages = defineMessages({
         id: "reg.haveAccount",
         defaultMessage: "Already have an account?",
     },
-    backToLogin: {
+    /*    backToLogin: {
         id: "reg.backToLogin",
         defaultMessage: "Click here to login.",
-    },
+    },*/
 });
 
 const RegistrationIndex: React.FC = (): ReactElement => {
@@ -79,7 +80,7 @@ const RegistrationIndex: React.FC = (): ReactElement => {
                 <p>
                     <FormattedMessage {...regMessages.haveAccount} />{" "}
                     <Link to={"/login"}>
-                        <FormattedMessage {...regMessages.backToLogin} />
+                        <FormattedMessage {...appMessages.backToLogin} />
                     </Link>
                 </p>
             </Space>

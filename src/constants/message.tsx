@@ -104,4 +104,8 @@ export const appMessages = defineMessages({
         id: "app.remove",
         defaultMessage: "Remove",
     },
+    backToLogin: {
+        id: "app.back.login",
+        defaultMessage: "Back to login",
+    },
 });

@@ -11,7 +11,7 @@ import { IntlShape } from "react-intl";
 import { MessageDescriptor } from "@formatjs/intl/src/types";
 import { appMessages } from "../constants";
 import React from "react";
-import { unique } from "./validators";
+import { checked, unique } from "./validators";
 import { RuleObject } from "rc-field-form/lib/interface";
 
 const degraceMD = (message: string | MessageDescriptor): string => {
@@ -35,6 +35,7 @@ export const IntlKitContext = React.createContext<IntlKit>({
     },
     validateRules: {
         unique: (type, message, config, errHandler) => unique(type, degraceMD(message), config, errHandler),
+        checked: (message, config) => checked(degraceMD(message), config),
     },
 });
 
@@ -45,6 +46,7 @@ export interface ValidateRules {
         config?: Omit<RuleObject, "validator"> | null,
         errHandler?: (e: unknown) => void
     ) => RuleObject;
+    checked: (message: string | MessageDescriptor, config?: Omit<RuleObject, "validator"> | null) => RuleObject;
 }
 
 export interface IntlKit {
@@ -81,8 +83,11 @@ export function createIntlKit(intl: IntlShape): IntlKit {
     return {
         messageHandler: msgHandler,
         validateRules: {
-            unique: (type, message, config, errHandler: (e: unknown) => void = defErrHandler): RuleObject => {
+            unique: (type, message, config, errHandler: (e: unknown) => void = defErrHandler) => {
                 return unique(type, resolveMD(message), config, errHandler);
+            },
+            checked: (message, config) => {
+                return checked(resolveMD(message), config);
             },
         },
     };
