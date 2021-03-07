@@ -81,7 +81,6 @@ AjaxInstance.interceptors.request.use(function (config) {
 );*/
 
 interface RequestConfig extends AxiosRequestConfig {
-    withAuthInject?: boolean;
     checkStatusInterval?: number;
     checkStatusTimeout?: number;
     time?: number;

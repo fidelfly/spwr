@@ -123,7 +123,6 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         }
         const ajaxConfig = {
             ...AjaxCfg.FormRequestConfig,
-            withAuthInject: false,
         };
 
         try {

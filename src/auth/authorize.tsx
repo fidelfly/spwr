@@ -1,5 +1,4 @@
 import { Storage, ErrCode, WsPath } from "../constants";
-import { clearToken } from "../actions";
 import { WsError } from "../errors";
 import { Ajax, AjaxCfg, AjaxInstance, AjaxMessage } from "../ajax";
 import axios, { AxiosResponse } from "axios";
@@ -132,10 +131,12 @@ async function waitRefreshToken(): Promise<TokenData> {
     throw new WsError(ErrCode.Unauthorized, `You should grant authorized first`);
 }
 
+/*
 export function invalidateToken(): void {
     removeToken();
     window.store.dispatch(clearToken());
 }
+*/
 
 export async function refreshToken(): Promise<TokenData> {
     const key = getRefreshToken();
@@ -154,11 +155,7 @@ export async function refreshToken(): Promise<TokenData> {
                     scope: "*",
                     refresh_token: key,
                 },
-                {
-                    ...AjaxCfg.FormRequestConfig,
-                    // headers: { Authorization: basicAuthKey },
-                    withAuthInject: false,
-                }
+                AjaxCfg.FormRequestConfig
             );
             setToken(resp.data as TokenData);
             refreshLock = false;
@@ -180,16 +177,8 @@ export async function loginWithPassword(formData: Record<string, unknown>): Prom
     } else if ((username as string).length === 0 || (password as string).length === 0) {
         throw new Error("Empty Username Or Password");
     }
-    const requestData = {
-        ...formData,
-    };
-    const ajaxConfig = {
-        ...AjaxCfg.FormRequestConfig,
-        // headers: { Authorization: basicAuthKey },
-        withAuthInject: false,
-    };
 
-    const resp = await Ajax.post(WsPath.login, requestData, ajaxConfig);
+    const resp = await Ajax.post(WsPath.login, formData, AjaxCfg.FormRequestConfig);
     setToken(resp.data as TokenData);
     return resp.data as TokenData;
 }
