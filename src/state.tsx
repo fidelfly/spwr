@@ -4,19 +4,23 @@ import { Param, Storage } from "./constants";
 import reducer from "./reducers";
 import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
-/*import axios from "axios";
-import { clearToken } from "./actions";*/
+import { AjaxInstance } from "./ajax";
+import { clearToken } from "./actions";
 
 const middleware = [thunk];
 
 const store = createStore(reducer, getInitState(), applyMiddleware(...middleware));
 
-/*axios.interceptors.response.use(undefined, function (err) {
+const ajaxErrorHandler = function (err: { status: number }) {
     if (err.status === 401) {
         store.dispatch(clearToken());
     }
-});*/
-window.store = store;
+    return Promise.reject(err);
+};
+
+AjaxInstance.interceptors.response.use(undefined, ajaxErrorHandler);
+AjaxInstance.interceptors.request.use(undefined, ajaxErrorHandler);
+
 function getInitState(): StoreState {
     return {
         language: getLang(),

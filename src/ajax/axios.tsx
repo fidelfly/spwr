@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios";
-import { invalidateToken, isAuthorized, isTokenExpiring, refreshToken, removeToken } from "../auth";
+// import { invalidateToken, isAuthorized, isTokenExpiring, refreshToken, removeToken } from "../auth";
 import { WsException } from "../errors";
-import { ErrCode } from "../constants";
+// import { ErrCode } from "../constants";
 
 export type MessageType = "error" | "info" | "warning" | "debug" | "fatal" | "success";
 
@@ -54,7 +54,13 @@ const resolveError = (error: AxiosError): unknown => {
     }
 };
 
-axios.interceptors.response.use(resolveData, resolveError);
+const AjaxInstance = axios.create();
+
+AjaxInstance.interceptors.response.use(resolveData, resolveError);
+
+AjaxInstance.interceptors.request.use(function (config) {
+    return config;
+});
 
 /*axios.interceptors.request.use(
     function (config) {
@@ -95,7 +101,7 @@ export function joinBase(url: string): string {
     return url;
 }
 
-async function refreshTokenIfNeed(): Promise<boolean> {
+/*async function refreshTokenIfNeed(): Promise<boolean> {
     if (isAuthorized()) {
         if (isTokenExpiring()) {
             try {
@@ -108,12 +114,10 @@ async function refreshTokenIfNeed(): Promise<boolean> {
         }
     }
     return false;
-}
+}*/
 
 export async function request<T = unknown, R = AxiosResponse<T>>(config: RequestConfig): Promise<R> {
-    /*    if (config == null || config.withAuthInject !== false) {
-    }*/
-    try {
+    /*    try {
         await refreshTokenIfNeed();
     } catch (e) {
         return Promise.reject({
@@ -124,13 +128,12 @@ export async function request<T = unknown, R = AxiosResponse<T>>(config: Request
                 type: "error",
             },
         });
-    }
+    }*/
 
-    try {
-        return await axios.request<T, R>(config);
+    return AjaxInstance.request<T, R>(config);
+    /*  try {
+        return await AjaxInstance.request<T, R>(config);
     } catch (e) {
-        /*        const resp = (e as AxiosError).response;
-        if (resp != null) {*/
         if (e.status === 401 && Ajax.isMessage(e.data)) {
             const msg = e.data as AjaxMessage;
             if (msg.code === ErrCode.TokenExpired) {
@@ -147,9 +150,7 @@ export async function request<T = unknown, R = AxiosResponse<T>>(config: Request
             }
         }
         return Promise.reject(e);
-        /*     }
-        throw e;*/
-    }
+    }*/
 }
 
 declare interface AjaxApi {
@@ -219,6 +220,7 @@ export const Ajax: AjaxApi = {
     },
 };
 
+export default AjaxInstance;
 /*export const upload = ({ action, data, file, filename, headers, onError, onProgress, onSuccess, withCredentials }) => {
     const formData = new FormData();
     if (data) {

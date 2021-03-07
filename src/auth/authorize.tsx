@@ -1,7 +1,8 @@
 import { Storage, ErrCode, WsPath } from "../constants";
 import { clearToken } from "../actions";
 import { WsError } from "../errors";
-import { Ajax, AjaxCfg } from "../ajax";
+import { Ajax, AjaxCfg, AjaxInstance, AjaxMessage } from "../ajax";
+import axios, { AxiosResponse } from "axios";
 
 /* eslint-disable, @typescript-eslint/no-explicit-any */
 
@@ -203,5 +204,56 @@ export async function logout(): Promise<boolean> {
     }
     return true;
 }
+
+async function refreshTokenIfNeed(): Promise<boolean> {
+    if (isAuthorized()) {
+        if (isTokenExpiring()) {
+            try {
+                await refreshToken();
+                return true;
+            } catch (e) {
+                removeToken();
+                // invalidateToken();
+                throw e;
+            }
+        }
+    }
+    return false;
+}
+
+AjaxInstance.interceptors.request.use(async function (config) {
+    try {
+        await refreshTokenIfNeed();
+    } catch (e) {
+        // this function is used to refresh token if need, no guarantee for the success
+        console.log(e);
+    }
+
+    return config;
+});
+
+AjaxInstance.interceptors.response.use(
+    function (resp) {
+        return resp;
+    },
+    async function (err: AxiosResponse) {
+        if (err.status === 401 && Ajax.isMessage(err.data)) {
+            const msg = err.data as AjaxMessage;
+            if (msg.code === ErrCode.TokenExpired) {
+                try {
+                    await refreshToken();
+                    return axios.request(err.config);
+                } catch (e) {
+                    removeToken();
+                    // invalidateToken();
+                }
+            } else if (msg.code === ErrCode.Unauthorized) {
+                removeToken();
+                // invalidateToken();
+            }
+        }
+        return Promise.reject(err);
+    }
+);
 
 /* eslint-enable */
