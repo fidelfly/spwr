@@ -1,19 +1,18 @@
-import Cookies from "js-cookie";
-import { CookieKeys, Storage, ErrCode, WsPath } from "../constants";
+import { Storage, ErrCode, WsPath } from "../constants";
 import { clearToken } from "../actions";
 import { WsError } from "../errors";
-import { Ajax, AjaxCfg, ApiBase } from "../ajax";
+import { Ajax, AjaxCfg } from "../ajax";
 
 /* eslint-disable, @typescript-eslint/no-explicit-any */
-// const basicAuthKey = process.env.REACT_APP_OAUTH_KEY;
 
+/* as we use cookie httponly, we can't get token from js
 export function getAccessToken(): string | undefined {
     return Cookies.get(CookieKeys.accessToken);
 }
-
 export function getAuthorizeToken(): string {
     return `${Cookies.get(CookieKeys.tokenType)} ${getAccessToken()}`;
 }
+*/
 
 function getRefreshToken(): string | null {
     return localStorage.getItem(Storage.RefreshToken);
@@ -28,8 +27,8 @@ function getTokenExpired(): string | null {
 }*/
 
 interface TokenData {
-    access_token: string;
-    token_type: string;
+    access_token?: string;
+    token_type?: string;
     refresh_token: string;
     expires_in?: number;
     user_id: string;
@@ -42,14 +41,16 @@ function setToken(data: TokenData): void {
     const expireDate = new Date();
     expireDate.setMinutes(expireDate.getMinutes() + 35);
 
+    /* use httponly instead to avoid attack
     Cookies.set(CookieKeys.accessToken, data.access_token, { expires: expireDate });
     Cookies.set(CookieKeys.tokenType, data.token_type, { expires: expireDate });
+
     if (data.request_id) {
         Cookies.set(CookieKeys.requestID, data.request_id, { path: `${ApiBase}/login` });
     } else {
         Cookies.remove(CookieKeys.requestID);
     }
-
+    */
     if (data.refresh_token) {
         localStorage.setItem(Storage.RefreshToken, data.refresh_token);
     }
@@ -67,18 +68,18 @@ function setToken(data: TokenData): void {
 
 function getTokenData(): TokenData {
     return {
-        access_token: Cookies.get(CookieKeys.accessToken) || "",
+        /*access_token: Cookies.get(CookieKeys.accessToken) || "",
         token_type: Cookies.get(CookieKeys.tokenType) || "",
+        request_id: Cookies.get(CookieKeys.requestID) || "",*/
         refresh_token: localStorage.getItem(Storage.RefreshToken) || "",
         user_id: localStorage.getItem(Storage.UserID) || "",
-        request_id: Cookies.get(CookieKeys.requestID) || "",
     };
 }
 
-function removeToken(): void {
-    Cookies.remove(CookieKeys.accessToken);
+export function removeToken(): void {
+    /*Cookies.remove(CookieKeys.accessToken);
     Cookies.remove(CookieKeys.tokenType);
-    Cookies.remove(CookieKeys.requestID);
+    Cookies.remove(CookieKeys.requestID);*/
     localStorage.removeItem(Storage.RefreshToken);
     localStorage.removeItem(Storage.TokenExpired);
     localStorage.removeItem(Storage.UserID);
@@ -89,7 +90,8 @@ function removeToken(): void {
 }
 
 export function isAuthorized(): boolean {
-    const key = getAccessToken();
+    // const key = getAccessToken();
+    const key = getRefreshToken();
     return !!(key && key.length > 0);
 }
 
@@ -193,41 +195,13 @@ export async function loginWithPassword(formData: Record<string, unknown>): Prom
 
 export async function logout(): Promise<boolean> {
     try {
-        await Ajax.post(WsPath.logout, { token: getAccessToken() }, AjaxCfg.FormRequestConfig);
+        await Ajax.post(WsPath.logout);
         removeToken();
     } catch (e) {
         console.log(e);
         return false;
     }
     return true;
-}
-
-export const Authkit = {
-    checkAuthorizeBeforeRequest: checkAuthorizeBeforeRequest,
-    getAuthorizeToken: getAuthorizeToken,
-};
-
-export async function checkAuthorizeBeforeRequest(assert = true): Promise<void> {
-    if (isAuthorized()) {
-        // if (!isTokenValid()) {
-        if (isTokenExpiring()) {
-            try {
-                await refreshToken();
-                // setToken(token);
-            } catch (e) {
-                invalidateToken();
-                // removeToken();
-                // window.store.dispatch(clearToken());
-                throw e;
-            }
-        }
-        return;
-    }
-
-    if (assert) {
-        invalidateToken();
-        throw new WsError(ErrCode.Unauthorized, `You should grant authorized token first`);
-    }
 }
 
 /* eslint-enable */

@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios";
-import { Authkit, invalidateToken, refreshToken } from "../auth";
+import { invalidateToken, isAuthorized, isTokenExpiring, refreshToken, removeToken } from "../auth";
 import { WsException } from "../errors";
 import { ErrCode } from "../constants";
 
@@ -39,16 +39,16 @@ const resolveData = (resp: AxiosResponse): AxiosResponse | Promise<AxiosResponse
 
 const resolveError = (error: AxiosError): unknown => {
     if (error.response) {
-        // const status = error.response.status;
-        const data = error.response.data;
+        const resp = error.response;
 
-        if (!Ajax.isMessage(data)) {
+        if (!Ajax.isMessage(resp.data)) {
             console.log(error);
             //     return Promise.reject(new WsException(status, data.code, data.message, data.data));
             // } else {
             //     return Promise.reject(new WsException(status, error.code || `Server(${status})`, "", data));
         }
-        return Promise.reject(error);
+
+        return Promise.reject(error.response);
     } else {
         console.log(error);
     }
@@ -56,10 +56,10 @@ const resolveError = (error: AxiosError): unknown => {
 
 axios.interceptors.response.use(resolveData, resolveError);
 
-axios.interceptors.request.use(
+/*axios.interceptors.request.use(
     function (config) {
         config = config || {};
-        const headers = config.headers || {};
+              const headers = config.headers || {};
         if (!headers["Authorization"]) {
             const accessToken = Authkit.getAuthorizeToken();
             if (accessToken) {
@@ -72,7 +72,7 @@ axios.interceptors.request.use(
     function (error) {
         return Promise.reject(error);
     }
-);
+);*/
 
 interface RequestConfig extends AxiosRequestConfig {
     withAuthInject?: boolean;
@@ -95,42 +95,60 @@ export function joinBase(url: string): string {
     return url;
 }
 
-export async function request<T = unknown, R = AxiosResponse<T>>(config: RequestConfig): Promise<R> {
-    if (config == null || config.withAuthInject !== false) {
-        try {
-            await Authkit.checkAuthorizeBeforeRequest(false);
-        } catch (e) {
-            return Promise.reject({
-                status: 401,
-                data: {
-                    code: ErrCode.Unauthorized,
-                    message: "You should grant authorized token first",
-                    type: "error",
-                },
-            });
+async function refreshTokenIfNeed(): Promise<boolean> {
+    if (isAuthorized()) {
+        if (isTokenExpiring()) {
+            try {
+                await refreshToken();
+                return true;
+            } catch (e) {
+                invalidateToken();
+                throw e;
+            }
         }
     }
+    return false;
+}
+
+export async function request<T = unknown, R = AxiosResponse<T>>(config: RequestConfig): Promise<R> {
+    /*    if (config == null || config.withAuthInject !== false) {
+    }*/
+    try {
+        await refreshTokenIfNeed();
+    } catch (e) {
+        return Promise.reject({
+            status: 401,
+            data: {
+                code: ErrCode.Unauthorized,
+                message: "You should grant authorized token first",
+                type: "error",
+            },
+        });
+    }
+
     try {
         return await axios.request<T, R>(config);
     } catch (e) {
-        const resp = (e as AxiosError).response;
-        if (resp != null) {
-            if (resp.status === 401 && Ajax.isMessage(resp.data)) {
-                const msg = resp.data as AjaxMessage;
-                if (msg.code === ErrCode.TokenExpired) {
-                    try {
-                        await refreshToken();
-                        return axios.request(config);
-                    } catch (e) {
-                        invalidateToken();
-                    }
-                } else if (msg.code === ErrCode.Unauthorized) {
+        /*        const resp = (e as AxiosError).response;
+        if (resp != null) {*/
+        if (e.status === 401 && Ajax.isMessage(e.data)) {
+            const msg = e.data as AjaxMessage;
+            if (msg.code === ErrCode.TokenExpired) {
+                try {
+                    await refreshToken();
+                    return axios.request(config);
+                } catch (e) {
+                    // removeToken();
                     invalidateToken();
                 }
+            } else if (msg.code === ErrCode.Unauthorized) {
+                // removeToken();
+                invalidateToken();
             }
-            return Promise.reject(resp);
         }
-        throw e;
+        return Promise.reject(e);
+        /*     }
+        throw e;*/
     }
 }
 
@@ -146,31 +164,6 @@ declare interface AjaxApi {
     isMessage(data: unknown): boolean;
     isError(data: unknown): boolean;
 }
-
-/*const ajax = {};
-["delete", "get", "head", "options"].forEach(function(method: string) {
-    ajax[method] = function(url: string, config?: RequestConfig) {
-        config = config || {};
-        return request({
-            ...config,
-            method: method as Method,
-            url: url,
-        });
-    };
-});
-
-["post", "put", "patch"].forEach(function(method: string) {
-    /!*eslint func-names:0*!/
-    ajax[method] = function(url: string, data?: any, config?: RequestConfig) {
-        config = config || {};
-        return request({
-            ...config,
-            method: method as Method,
-            url: url,
-            data: data,
-        });
-    };
-});*/
 
 function createRequestFunction<T = unknown, R = AxiosResponse<T>>(
     method: string

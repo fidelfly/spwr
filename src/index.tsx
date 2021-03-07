@@ -3,6 +3,11 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { isAuthorized, isTokenValid, removeToken } from "./auth";
+
+if (isAuthorized() && !isTokenValid()) {
+    removeToken();
+}
 
 ReactDOM.render(
     <React.StrictMode>

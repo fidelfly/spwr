@@ -4,10 +4,18 @@ import { Param, Storage } from "./constants";
 import reducer from "./reducers";
 import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
+/*import axios from "axios";
+import { clearToken } from "./actions";*/
 
 const middleware = [thunk];
 
 const store = createStore(reducer, getInitState(), applyMiddleware(...middleware));
+
+/*axios.interceptors.response.use(undefined, function (err) {
+    if (err.status === 401) {
+        store.dispatch(clearToken());
+    }
+});*/
 window.store = store;
 function getInitState(): StoreState {
     return {
