@@ -1,7 +1,7 @@
 import { Storage, ErrCode, WsPath } from "../constants";
 import { WsError } from "../errors";
 import { Ajax, AjaxCfg, AjaxInstance, AjaxMessage } from "../ajax";
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 /* eslint-disable, @typescript-eslint/no-explicit-any */
 
@@ -231,7 +231,7 @@ AjaxInstance.interceptors.response.use(
             if (msg.code === ErrCode.TokenExpired) {
                 try {
                     await refreshToken();
-                    return axios.request(err.config);
+                    return Ajax.request(err.config);
                 } catch (e) {
                     removeToken();
                     // invalidateToken();

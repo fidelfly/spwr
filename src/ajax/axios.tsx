@@ -153,6 +153,7 @@ export async function request<T = unknown, R = AxiosResponse<T>>(config: Request
 }
 
 declare interface AjaxApi {
+    request<T = unknown, R = AxiosResponse<T>>(config: RequestConfig): Promise<R>;
     get<T = unknown, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
     delete<T = unknown, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
     head<T = unknown, R = AxiosResponse<T>>(url: string, config?: RequestConfig): Promise<R>;
@@ -193,6 +194,7 @@ function createDataRequestFunction<T = unknown, R = AxiosResponse<T>>(
 }
 
 export const Ajax: AjaxApi = {
+    request: request,
     delete: createRequestFunction("delete"),
     get: createRequestFunction("get"),
     head: createRequestFunction("head"),
