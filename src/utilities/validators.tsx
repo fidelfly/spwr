@@ -11,6 +11,9 @@ export const unique = (
     return {
         ...config,
         validator: async (rule, value): Promise<unknown> => {
+            if (value == null || (typeof value === "string" && value.length === 0)) {
+                return true;
+            }
             try {
                 const resp = await Ajax.post<{ exist: boolean }>(
                     AjaxKit.getPath(WsPath.queryExist, { type: type }),
