@@ -6,7 +6,7 @@ export const WsPath = {
     file: "/file",
     avatar: {
         upload: "/avatar",
-        get: "/avatar/{id}",
+        get: "/avatar/{key}",
     },
 
     queryExist: "/universal/exist/{type}",

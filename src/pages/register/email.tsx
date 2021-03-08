@@ -43,7 +43,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         } else {
             setPreview(() => {
                 if (avatarID > 0) {
-                    return AjaxKit.getPath(WsPath.avatar.get, { id: avatarID }, true);
+                    return AjaxKit.getPath(WsPath.avatar.get, { key: avatarID }, true);
                 }
                 return null;
             });
@@ -86,10 +86,11 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         const formData = new FormData();
         formData.append("file", avatarFile as RcFile);
         try {
-            const resp = await axios.post<{ id: number }>(AjaxKit.getPath(WsPath.avatar.upload, null, true), formData);
+            const resp = await axios.post<{ key: string }>(AjaxKit.getPath(WsPath.avatar.upload, null, true), formData);
             setAvatar(null);
-            setAvatarID(resp.data.id);
-            return resp.data.id;
+            const id = parseInt(resp.data.key);
+            setAvatarID(id);
+            return id;
         } catch (e) {
             msgHandler.showNotification({
                 code: "avatar.upload.error",

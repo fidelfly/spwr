@@ -19,7 +19,7 @@ export const Header: React.FC = (): ReactElement => {
                     <Avatar
                         className={"avatar"}
                         size={40}
-                        src={AjaxKit.getPath(WsPath.avatar.get, { id: user.avatar }, true)}
+                        src={AjaxKit.getPath(WsPath.avatar.get, { key: user.avatar }, true)}
                     />
                 ) : (
                     <Avatar size={40} className={"avatar"} icon={<UserOutlined />} />
