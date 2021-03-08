@@ -1,6 +1,6 @@
 import { Storage, ErrCode, WsPath } from "../constants";
 import { WsError } from "../errors";
-import { Ajax, AjaxCfg, AjaxInstance, AjaxMessage } from "../ajax";
+import { Ajax, AjaxCfg, AjaxInstance, AjaxMessage, joinBase } from "../ajax";
 import { AxiosResponse } from "axios";
 
 /* eslint-disable, @typescript-eslint/no-explicit-any */
@@ -155,14 +155,15 @@ export async function refreshToken(): Promise<TokenData> {
                     scope: "*",
                     refresh_token: key,
                 },
-                AjaxCfg.FormRequestConfig
+                { ...AjaxCfg.FormRequestConfig }
             );
             setToken(resp.data as TokenData);
             refreshLock = false;
             return resp.data as TokenData;
         } catch (e) {
             refreshLock = false;
-            removeToken();
+            // all errors have been handled in Ajax.post flow (interceptors), no need to do anything here
+            // removeToken();
             throw e;
         }
     } else {
@@ -178,7 +179,7 @@ export async function loginWithPassword(formData: Record<string, unknown>): Prom
         throw new Error("Empty Username Or Password");
     }
 
-    const resp = await Ajax.post(WsPath.login, formData, AjaxCfg.FormRequestConfig);
+    const resp = await Ajax.post(WsPath.login, formData, { ...AjaxCfg.FormRequestConfig });
     setToken(resp.data as TokenData);
     return resp.data as TokenData;
 }
@@ -201,8 +202,6 @@ async function refreshTokenIfNeed(): Promise<boolean> {
                 await refreshToken();
                 return true;
             } catch (e) {
-                removeToken();
-                // invalidateToken();
                 throw e;
             }
         }
@@ -211,11 +210,14 @@ async function refreshTokenIfNeed(): Promise<boolean> {
 }
 
 AjaxInstance.interceptors.request.use(async function (config) {
-    try {
-        await refreshTokenIfNeed();
-    } catch (e) {
-        // this function is used to refresh token if need, no guarantee for the success
-        console.log(e);
+    if (config.url !== joinBase(WsPath.token)) {
+        try {
+            await refreshTokenIfNeed();
+        } catch (e) {
+            // this function is used to refresh token if need, no guarantee for the success
+            console.log(e);
+            return Promise.reject(e);
+        }
     }
 
     return config;

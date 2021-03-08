@@ -128,7 +128,9 @@ export async function request<T = unknown, R = AxiosResponse<T>>(config: Request
             },
         });
     }*/
-
+    if (config.url != null) {
+        config.url = joinBase(config.url);
+    }
     return AjaxInstance.request<T, R>(config);
     /*  try {
         return await AjaxInstance.request<T, R>(config);
@@ -174,7 +176,7 @@ function createRequestFunction<T = unknown, R = AxiosResponse<T>>(
         return request({
             ...config,
             method: method as Method,
-            url: joinBase(url),
+            url: url,
         });
     };
 }
@@ -187,7 +189,7 @@ function createDataRequestFunction<T = unknown, R = AxiosResponse<T>>(
         return request({
             ...config,
             method: method as Method,
-            url: joinBase(url),
+            url: url,
             data: data,
         });
     };

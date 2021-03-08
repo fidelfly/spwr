@@ -17,7 +17,7 @@ export const unique = (
                     {
                         key: value,
                     },
-                    AjaxCfg.FormRequestConfig
+                    { ...AjaxCfg.FormRequestConfig }
                 );
                 if (resp.data.exist) {
                     return Promise.reject(message);
