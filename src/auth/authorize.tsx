@@ -54,9 +54,10 @@ function setToken(data: TokenData): void {
     if (data.refresh_token) {
         localStorage.setItem(Storage.RefreshToken, data.refresh_token);
     }
-    if (data.expires_in) {
+    /*    if (data.expires_in) {
         localStorage.setItem(Storage.TokenExpired, (new Date().getTime() + data.expires_in * 1000).toString());
-    }
+    }*/
+    localStorage.setItem(Storage.TokenExpired, expireDate.getTime().toString());
     localStorage.setItem(Storage.UserID, data.user_id);
 
     if (autoRefresh !== undefined) {

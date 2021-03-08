@@ -8,6 +8,7 @@ import { AjaxMessage, Ajax, AjaxKit } from "../../ajax";
 import { useMessage } from "../../utilities";
 import { FormattedMessage } from "react-intl";
 import { appMessages } from "../../constants";
+import { DelayButton } from "../../components/DelayButton";
 
 export const Home: React.FC = (): ReactElement => {
     const dispatch = useDispatch();
@@ -60,6 +61,14 @@ export const Home: React.FC = (): ReactElement => {
         }
     };
 
+    const onclick = () => {
+        return new Promise(function (resolve) {
+            setTimeout(() => {
+                resolve(true);
+            }, 3000);
+        });
+    };
+
     return (
         <div>
             <FormattedMessage {...appMessages.name} />
@@ -91,6 +100,10 @@ export const Home: React.FC = (): ReactElement => {
                 </Space>
 
                 <Button onClick={() => unauthorizedRequest()}>{"Unauthorized Request"}</Button>
+
+                <DelayButton onClick={onclick} delay={60}>
+                    {"Delay Button"}
+                </DelayButton>
             </Space>
         </div>
     );
