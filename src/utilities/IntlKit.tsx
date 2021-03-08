@@ -34,14 +34,14 @@ export const IntlKitContext = React.createContext<IntlKit>({
         showNotification: handleWithNotification,
     },
     validateRules: {
-        unique: (type, message, config, errHandler) => unique(type, degraceMD(message), config, errHandler),
+        unique: (typeOrPath, message, config, errHandler) => unique(typeOrPath, degraceMD(message), config, errHandler),
         checked: (message, config) => checked(degraceMD(message), config),
     },
 });
 
 export interface ValidateRules {
     unique: (
-        type: string,
+        typeOrPath: string,
         message: string | MessageDescriptor,
         config?: Omit<RuleObject, "validator"> | null,
         errHandler?: (e: unknown) => void
@@ -83,8 +83,8 @@ export function createIntlKit(intl: IntlShape): IntlKit {
     return {
         messageHandler: msgHandler,
         validateRules: {
-            unique: (type, message, config, errHandler: (e: unknown) => void = defErrHandler) => {
-                return unique(type, resolveMD(message), config, errHandler);
+            unique: (typeOrPath, message, config, errHandler: (e: unknown) => void = defErrHandler) => {
+                return unique(typeOrPath, resolveMD(message), config, errHandler);
             },
             checked: (message, config) => {
                 return checked(resolveMD(message), config);

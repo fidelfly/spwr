@@ -1,9 +1,10 @@
 import { RuleObject } from "rc-field-form/lib/interface";
 import { WsPath } from "../constants";
 import { Ajax, AjaxCfg, AjaxKit } from "../ajax";
+import { type } from "os";
 
 export const unique = (
-    type: string,
+    typeOrPath: string,
     message: string,
     config?: RuleObject | null,
     errHandler?: (e: unknown) => void
@@ -14,9 +15,15 @@ export const unique = (
             if (value == null || (typeof value === "string" && value.length === 0)) {
                 return true;
             }
+            let ajaxPath = "";
+            if (typeOrPath.indexOf("/") >= 0) {
+                ajaxPath = typeOrPath;
+            } else {
+                ajaxPath = AjaxKit.getPath(WsPath.queryExist, { type: typeOrPath });
+            }
             try {
                 const resp = await Ajax.post<{ exist: boolean }>(
-                    AjaxKit.getPath(WsPath.queryExist, { type: type }),
+                    ajaxPath,
                     {
                         key: value,
                     },
