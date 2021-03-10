@@ -3,6 +3,24 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "ax
 import { WsException } from "../errors";
 // import { ErrCode } from "../constants";
 
+const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|(\+|-)([\d|:]*))?$/;
+const reMsAjax = /^\/Date\((d|-|.*)\)[\/|\\]$/;
+
+const dateParser = function (key: unknown, value: unknown) {
+    if (typeof value === "string") {
+        let a = reISO.exec(value);
+        if (a) {
+            return new Date(value);
+        }
+        a = reMsAjax.exec(value);
+        if (a) {
+            const b = a[1].split(/[-+,.]/);
+            return new Date(b[0] ? +b[0] : 0 - +b[1]);
+        }
+    }
+    return value;
+};
+
 export type MessageType = "error" | "info" | "warning" | "debug" | "fatal" | "success";
 
 export interface AjaxMessage {
@@ -54,7 +72,18 @@ const resolveError = (error: AxiosError): unknown => {
     }
 };
 
-const AjaxInstance = axios.create();
+const AjaxInstance = axios.create({
+    transformResponse: function (data) {
+        if (typeof data === "string") {
+            try {
+                data = JSON.parse(data, dateParser);
+            } catch (e) {
+                /* Ignore */
+            }
+        }
+        return data;
+    },
+});
 
 AjaxInstance.interceptors.response.use(resolveData, resolveError);
 
