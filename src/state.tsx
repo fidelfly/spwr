@@ -6,13 +6,15 @@ import { applyMiddleware, createStore } from "redux";
 import thunk from "redux-thunk";
 import { AjaxInstance } from "./ajax";
 import { clearToken } from "./actions";
+import { isTokenRequest } from "./auth";
+import { AxiosResponse } from "axios";
 
 const middleware = [thunk];
 
 const store = createStore(reducer, getInitState(), applyMiddleware(...middleware));
 
-const ajaxErrorHandler = function (err: { status: number }) {
-    if (err.status === 401) {
+const ajaxErrorHandler = function (err: AxiosResponse) {
+    if (err.status === 401 || isTokenRequest(err.config.url)) {
         store.dispatch(clearToken());
     }
     return Promise.reject(err);

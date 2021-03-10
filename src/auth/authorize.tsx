@@ -210,8 +210,12 @@ async function refreshTokenIfNeed(): Promise<boolean> {
     return false;
 }
 
+export function isTokenRequest(url?: string): boolean {
+    return url === joinBase(WsPath.auth.token);
+}
+
 AjaxInstance.interceptors.request.use(async function (config) {
-    if (config.url !== joinBase(WsPath.auth.token)) {
+    if (!isTokenRequest(config.url)) {
         try {
             await refreshTokenIfNeed();
         } catch (e) {
@@ -229,6 +233,11 @@ AjaxInstance.interceptors.response.use(
         return resp;
     },
     async function (err: AxiosResponse) {
+        if (isTokenRequest(err.config.url)) {
+            removeToken();
+            return Promise.reject(err);
+        }
+
         if (err.status === 401 && Ajax.isMessage(err.data)) {
             const msg = err.data as AjaxMessage;
             if (msg.code === ErrCode.TokenExpired) {
