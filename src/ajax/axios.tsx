@@ -1,7 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, Method } from "axios";
-// import { invalidateToken, isAuthorized, isTokenExpiring, refreshToken, removeToken } from "../auth";
 import { WsException } from "../errors";
-// import { ErrCode } from "../constants";
 
 const reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(?:Z|(\+|-)([\d|:]*))?$/;
 const reMsAjax = /^\/Date\((d|-|.*)\)[\/|\\]$/;
@@ -61,9 +59,6 @@ const resolveError = (error: AxiosError): unknown => {
 
         if (!Ajax.isMessage(resp.data)) {
             console.log(error);
-            //     return Promise.reject(new WsException(status, data.code, data.message, data.data));
-            // } else {
-            //     return Promise.reject(new WsException(status, error.code || `Server(${status})`, "", data));
         }
 
         return Promise.reject(error.response);
@@ -91,24 +86,6 @@ AjaxInstance.interceptors.request.use(function (config) {
     return config;
 });
 
-/*axios.interceptors.request.use(
-    function (config) {
-        config = config || {};
-              const headers = config.headers || {};
-        if (!headers["Authorization"]) {
-            const accessToken = Authkit.getAuthorizeToken();
-            if (accessToken) {
-                headers["Authorization"] = accessToken;
-                config.headers = headers;
-            }
-        }
-        return config;
-    },
-    function (error) {
-        return Promise.reject(error);
-    }
-);*/
-
 interface RequestConfig extends AxiosRequestConfig {
     checkStatusInterval?: number;
     checkStatusTimeout?: number;
@@ -129,58 +106,11 @@ export function joinBase(url: string): string {
     return url;
 }
 
-/*async function refreshTokenIfNeed(): Promise<boolean> {
-    if (isAuthorized()) {
-        if (isTokenExpiring()) {
-            try {
-                await refreshToken();
-                return true;
-            } catch (e) {
-                invalidateToken();
-                throw e;
-            }
-        }
-    }
-    return false;
-}*/
-
 export async function request<T = unknown, R = AxiosResponse<T>>(config: RequestConfig): Promise<R> {
-    /*    try {
-        await refreshTokenIfNeed();
-    } catch (e) {
-        return Promise.reject({
-            status: 401,
-            data: {
-                code: ErrCode.Unauthorized,
-                message: "You should grant authorized token first",
-                type: "error",
-            },
-        });
-    }*/
     if (config.url != null) {
         config.url = joinBase(config.url);
     }
     return AjaxInstance.request<T, R>(config);
-    /*  try {
-        return await AjaxInstance.request<T, R>(config);
-    } catch (e) {
-        if (e.status === 401 && Ajax.isMessage(e.data)) {
-            const msg = e.data as AjaxMessage;
-            if (msg.code === ErrCode.TokenExpired) {
-                try {
-                    await refreshToken();
-                    return axios.request(config);
-                } catch (e) {
-                    // removeToken();
-                    invalidateToken();
-                }
-            } else if (msg.code === ErrCode.Unauthorized) {
-                // removeToken();
-                invalidateToken();
-            }
-        }
-        return Promise.reject(e);
-    }*/
 }
 
 declare interface AjaxApi {
@@ -253,32 +183,3 @@ export const Ajax: AjaxApi = {
 };
 
 export default AjaxInstance;
-/*export const upload = ({ action, data, file, filename, headers, onError, onProgress, onSuccess, withCredentials }) => {
-    const formData = new FormData();
-    if (data) {
-        Object.keys(data).map((key) => {
-            formData.append(key, data[key]);
-            return key;
-        });
-    }
-    formData.append(filename, file);
-    const config = {
-        withCredentials,
-        headers,
-        onUploadProgress: ({ total, loaded }) => {
-            onProgress({ percent: Math.round((loaded / total) * 100).toFixed(2) }, file);
-        },
-    };
-    authRequest("POST", action, formData, config)
-        .then((response) => {
-            onSuccess(response, file);
-        })
-        .catch(onError);
-
-    return {
-        abort() {
-            console.log("upload progress is aborted."); /!*eslint-disable-line no-console*!/
-        },
-    };
-};*/
-/* eslint-enable @typescript-eslint/no-explicit-any*/
