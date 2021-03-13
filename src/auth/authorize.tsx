@@ -149,7 +149,7 @@ export async function refreshToken(): Promise<TokenData> {
         // todo send refresh ajax
         try {
             const resp = await Ajax.post(
-                WsPath.token,
+                WsPath.auth.token,
                 {
                     // access_token: getAccessToken(),
                     grant_type: "refresh_token",
@@ -180,14 +180,14 @@ export async function loginWithPassword(formData: Record<string, unknown>): Prom
         throw new Error("Empty Username Or Password");
     }
 
-    const resp = await Ajax.post(WsPath.login, formData, { ...AjaxCfg.FormRequestConfig });
+    const resp = await Ajax.post(WsPath.auth.login, formData, { ...AjaxCfg.FormRequestConfig });
     setToken(resp.data as TokenData);
     return resp.data as TokenData;
 }
 
 export async function logout(): Promise<boolean> {
     try {
-        await Ajax.post(WsPath.logout);
+        await Ajax.post(WsPath.auth.logout);
         removeToken();
     } catch (e) {
         console.log(e);
@@ -211,7 +211,7 @@ async function refreshTokenIfNeed(): Promise<boolean> {
 }
 
 AjaxInstance.interceptors.request.use(async function (config) {
-    if (config.url !== joinBase(WsPath.token)) {
+    if (config.url !== joinBase(WsPath.auth.token)) {
         try {
             await refreshTokenIfNeed();
         } catch (e) {
