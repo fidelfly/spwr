@@ -1,8 +1,8 @@
 export const WsPath = {
     auth: {
-      login: "/webauth/login",
-      logout: "/webauth/logout",
-      token: "/webauth/token",
+        login: "/webauth/login",
+        logout: "/webauth/logout",
+        token: "/webauth/token",
     },
     user: "/user/{id}",
     file: "/file",

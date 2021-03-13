@@ -13,7 +13,7 @@ export const DelayButton: React.FC<DelayButtonProps> = (props: DelayButtonProps)
     const { delay, disabled, children, onClick, ...others } = props;
 
     const [doing, setDoing] = useState<boolean>(false);
-    const [count, setCount] = useCountDown();
+    const [count, counter] = useCountDown();
 
     function onClickFunc(e: MouseEvent<HTMLElement>) {
         setDoing(true);
@@ -22,7 +22,7 @@ export const DelayButton: React.FC<DelayButtonProps> = (props: DelayButtonProps)
                 resolve(onClick(e));
             })
                 .then(function () {
-                    setCount(delay || -1);
+                    counter.start(delay || -1);
                     // setCounting(true);
                 })
                 .finally(() => {
@@ -30,7 +30,7 @@ export const DelayButton: React.FC<DelayButtonProps> = (props: DelayButtonProps)
                 });
         } else {
             setDoing(false);
-            setCount(delay || -1);
+            counter.start(delay || -1);
         }
     }
     return (
