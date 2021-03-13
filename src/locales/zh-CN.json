@@ -31,6 +31,7 @@
 
     "login.user": "用户名",
     "login.loginBtn": "登录",
+    "login.invalid.user": "错误的用户名或密码",
 
     "menu.home": "首页",
     "menu.account": "账户",
