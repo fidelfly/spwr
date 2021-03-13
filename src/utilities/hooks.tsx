@@ -2,6 +2,9 @@ import { useIntl } from "react-intl";
 import { MessageDescriptor } from "@formatjs/intl/src/types";
 import { IntlKit, IntlKitContext, MessageHandler, ValidateRules } from "./IntlKit";
 import { useContext, useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "../auth";
+import { clearToken } from "../actions";
 
 export function useIntlKit(): IntlKit {
     return useContext<IntlKit>(IntlKitContext);
@@ -70,6 +73,25 @@ export const useCount = (): [number, CountAPI] => {
     }, [setCount]);
 
     return [count, api];
+};
+
+type AuthorizeAPI = {
+    logout: () => void;
+};
+export const useAuthorizeAPI = (): AuthorizeAPI => {
+    const dispatch = useDispatch();
+
+    const api = useMemo<AuthorizeAPI>(() => {
+        return {
+            logout: () => {
+                logout().then(() => {
+                    dispatch(clearToken());
+                });
+            },
+        };
+    }, [dispatch]);
+
+    return api;
 };
 
 export const useMessageVars = (vars: Record<string, string | MessageDescriptor>): Record<string, string> => {
