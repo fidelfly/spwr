@@ -86,7 +86,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         const formData = new FormData();
         formData.append("file", avatarFile as RcFile);
         try {
-            const resp = await axios.post<{ key: string }>(AjaxKit.getPath(WsPath.avatar.upload, null, true), formData);
+            const resp = await Ajax.post<{ key: string }>(WsPath.avatar.upload, formData);
             setAvatar(null);
             const id = parseInt(resp.data.key);
             setAvatarID(id);
