@@ -1,14 +1,13 @@
-import React, { PropsWithChildren, ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import { FormattedMessage } from "react-intl";
 import { LangBtn } from "../../components";
 import { appMessages } from "../../constants";
 import "../style/PageLayout.less";
-import { EnvColor } from "../../system";
 import { Snowflake } from "../../icons";
 import { GithubOutlined } from "@ant-design/icons";
 // import background from "../../assets/image/login_bg.png";
 import { Typography } from "antd";
-const { Title, Paragraph, Text, Link } = Typography;
+const { Title, Paragraph, Link } = Typography;
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
 export const PageLayout: React.FC<Props> = (props: Props): ReactElement => {

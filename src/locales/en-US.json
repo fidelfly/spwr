@@ -19,6 +19,7 @@
     "app.logout.return": "Return",
     "app.user.name": "Name",
     "app.email": "Email",
+    "app.phone": "Mobile Phone",
     "app.confirm": "Confirm",
     "app.cancel": "Cancel",
     "app.user.avatar": "Avatar",
@@ -28,6 +29,11 @@
     "app.back": "Back",
     "app.password": "Password",
     "app.back.login": "Back to login",
+    "app.save.success": "Save successfully",
+    "app.save.failed": "Save failed",
+    "app.update.success": "Update successfully",
+    "app.update.failed": "Update failed",
+    "app.invalid.pwd": "Invalid password",
 
     "login.user": "Username",
     "login.loginBtn": "Login",
@@ -63,5 +69,8 @@
     "reg.byEmail": "Register by Email",
     "reg.email.done": "Registration done!",
     "reg.email.reset": "Already have an account?",
-    "reg.term.must": "You must agree to terms of use and privacy policy"
+    "reg.term.must": "You must agree to terms of use and privacy policy",
+
+    "profile.change.pwd": "Change Password",
+    "profile.original.pwd": "Original Password"
 }

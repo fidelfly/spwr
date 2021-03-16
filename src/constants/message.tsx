@@ -32,6 +32,10 @@ export const appMessages = defineMessages({
         id: "app.email",
         defaultMessage: "Email",
     },
+    phone: {
+        id: "app.phone",
+        defaultMessage: "Mobile Phone",
+    },
     password: {
         id: "app.password",
         defaultMessage: "Password",
@@ -67,6 +71,22 @@ export const appMessages = defineMessages({
     save: {
         id: "app.save",
         defaultMessage: "Save",
+    },
+    saveSuccess: {
+        id: "app.save.success",
+        defaultMessage: "Save successfully",
+    },
+    saveFailed: {
+        id: "app.save.failed",
+        defaultMessage: "Save failed",
+    },
+    updateSuccess: {
+        id: "app.update.success",
+        defaultMessage: "Update successfully",
+    },
+    updateFailed: {
+        id: "app.update.failed",
+        defaultMessage: "Update failed",
     },
     errorMsg: {
         id: "app.message.error",
@@ -107,5 +127,9 @@ export const appMessages = defineMessages({
     backToLogin: {
         id: "app.back.login",
         defaultMessage: "Back to login",
+    },
+    invalidPwd: {
+        id: "app.invalid.pwd",
+        defaultMessage: "Invalid password",
     },
 });

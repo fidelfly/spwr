@@ -29,7 +29,7 @@ type HeadProps = Omit<PageHeaderProps, "breadcrumb" | "breadcrumbRender" | "extr
 
 const ViewHeader: React.FC<HeadProps> = (props: PropsWithChildren<HeadProps>): ReactElement => {
     const { children, breadcrumb, toolbar, ...others } = props;
-    others.className = (others.className ? " " : "") + "view-layout";
+    others.className = (others.className ? " " : "") + "view-header";
     if (breadcrumb) {
         (others as PageHeaderProps).breadcrumbRender = () => <PathBreadcrumb {...breadcrumb} />;
     }

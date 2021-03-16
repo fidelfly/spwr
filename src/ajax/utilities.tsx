@@ -47,7 +47,7 @@ const resolvePathVar = (path: string, params?: Record<string, unknown> | unknown
 export const AjaxKit = {
     getURL: (path: string, params: Record<string, unknown>): string => {
         if (params != null) {
-            return `${path}${qs.stringify(params, { addQueryPrefix: true })}`;
+            return `${path}${qs.stringify(params, { addQueryPrefix: true, arrayFormat: "repeat" })}`;
         }
         return path;
     },

@@ -5,6 +5,7 @@ export const WsPath = {
         token: "/webauth/token",
     },
     user: "/user/{id}",
+    password: "/user/{id}/pwd",
     file: "/file",
     avatar: {
         upload: "/avatar",

@@ -20,6 +20,7 @@
     "app.password": "密码",
     "app.user.name": "名称",
     "app.email": "邮箱",
+    "app.phone": "手机",
     "app.confirm": "确认",
     "app.cancel": "取消",
     "app.user.avatar": "头像",
@@ -28,6 +29,11 @@
     "app.timeZone": "时区",
     "app.back": "返回",
     "app.back.login": "返回登陆",
+    "app.save.success": "保存成功",
+    "app.save.failed": "保存失败",
+    "app.update.success": "更新成功",
+    "app.update.failed": "更新失败",
+    "app.invalid.pwd": "密码错误",
 
     "login.user": "用户名",
     "login.loginBtn": "登录",
@@ -63,5 +69,8 @@
     "reg.haveAccount": "已经有账户？",
     "reg.email.done": "注册成功",
     "reg.email.reset": "继续使用邮箱创建账户",
-    "reg.term.must": "您必须同意使用条款和隐私政策"
+    "reg.term.must": "您必须同意使用条款和隐私政策",
+
+    "profile.change.pwd": "更改密码",
+    "profile.original.pwd": "原始密码"
 }

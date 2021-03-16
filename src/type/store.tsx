@@ -21,6 +21,7 @@ export interface User {
     code: string;
     name: string;
     email: string;
+    phone?: string;
     avatar?: number;
     time_zone: string;
 }
