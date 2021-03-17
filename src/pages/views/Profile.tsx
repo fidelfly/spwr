@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useCallback, useState } from "react";
 import ViewLayout, { ViewHeader, ViewContent } from "../template/ViewLayout";
 import { BreadcrumbRoute, PathBreadcrumb } from "../../components/PathBreadcrumb";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
@@ -68,18 +68,22 @@ const ProfileView: React.FC = (): ReactElement => {
     const intl = useIntl();
     const msgHandler = useMessage();
     const validateRules = useValidateRules();
-    function onFinishFailed({ errorFields }: ValidateErrorEntity): void {
-        form.scrollToField(errorFields[0].name);
-    }
 
-    function onPwdChange() {
+    const onFinishFailed = useCallback(
+        ({ errorFields }: ValidateErrorEntity): void => {
+            form.scrollToField(errorFields[0].name);
+        },
+        [form]
+    );
+
+    const onPwdChange = useCallback(() => {
         form.submit();
-    }
+    }, [form]);
 
-    function onPwdCancel() {
+    const onPwdCancel = useCallback(() => {
         setShowPwdEditor(false);
         form.resetFields();
-    }
+    }, [form]);
 
     async function handleSubmit(values: Record<string, unknown>): Promise<boolean> {
         setFormDisable(true);
