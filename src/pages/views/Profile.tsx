@@ -65,6 +65,7 @@ const ProfileView: React.FC = (): ReactElement => {
     const [showPwdEditor, setShowPwdEditor] = useState<boolean>(false);
     const [disableForm, setFormDisable] = useState<boolean>(false);
     const [form] = Form.useForm();
+    const intl = useIntl();
     const msgHandler = useMessage();
     const validateRules = useValidateRules();
     function onFinishFailed({ errorFields }: ValidateErrorEntity): void {
@@ -163,7 +164,7 @@ const ProfileView: React.FC = (): ReactElement => {
                     onFinish={handleSubmit}
                     onFinishFailed={onFinishFailed}>
                     <Form.Item
-                        label={<FormattedMessage {...viewMessage.oldPwd} />}
+                        label={intl.formatMessage(viewMessage.oldPwd)}
                         name={"org_password"}
                         validateTrigger={["onBlur", "onChange"]}
                         rules={[
@@ -173,7 +174,7 @@ const ProfileView: React.FC = (): ReactElement => {
                         <Input type="password" disabled={disableForm} />
                     </Form.Item>
                     <Form.Item
-                        label={<FormattedMessage {...appMessages.password} />}
+                        label={intl.formatMessage(appMessages.password)}
                         name={"password"}
                         rules={[{ required: true }]}>
                         <Input type="password" disabled={disableForm} />

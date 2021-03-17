@@ -57,7 +57,7 @@ export const password = (userId: number, message: string, config?: RuleObject | 
     return {
         ...config,
         validator: async (rule, value): Promise<unknown> => {
-            if (typeof value === "string" && value.length === 0) {
+            if (value == null || (typeof value === "string" && value.length === 0)) {
                 return true;
             }
             const ajaxPath = AjaxKit.getPath(WsPath.password, { id: userId });
