@@ -8,7 +8,7 @@ import { AjaxMessage, Ajax, AjaxKit } from "../../ajax";
 import { useMessage } from "../../utilities";
 import { FormattedMessage } from "react-intl";
 import { appMessages } from "../../constants";
-import { DelayButton } from "../../components/DelayButton";
+import { DelayButton } from "../../components";
 
 export const Home: React.FC = (): ReactElement => {
     const dispatch = useDispatch();

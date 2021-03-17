@@ -1,15 +1,12 @@
-import React, { ReactElement, MouseEvent, useEffect, useMemo, useState } from "react";
-import { Input, Row, Col, Image, Form, Upload, Select, Checkbox, Button } from "antd";
+import React, { ReactElement, useMemo, useState } from "react";
+import { Input, Row, Col, Form, Select, Checkbox, Button } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 import { appMessages, WsPath } from "../../constants";
 import { RcFile } from "antd/lib/upload/interface";
 import { useMessage, TZData, Timezone, useValidateRules } from "../../utilities";
-import { PlusOutlined } from "@ant-design/icons";
-import { BackButton, PwdHint, SubscribeADHint, TermHint } from "../../components";
+import { BackButton, ImageValue, PwdHint, SubscribeADHint, TermHint, useImageValue } from "../../components";
 import { PageForm } from "../template/PageLayout";
 import { Link } from "react-router-dom";
-import ImgCrop from "antd-img-crop";
-import axios from "axios";
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 import { Ajax, AjaxCfg, AjaxKit } from "../../ajax";
 
@@ -28,37 +25,10 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
         });
     }, []);
 
-    const [avatarFile, setAvatar] = useState<RcFile | null>(null);
-    const [previewUrl, setPreview] = useState<string | null>(null);
-    const [avatarID, setAvatarID] = useState<number>(0);
     const [done, setDone] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (avatarFile != null) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result as string);
-            };
-            reader.readAsDataURL(avatarFile);
-        } else {
-            setPreview(() => {
-                if (avatarID > 0) {
-                    return AjaxKit.getPath(WsPath.avatar.get, { key: avatarID }, true);
-                }
-                return null;
-            });
-        }
-    }, [avatarFile, avatarID]);
+    const avatarRef = useImageValue<number>();
 
     function beforeUpload(file: RcFile) {
-        const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-        if (!isJpgOrPng) {
-            msgHandler.showMessage({
-                code: "upload.file.image.type.warning",
-                message: "You can only upload JPG/PNG file!",
-                type: "error",
-            });
-        }
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isLt2M) {
             msgHandler.showMessage({
@@ -67,46 +37,11 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
                 type: "error",
             });
         }
-        if (isJpgOrPng && isLt2M) {
-            setAvatar(file);
-        }
-        return false;
-    }
-
-    function removeAvatar(e: MouseEvent): void {
-        setAvatarID(0);
-        setAvatar(null);
-        e.stopPropagation();
-    }
-
-    async function uploadAvatar(): Promise<number> {
-        if (avatarFile == null) {
-            return 0;
-        }
-        const formData = new FormData();
-        formData.append("file", avatarFile as RcFile);
-        try {
-            const resp = await Ajax.post<{ key: string }>(WsPath.avatar.upload, formData);
-            setAvatar(null);
-            const id = parseInt(resp.data.key);
-            setAvatarID(id);
-            return id;
-        } catch (e) {
-            msgHandler.showNotification({
-                code: "avatar.upload.error",
-                message: "Upload avatar failed!",
-                type: "error",
-            });
-        }
-
-        return 0;
+        return isLt2M;
     }
 
     function resetForm(): void {
         form.resetFields();
-        setAvatar(null);
-        setAvatarID(0);
-        setPreview(null);
         setDone(false);
     }
 
@@ -115,13 +50,12 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
     }
 
     async function handleSubmit(values: Record<string, unknown>): Promise<boolean> {
-        if (avatarFile != null) {
-            const avatar = await uploadAvatar();
-            if (avatar === 0) {
-                return false;
-            }
-            values["avatar"] = avatar;
+        try {
+            [values["avatar"]] = await Promise.all([avatarRef.current.upload()]);
+        } catch (e) {
+            return false;
         }
+
         const ajaxConfig = {
             ...AjaxCfg.FormRequestConfig,
         };
@@ -191,36 +125,30 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
                         <Input />
                     </Form.Item>
                     <Form.Item label={<FormattedMessage {...appMessages.avatar} />}>
-                        <ImgCrop
-                            grid
-                            rotate
-                            modalTitle={intl.formatMessage(appMessages.edit)}
-                            modalOk={intl.formatMessage(appMessages.confirm)}
-                            modalCancel={intl.formatMessage(appMessages.cancel)}>
-                            <Upload
-                                name="avatar"
-                                listType="picture-card"
-                                className="avatar-uploader"
-                                showUploadList={false}
-                                fileList={avatarFile != null ? [avatarFile] : []}
-                                beforeUpload={beforeUpload}>
-                                {previewUrl == null ? (
-                                    <div>
-                                        <PlusOutlined />
-                                        <div style={{ marginTop: 8 }}>
-                                            <FormattedMessage {...appMessages.upload} />
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className={"avatar-uploader"}>
-                                        <Image alt="avatar" src={previewUrl} width={100} height={100} preview={false} />
-                                        <Button type={"default"} onClick={removeAvatar}>
-                                            <FormattedMessage {...appMessages.remove} />
-                                        </Button>
-                                    </div>
-                                )}
-                            </Upload>
-                        </ImgCrop>
+                        <ImageValue
+                            ref={avatarRef}
+                            disableAutoUpload
+                            action={WsPath.avatar.upload}
+                            accept={"image/jpeg,image/png"}
+                            imgURL={(value) =>
+                                (value as number) > 0 ? AjaxKit.getPath(WsPath.avatar.get, { key: value }, true) : null
+                            }
+                            transform={(key) => parseInt(key)}
+                            beforeUpload={beforeUpload}
+                            crop={{
+                                grid: true,
+                                rotate: true,
+                                modalTitle: intl.formatMessage(appMessages.edit),
+                                modalOk: intl.formatMessage(appMessages.confirm),
+                                modalCancel: intl.formatMessage(appMessages.cancel),
+                            }}
+                            preview={{
+                                uploadText: intl.formatMessage(appMessages.upload),
+                                removeText: intl.formatMessage(appMessages.remove),
+                                size: { width: 100, height: 100 },
+                                className: "avatar-uploader",
+                            }}
+                        />
                     </Form.Item>
                     <Form.Item
                         label={<FormattedMessage {...appMessages.timeZone} />}
