@@ -14,5 +14,8 @@ export function ImageURL(id?: unknown | null): string | null {
 }
 
 export function ImageValue(key: string): number {
+    if (key.length == 0) {
+        return 0;
+    }
     return parseInt(key);
 }
