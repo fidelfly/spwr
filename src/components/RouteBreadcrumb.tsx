@@ -83,7 +83,7 @@ export const useBreadcrumb = (node?: string): void => {
 };
 
 export type RouteBreadcrumbProps = Omit<BreadcrumbProps, "itemRender" | "routes"> & {
-    itemRender?: (url: string, title?: string) => ReactNode;
+    itemRender?: (index: number, url: string, title?: string) => ReactNode;
 };
 
 export type BreadcrumbRef = {
@@ -92,17 +92,22 @@ export type BreadcrumbRef = {
 };
 
 function renderItem(
+    index: number,
     route: BreadcrumbRoute,
     routes: BreadcrumbRoutes,
     currentPath: string,
-    itemRender?: (url: string, title?: string) => ReactNode
+    itemRender?: (index: number, url: string, title?: string) => ReactNode
 ): ReactNode {
-    const match = matchPath(currentPath, { path: route.path, exact: true });
-    if (match != null && match.isExact) {
-        return route.title;
+    if (index === routes.length - 1) {
+        return itemRender?.(index, route.url, route.title) || route.title;
     }
 
-    return <Link to={route.url}>{itemRender?.(route.url, route.title) || route.title}</Link>;
+    const match = matchPath(currentPath, { path: route.path, exact: true });
+    if (match != null && match.isExact) {
+        return itemRender?.(index, route.url, route.title) || route.title;
+    }
+
+    return <Link to={route.url}>{itemRender?.(index, route.url, route.title) || route.title}</Link>;
 }
 
 const RouteBreadcrumbRender: ForwardRefRenderFunction<BreadcrumbRef, RouteBreadcrumbProps> = (
@@ -170,10 +175,10 @@ const RouteBreadcrumbRender: ForwardRefRenderFunction<BreadcrumbRef, RouteBreadc
     );
     return (
         <Breadcrumb {...others}>
-            {routes.map((route) => {
+            {routes.map((route, index) => {
                 return (
                     <Breadcrumb.Item key={route.path}>
-                        {renderItem(route, routes, location.pathname, itemRender)}
+                        {renderItem(index, route, routes, location.pathname, itemRender)}
                     </Breadcrumb.Item>
                 );
             })}

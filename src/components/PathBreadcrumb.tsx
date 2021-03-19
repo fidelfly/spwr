@@ -1,7 +1,7 @@
 import { BreadcrumbProps } from "antd/lib/breadcrumb";
 import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { Breadcrumb } from "antd";
-import { useLocation } from "react-router";
+import { useLocation, matchPath } from "react-router";
 import { Link } from "react-router-dom";
 
 export interface BreadcrumbRoute {
@@ -14,9 +14,10 @@ export type BreadcrumbNode = Omit<BreadcrumbRoute, "children">;
 
 function findRoute(route: BreadcrumbRoute, path: string, parent: string): BreadcrumbNode | undefined {
     const routePath = parent + (route.path === "/" ? "" : route.path);
-    if (routePath === path || path.startsWith(routePath)) {
+    const match = matchPath(path, { path: routePath });
+    if (match != null) {
         return {
-            path: routePath,
+            path: match.url,
             title: route.title,
         };
     }
