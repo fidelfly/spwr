@@ -1,10 +1,10 @@
 import React, { ReactElement, useMemo, useState } from "react";
 import { Input, Row, Col, Form, Select, Checkbox, Button } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
-import { appMessages, WsPath } from "../../constants";
+import { appMessages, WsPath, ImageURL, ImageValue } from "../../constants";
 import { RcFile } from "antd/lib/upload/interface";
 import { useMessage, TZData, Timezone, useValidateRules } from "../../utilities";
-import { BackButton, ImageValue, PwdHint, SubscribeADHint, TermHint, useImageValue } from "../../components";
+import { BackButton, ImageInput, PwdHint, SubscribeADHint, TermHint, useImageInput } from "../../components";
 import { PageForm } from "../template/PageLayout";
 import { Link } from "react-router-dom";
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
@@ -26,7 +26,7 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
     }, []);
 
     const [done, setDone] = useState<boolean>(false);
-    const avatarRef = useImageValue<number>();
+    const avatarRef = useImageInput<number>();
 
     function beforeUpload(file: RcFile) {
         const isLt2M = file.size / 1024 / 1024 < 2;
@@ -125,15 +125,13 @@ export const RegisterByEmail: React.FC = (): ReactElement => {
                         <Input />
                     </Form.Item>
                     <Form.Item label={<FormattedMessage {...appMessages.avatar} />}>
-                        <ImageValue
+                        <ImageInput
                             ref={avatarRef}
                             disableAutoUpload
                             action={WsPath.avatar.upload}
                             accept={"image/jpeg,image/png"}
-                            imgURL={(value) =>
-                                (value as number) > 0 ? AjaxKit.getPath(WsPath.avatar.get, { key: value }, true) : null
-                            }
-                            transform={(key) => parseInt(key)}
+                            imgURL={ImageURL}
+                            transform={ImageValue}
                             beforeUpload={beforeUpload}
                             crop={{
                                 grid: true,

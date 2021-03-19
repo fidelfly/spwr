@@ -6,6 +6,6 @@ export * from "./fragments";
 
 export * from "./DelayButton";
 
-export * from "./ImageValue";
+export * from "./ImageInput";
 
 export * from "./RouteBreadcrumb";

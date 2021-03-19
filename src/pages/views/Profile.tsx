@@ -1,7 +1,7 @@
 import React, { ReactElement, useCallback, useState } from "react";
 import ViewLayout, { ViewHeader, ViewContent } from "../template/ViewLayout";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { appMessages, WsPath } from "../../constants";
+import { appMessages, ImageURL, ImageValue, WsPath } from "../../constants";
 import { Route, Switch, Link, useHistory } from "react-router-dom";
 import { Button, Descriptions, Form, Image, Input, Space, Modal } from "antd";
 import { CaretRightOutlined, ArrowLeftOutlined, UserOutlined } from "@ant-design/icons";
@@ -14,8 +14,8 @@ import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 import { updateUser, viewLoading } from "../../actions";
 import {
     PwdHint,
-    useImageValue,
-    ImageValue,
+    useImageInput,
+    ImageInput,
     useRouteBreadcrumb,
     RouteBreadcrumb,
     useBreadcrumb,
@@ -214,7 +214,7 @@ const ProfileEditor: React.FC = (): ReactElement => {
     const msgHandler = useMessage();
     const dispatch = useDispatch();
     const history = useHistory();
-    const avatarRef = useImageValue<number>();
+    const avatarRef = useImageInput<number>();
 
     useBreadcrumb(intl.formatMessage(appMessages.edit));
 
@@ -317,15 +317,13 @@ const ProfileEditor: React.FC = (): ReactElement => {
                 onFinish={handleSubmit}
                 onFinishFailed={onFinishFailed}>
                 <Form.Item name={"avatar"} label={<FormattedMessage {...appMessages.avatar} />}>
-                    <ImageValue
+                    <ImageInput
                         ref={avatarRef}
                         disableAutoUpload
                         action={WsPath.avatar.upload}
                         accept={"image/jpeg,image/png"}
-                        imgURL={(value) =>
-                            (value as number) > 0 ? AjaxKit.getPath(WsPath.avatar.get, { key: value }, true) : null
-                        }
-                        transform={(key) => parseInt(key)}
+                        imgURL={ImageURL}
+                        transform={ImageValue}
                         beforeUpload={beforeUpload}
                         crop={{
                             grid: true,

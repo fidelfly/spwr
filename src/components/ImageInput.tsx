@@ -222,9 +222,9 @@ const ImageValueComponent: ForwardRefRenderFunction<ImageValueRef, ImageValuePro
     return uploadUI;
 };
 
-export const ImageValue = React.forwardRef(ImageValueComponent);
+export const ImageInput = React.forwardRef(ImageValueComponent);
 
-export const useImageValue = function <T = unknown>(): MutableRefObject<ImageValueRef<T>> {
+export const useImageInput = function <T = unknown>(): MutableRefObject<ImageValueRef<T>> {
     return useRef<ImageValueRef<T>>({
         getValue(): T | null {
             return null;
