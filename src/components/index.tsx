@@ -7,3 +7,5 @@ export * from "./fragments";
 export * from "./DelayButton";
 
 export * from "./ImageValue";
+
+export * from "./RouteBreadcrumb";

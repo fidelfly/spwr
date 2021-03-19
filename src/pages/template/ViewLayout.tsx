@@ -1,8 +1,8 @@
-import React, { PropsWithChildren, ReactElement } from "react";
+import React, { MutableRefObject, PropsWithChildren, ReactElement } from "react";
 import { PageHeader } from "antd";
 import { PageHeaderProps } from "antd/lib/page-header";
-import { PathBreadcrumb, Props as BreadcrumbProps } from "../../components/PathBreadcrumb";
 import "../style/ViewLayout.less";
+import { BreadcrumbRef, RouteBreadcrumb, RouteBreadcrumbProps } from "../../components";
 
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
@@ -23,7 +23,9 @@ const ViewContent: React.FC<Props> = (props: Props): ReactElement => {
 };
 
 type HeadProps = Omit<PageHeaderProps, "breadcrumb" | "breadcrumbRender" | "extra"> & {
-    breadcrumb?: BreadcrumbProps;
+    breadcrumb?: RouteBreadcrumbProps & {
+        ref: MutableRefObject<BreadcrumbRef>;
+    };
     toolbar?: React.ReactNode;
 };
 
@@ -31,7 +33,7 @@ const ViewHeader: React.FC<HeadProps> = (props: PropsWithChildren<HeadProps>): R
     const { children, breadcrumb, toolbar, ...others } = props;
     others.className = (others.className ? " " : "") + "view-header";
     if (breadcrumb) {
-        (others as PageHeaderProps).breadcrumbRender = () => <PathBreadcrumb {...breadcrumb} />;
+        (others as PageHeaderProps).breadcrumbRender = () => <RouteBreadcrumb {...breadcrumb} />;
     }
     if (toolbar) {
         (others as PageHeaderProps).extra = toolbar;

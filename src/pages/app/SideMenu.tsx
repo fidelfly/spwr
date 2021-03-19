@@ -194,7 +194,6 @@ export const SideMenu: React.FC<Props> = (props) => {
     return (
         <Menu
             mode={"inline"}
-            inlineCollapsed={collapsed}
             selectedKeys={selectedKeys}
             openKeys={openKeys}
             onOpenChange={onOpenChange}

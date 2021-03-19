@@ -1,6 +1,5 @@
 import React, { ReactElement, useCallback, useState } from "react";
 import ViewLayout, { ViewHeader, ViewContent } from "../template/ViewLayout";
-import { BreadcrumbRoute, PathBreadcrumb } from "../../components/PathBreadcrumb";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { appMessages, WsPath } from "../../constants";
 import { Route, Switch, Link, useHistory } from "react-router-dom";
@@ -13,7 +12,14 @@ import { useMessage, useValidateRules } from "../../utilities";
 import { RcFile } from "antd/es/upload";
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 import { updateUser, viewLoading } from "../../actions";
-import { PwdHint, useImageValue, ImageValue } from "../../components";
+import {
+    PwdHint,
+    useImageValue,
+    ImageValue,
+    useRouteBreadcrumb,
+    RouteBreadcrumb,
+    useBreadcrumb,
+} from "../../components";
 
 const viewMessage = defineMessages({
     title: {
@@ -30,7 +36,7 @@ const viewMessage = defineMessages({
     },
 });
 
-const myRoutes: BreadcrumbRoute = {
+/*const myRoutes: BreadcrumbRoute = {
     path: "/",
     title: <FormattedMessage {...viewMessage.title} />,
     children: [
@@ -39,26 +45,37 @@ const myRoutes: BreadcrumbRoute = {
             title: <FormattedMessage {...appMessages.edit} />,
         },
     ],
-};
+};*/
 
 export const Profile: React.FC = (): ReactElement => {
+    const intl = useIntl();
+    const [BreadcrumbProvider, breadcrumbRef] = useRouteBreadcrumb(intl.formatMessage(viewMessage.title));
     return (
         <ViewLayout>
-            <PathBreadcrumb
+            {/*     <PathBreadcrumb
                 base="/app/account/profile"
                 routes={myRoutes}
                 className={"view-breadcrumb"}
                 separator={<CaretRightOutlined />}
-            />
-            <Switch>
-                <Route exact path={"/app/account/profile/e"} component={ProfileEditor} />
-                <Route>
-                    <ProfileView />
-                </Route>
-            </Switch>
+            />*/}
+            <RouteBreadcrumb ref={breadcrumbRef} className={"view-breadcrumb"} separator={<CaretRightOutlined />} />
+            <BreadcrumbProvider>
+                <Switch>
+                    <Route path={"/app/account/profile/e"} component={ProfileEditor} />
+                    {/*<Route exact path={"/app/account/profile/t"} component={ProfileView0} />*/}
+                    <Route>
+                        <ProfileView />
+                    </Route>
+                </Switch>
+            </BreadcrumbProvider>
         </ViewLayout>
     );
 };
+
+/*const ProfileView0: React.FC = (): ReactElement => {
+    useBreadcrumb("Testing");
+    return <div>{"testing"}</div>;
+};*/
 
 const ProfileView: React.FC = (): ReactElement => {
     const user = useSelector<StoreState, User>((state) => state.user as User);
@@ -199,6 +216,8 @@ const ProfileEditor: React.FC = (): ReactElement => {
     const history = useHistory();
     const avatarRef = useImageValue<number>();
 
+    useBreadcrumb(intl.formatMessage(appMessages.edit));
+
     function onFinishFailed({ errorFields }: ValidateErrorEntity): void {
         form.scrollToField(errorFields[0].name);
     }
@@ -258,12 +277,25 @@ const ProfileEditor: React.FC = (): ReactElement => {
     }
 
     return (
+        /*        <Switch>
+            <Route exact path={"/app/account/profile/e/t"} component={ProfileView0} />
+            <Route>*/
         <ViewContent style={{ textAlign: "center" }}>
             <ViewHeader
                 toolbar={[
                     <Button type={"primary"} key={"save"} onClick={save}>
                         <FormattedMessage {...appMessages.save} />
                     </Button>,
+                    /*         <Link to={"/app/account/profile/t"} key={"second"}>
+                        <Button type={"primary"} key={"testing"} onClick={save}>
+                            {"testing0"}
+                        </Button>
+                    </Link>,
+                    <Link to={"/app/account/profile/e/t"} key={"sub second"}>
+                        <Button type={"primary"} key={"testing1"} onClick={save}>
+                            {"testing1"}
+                        </Button>
+                    </Link>,*/
                 ]}
                 backIcon={
                     <Link to={"/app/account/profile"}>
@@ -316,5 +348,7 @@ const ProfileEditor: React.FC = (): ReactElement => {
                 </Form.Item>
             </Form>
         </ViewContent>
+        /*   </Route>
+        </Switch>*/
     );
 };
