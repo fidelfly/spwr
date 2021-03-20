@@ -15,10 +15,14 @@ import { Link, useRouteMatch, matchPath } from "react-router-dom";
 import { BreadcrumbProps } from "antd/lib/breadcrumb";
 import { useLocation } from "react-router";
 
-export interface BreadcrumbRoute {
+export interface BreadcrumbNode {
     url: string;
-    path: string;
     title?: string;
+    key?: string;
+}
+
+export interface BreadcrumbRoute extends BreadcrumbNode {
+    path: string;
 }
 
 type BreadcrumbRoutes = BreadcrumbRoute[];
@@ -34,7 +38,7 @@ const BreadcrumbContext = React.createContext<MutableRefObject<BreadcrumbRef>>({
     },
 });
 
-export const useRouteBreadcrumb = (node?: string): [React.FC, MutableRefObject<BreadcrumbRef>] => {
+export const useRouteBreadcrumb = (node?: string, key?: string): [React.FC, MutableRefObject<BreadcrumbRef>] => {
     const match = useRouteMatch();
     const ref = useRef<BreadcrumbRef>({
         setRoute: (_) => {
@@ -49,13 +53,13 @@ export const useRouteBreadcrumb = (node?: string): [React.FC, MutableRefObject<B
         if (node != null) {
             const breadcrumbRef = ref.current;
             console.log(`set route(${node}) : ${url}, ${path}`);
-            breadcrumbRef.setRoute({ url: url, path: path, title: node });
+            breadcrumbRef.setRoute({ url: url, path: path, title: node, key: key });
             return () => {
                 console.log(`clear route(${node}) : ${url}, ${path}`);
-                breadcrumbRef.clearRoute({ url: url, path: path });
+                breadcrumbRef.clearRoute({ url: url, path: path, key: key });
             };
         }
-    }, [url, path, node, ref]);
+    }, [url, path, node, key, ref]);
 
     const provider = useCallback(
         (props) => {
@@ -67,23 +71,23 @@ export const useRouteBreadcrumb = (node?: string): [React.FC, MutableRefObject<B
     return [provider, ref];
 };
 
-export const useBreadcrumb = (node?: string): void => {
+export const useBreadcrumb = (node: string, key?: string): void => {
     const match = useRouteMatch();
     const { url, path } = match;
     const breadcrumb = useContext(BreadcrumbContext);
     useEffect(() => {
         const breadcrumbRef = breadcrumb.current;
         console.log(`set route(${node}) : ${url}, ${path}`);
-        breadcrumbRef.setRoute({ url: url, path: path, title: node });
+        breadcrumbRef.setRoute({ url: url, path: path, title: node, key: key });
         return () => {
             console.log(`clear route(${node}) : ${url}, ${path}`);
-            breadcrumbRef.clearRoute({ url: url, path: path });
+            breadcrumbRef.clearRoute({ url: url, path: path, key: key });
         };
-    }, [url, path, node, breadcrumb]);
+    }, [url, path, node, key, breadcrumb]);
 };
 
 export type RouteBreadcrumbProps = Omit<BreadcrumbProps, "itemRender" | "routes"> & {
-    itemRender?: (index: number, url: string, title?: string) => ReactNode;
+    itemRender?: (index: number, node: BreadcrumbNode) => ReactNode;
 };
 
 export type BreadcrumbRef = {
@@ -96,18 +100,18 @@ function renderItem(
     route: BreadcrumbRoute,
     routes: BreadcrumbRoutes,
     currentPath: string,
-    itemRender?: (index: number, url: string, title?: string) => ReactNode
+    itemRender?: (index: number, node: BreadcrumbNode) => ReactNode
 ): ReactNode {
     if (index === routes.length - 1) {
-        return itemRender?.(index, route.url, route.title) || route.title;
+        return itemRender?.(index, route) || route.title;
     }
 
     const match = matchPath(currentPath, { path: route.path, exact: true });
     if (match != null && match.isExact) {
-        return itemRender?.(index, route.url, route.title) || route.title;
+        return itemRender?.(index, route) || route.title;
     }
 
-    return <Link to={route.url}>{itemRender?.(index, route.url, route.title) || route.title}</Link>;
+    return <Link to={route.url}>{itemRender?.(index, route) || route.title}</Link>;
 }
 
 const RouteBreadcrumbRender: ForwardRefRenderFunction<BreadcrumbRef, RouteBreadcrumbProps> = (
@@ -177,7 +181,7 @@ const RouteBreadcrumbRender: ForwardRefRenderFunction<BreadcrumbRef, RouteBreadc
         <Breadcrumb {...others}>
             {routes.map((route, index) => {
                 return (
-                    <Breadcrumb.Item key={route.path}>
+                    <Breadcrumb.Item key={route.key || route.url || route.path}>
                         {renderItem(index, route, routes, location.pathname, itemRender)}
                     </Breadcrumb.Item>
                 );
