@@ -30,7 +30,7 @@ type BreadcrumbRoutes = BreadcrumbRoute[];
 const BreadcrumbContext = React.createContext<MutableRefObject<BreadcrumbRef>>({
     current: {
         setRoute: (_) => {
-            //do nothing;
+            //do nothing
         },
         clearRoute: (_) => {
             //do nothing;
@@ -38,7 +38,11 @@ const BreadcrumbContext = React.createContext<MutableRefObject<BreadcrumbRef>>({
     },
 });
 
-export const useRouteBreadcrumb = (node?: string, key?: string): [React.FC, MutableRefObject<BreadcrumbRef>] => {
+export const useRouteBreadcrumb = (
+    node?: string,
+    key?: string,
+    deps?: ReadonlyArray<unknown>
+): [React.FC, MutableRefObject<BreadcrumbRef>] => {
     const match = useRouteMatch();
     const ref = useRef<BreadcrumbRef>({
         setRoute: (_) => {
@@ -59,7 +63,8 @@ export const useRouteBreadcrumb = (node?: string, key?: string): [React.FC, Muta
                 breadcrumbRef.clearRoute({ url: url, path: path, key: key });
             };
         }
-    }, [url, path, node, key, ref]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [url, path, node, key, ref, ...(deps || [])]);
 
     const provider = useCallback(
         (props) => {
@@ -125,31 +130,48 @@ const RouteBreadcrumbRender: ForwardRefRenderFunction<BreadcrumbRef, RouteBreadc
     useImperativeHandle(
         ref,
         () => {
-            // console.log("Breadcrumb ref current changed");
+            console.log("Breadcrumb ref current changed");
             return {
                 setRoute: (route: BreadcrumbRoute) => {
                     setRoutes(
                         (routes: BreadcrumbRoutes): BreadcrumbRoutes => {
-                            // const newRoutes = [...routes];
+                            // console.log(`doing set route(${route.title}) : ${route.url}, ${route.path}`);
                             if (routes.length > 0) {
-                                const match = matchPath(routes[0].url, { path: route.path });
+                                const newRoutes = [...routes];
+                                const match = matchPath(newRoutes[0].url, { path: route.path });
                                 if (match != null) {
                                     if (match.isExact) {
-                                        return [route].concat(routes.slice(1));
+                                        newRoutes.splice(0, 1, route);
+                                    } else {
+                                        newRoutes.splice(0, 0, route);
                                     }
 
-                                    return [route].concat(routes);
+                                    return newRoutes;
                                 }
-                            }
 
-                            for (let i = routes.length - 1; i >= 0; i--) {
-                                const match = matchPath(route.url, { path: routes[i].path });
-                                if (match != null) {
-                                    if (match.isExact) {
-                                        return routes.slice(0, i).concat(route) as BreadcrumbRoutes;
+                                let tailIndex = 0;
+                                for (let i = newRoutes.length - 1; i >= 0; i--) {
+                                    let match = matchPath(route.url, { path: newRoutes[i].path });
+                                    if (match != null) {
+                                        if (tailIndex > 0) {
+                                            newRoutes.splice(tailIndex + 1);
+                                        }
+
+                                        if (match.isExact) {
+                                            newRoutes.splice(i, 1, route);
+                                        } else {
+                                            newRoutes.splice(i + 1, 0, route);
+                                        }
+
+                                        return newRoutes;
                                     }
 
-                                    return routes.slice(0, i + 1).concat(route) as BreadcrumbRoutes;
+                                    if (tailIndex === 0) {
+                                        match = matchPath(newRoutes[i].url, { path: route.path });
+                                        if (match != null) {
+                                            tailIndex = i;
+                                        }
+                                    }
                                 }
                             }
 
