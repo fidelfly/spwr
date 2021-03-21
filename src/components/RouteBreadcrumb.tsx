@@ -182,16 +182,19 @@ const RouteBreadcrumbRender: ForwardRefRenderFunction<BreadcrumbRef, RouteBreadc
                 clearRoute: (route: BreadcrumbRoute) => {
                     setRoutes(
                         (routes: BreadcrumbRoutes): BreadcrumbRoutes => {
-                            for (let i = routes.length - 1; i >= 0; i--) {
-                                const match = matchPath(route.url, { path: routes[i].path });
+                            const newRoutes = [...routes];
+                            for (let i = newRoutes.length - 1; i >= 0; i--) {
+                                const match = matchPath(route.url, { path: newRoutes[i].path });
                                 if (match != null) {
                                     if (match.isExact) {
-                                        return routes.slice(0, i).concat(routes.slice(i + 1)) as BreadcrumbRoutes;
+                                        newRoutes.splice(i, 1);
+                                        break;
+                                        // return newRoutes.slice(0, i).concat(newRoutes.slice(i + 1)) as BreadcrumbRoutes;
                                     }
                                 }
                             }
 
-                            return routes;
+                            return newRoutes;
                         }
                     );
                 },
