@@ -70,7 +70,7 @@ export const useRouteBreadcrumb = (
         (props) => {
             return <BreadcrumbContext.Provider value={ref}>{props.children}</BreadcrumbContext.Provider>;
         },
-        [ref]
+        [ref, ...(deps || [])] // add ...(dpes || []) here, so that we can rerender all routes when RouteBreadcrumb changed
     );
 
     return [provider, ref];
