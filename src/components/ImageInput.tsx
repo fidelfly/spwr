@@ -115,23 +115,27 @@ const ImageValueComponent: ForwardRefRenderFunction<ImageValueRef, ImageValuePro
                     return beforeAction && !disableAutoUpload;
                 }
 
-                if (disableAutoUpload) {
-                    beforeAction.then((value) => {
+                const beforeActionPromise = beforeAction as Promise<void | Blob | File>;
+
+                if (beforeActionPromise.then) {
+                    if (disableAutoUpload) {
+                        beforeActionPromise.then((value) => {
+                            if (value != null) {
+                                setImageFile(value);
+                            }
+                            return value;
+                        });
+
+                        return false;
+                    }
+
+                    return beforeActionPromise.then((value) => {
                         if (value != null) {
                             setImageFile(value);
                         }
                         return value;
                     });
-
-                    return false;
                 }
-
-                return beforeAction.then((value) => {
-                    if (value != null) {
-                        setImageFile(value);
-                    }
-                    return value;
-                });
             }
             return !disableAutoUpload;
         },
@@ -157,7 +161,7 @@ const ImageValueComponent: ForwardRefRenderFunction<ImageValueRef, ImageValuePro
 
     const customUpload = useCallback(
         (uploadReq: RcCustomRequestOptions) => {
-            upload(uploadReq.file).then(() => {
+            upload(uploadReq.file as Blob).then(() => {
                 //do nothing
             });
         },

@@ -70,6 +70,7 @@ export const useRouteBreadcrumb = (
         (props) => {
             return <BreadcrumbContext.Provider value={ref}>{props.children}</BreadcrumbContext.Provider>;
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [ref, ...(deps || [])] // add ...(dpes || []) here, so that we can rerender all routes when RouteBreadcrumb changed
     );
 
