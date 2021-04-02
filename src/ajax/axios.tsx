@@ -67,7 +67,12 @@ const resolveError = (error: AxiosError): unknown => {
     }
 };
 
+export const ApiBase = process.env.REACT_APP_APIBASE || "/api";
+
+export const ApiURL = process.env.REACT_APP_APIURL || "";
+
 const AjaxInstance = axios.create({
+    baseURL: ApiURL,
     transformResponse: function (data) {
         if (typeof data === "string") {
             try {
@@ -92,15 +97,16 @@ interface RequestConfig extends AxiosRequestConfig {
     time?: number;
 }
 
-export const ApiBase = process.env.API_BASE || "/api";
-
 export function joinBase(url: string): string {
     url = url.trim();
     if (!url.startsWith("/")) {
         url = "/" + url;
     }
-    if (!url.startsWith(ApiBase)) {
-        url = ApiBase + url;
+
+    if (ApiBase != null && ApiBase.length > 0) {
+        if (!url.startsWith(ApiBase)) {
+            url = ApiBase + url;
+        }
     }
 
     return url;
