@@ -6,7 +6,7 @@ const formRequestConfig: AxiosRequestConfig = {
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
     transformRequest: (data: any): any => {
         // headers["content-type"] = "application/x-www-form-urlencoded";
-        return qs.stringify(data);
+        return qs.stringify(data, { arrayFormat: "repeat" });
     },
 };
 
